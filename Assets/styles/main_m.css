@@ -1,0 +1,187 @@
+@import url(http://fonts.googleapis.com/css?family=Montserrat);
+@import url(http://fonts.googleapis.com/css?family=Pacifico);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+/* ==========================================================================
+        Feuille personalisée exterieure au bootstrap
+   ========================================================================== */
+p {
+    -webkit-font-smoothing: subpixel-antialiased;
+    text-rendering: geometricPrecision;
+}
+
+a {
+    color: #FF7A00;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+.nav-list > li > a, .nav-list .nav-header {
+margin-right: -15px;
+margin-left: -15px;
+text-shadow: none;
+}
+
+body {
+    background-color: #fff;
+}
+
+.main-content {
+    padding-top: 50px;
+}
+
+.navbar.lambdanav {
+background-color: transparent;
+}
+
+.nav-pills > li.active > a {
+    color: #fff;
+}
+
+.nav-pills > li[data-move="dynamic"] > a:hover{
+    background-color: rgba(200,200,200,0.1);
+    color: #666;
+}
+
+.nav-pills > li.active > a:hover{
+    color: #fff;
+    background-color: #71BEFF;
+}
+
+a:hover { text-decoration: none }
+
+.upSuccess {
+    color: #0081c2;
+}
+
+.upPending {
+    color: #FF7A00;
+}
+
+.upError {
+    color: #c43c35;
+}
+
+
+h1 {
+    color: #79B2E2;	
+}
+
+.button {
+    padding: 6px 12px 6px 12px;
+    margin: 5px;
+    color: #666;
+    background-color: #FAFAFA;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    display: inline-block;
+    background-image: none;
+    box-shadow: none;
+}
+
+.button:hover {
+    color: #79B2E2;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    background-image: none;
+}
+
+.btn.button.active, .btn.button:active {
+    background-color: white;
+}
+
+.button.active:hover, .button:active, .button .active {
+    color: #79B2E2;
+    -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+    background-color: white;
+    background-image: none;
+}
+
+.button:active, .button:checked {
+    background-color: white;
+    background-color: white 9;
+    background-image: none;
+    outline: 0;
+    -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-group > .button {
+    margin: 1px 0px 10px 0px;
+}
+
+.container > .brand {
+    color: #666;	
+    text-shadow:none;
+}
+
+.navbar-inverse .navbar-inner {
+    background-color: rgba(0,0,0,0.0)s;
+    background-image: none;
+}
+
+.well {
+min-height: 20px;
+padding: 19px;
+margin-bottom: 20px;
+color: white;
+background-color: transparent;
+border: none;
+border-right: 3px solid #FF7A00;
+-webkit-border-radius: 0px;
+-moz-border-radius: 0px;
+border-radius: 0px;
+-webkit-box-shadow: none;
+box-shadow: none;
+}
+
+.user-unit {
+padding: 10px;
+margin-bottom: 10px;
+background-color: transparent;
+-webkit-border-radius: 0px;
+-moz-border-radius: 0px;
+border-radius: 0px;
+}
+
+.form-lw {
+    margin: 10px;
+}
+
+.control-group.form_lw {
+margin-top: 20px;
+margin-left: 5px;
+}
+
+.user-infos h1 {
+margin-bottom: 0;
+font-size: 60px;
+line-height: 1;
+letter-spacing: -1px;
+color: inherit;
+}
+
+.user-infos h2, h3 {
+color: #999;
+}
+
+.user-img {
+    display: inline-block;
+    max-height: 200px;
+    max-width: 200px;
+}
+
+.user-infos, .user-edit {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 40px;
+}
+
+.gris-moyen {
+    color: #999;
+}

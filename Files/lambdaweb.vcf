@@ -1,0 +1,9 @@
+BEGIN:VCARD
+VERSION:3.0
+FN:Lambdaweb
+N:;Lambdaweb;;;
+EMAIL;TYPE=INTERNET;TYPE=WORK:contact@lambdaweb.fr
+TEL;TYPE=CELL:0686149052
+ADR;TYPE=HOME:;;43 rue Boudouresque;Marseille;;13007;France
+URL;TYPE=WORK:http\://www.lambdaweb.fr
+END:VCARD

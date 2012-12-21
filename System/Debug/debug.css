@@ -1,0 +1,51 @@
+/* 
+    Document   : debug
+    Created on : 21 déc. 2012, 17:54:38
+    Author     : lambda2
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.debug-num {
+    display: inline-block;
+    width: 20%;
+    color: #FFF;
+    font-size: 2em;
+    text-align: center;
+    
+    font-family: sans-serif;
+    float: left;
+}
+
+.debug-num p{
+    text-align: center;
+    font-family: sans-serif;
+    margin: 4%;
+}
+
+.debug-zone {
+    display: inline-block;
+    width: 80%;
+    color: #FFF;
+    font-size: 0.8em;
+    text-align: left;
+    font-family: sans-serif;
+    float: right;
+}
+
+.debug-zone p:first-child {
+    margin-top: 10px;
+}
+
+.debug-zone p {
+    line-height: 0px;
+}
+
+.debug-aera {
+    display: block;
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    height: 100px;
+    background-color: rgba(0,0,0,0.6);
+}
