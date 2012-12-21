@@ -7,24 +7,24 @@ abstract class Entity {
     protected $bdd;
     protected $fields;
     protected $access;
-    
+
     public function __construct() {
-        
-        $this->table = strtolower(get_class($this)).Configuration::getInstance()->getDbPrefix();
+
+        $this->table = strtolower(get_class($this)) . Configuration::getInstance()->getDbPrefix();
         $this->editable = new Editable($this, $this->table);
         $this->bdd = Configuration::getInstance()->bdd();
         $this->access = new Access();
-        
+
         $this->generateProperties();
         $this->generateFields();
     }
-    
-    protected function reload(){
-        
+
+    protected function reload() {
+
         $this->editable = new Editable($this, $this->table);
         $this->bdd = Configuration::getInstance()->bdd();
         $this->access = new Access();
-        
+
         $this->generateProperties();
         $this->generateFields();
     }
@@ -47,8 +47,8 @@ abstract class Entity {
             }
         }
     }
-    
-    protected function generateProperties(){
+
+    protected function generateProperties() {
         $t = array();
         try {
             $Req = $this->bdd->prepare("SHOW COLUMNS FROM {$this->table}");
@@ -61,13 +61,13 @@ abstract class Entity {
         }
         $this->fields = $t;
     }
-    
+
     /**
      * Génère les champs de formulaire 
      * depuis le shema de la base de données.
      */
-    protected function generateFields(){
-        $this->editable = new Editable($this,$this->table);
+    protected function generateFields() {
+        $this->editable = new Editable($this, $this->table);
         try {
             $Req = $this->bdd->prepare("SHOW COLUMNS FROM {$this->table}");
             $Req->execute(array());
@@ -76,27 +76,23 @@ abstract class Entity {
         }
         while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
             $type = "text";
-            if($res->Key == "MUL"){
+            if ($res->Key == "MUL") {
                 $type = "select";
                 $target = str_replace('id_', '', $res->Field) . Configuration::getInstance()->getDbPrefix() . '.' . $res->Field;
-                $this->editable->add(new Champ($res->Field,$res->Field,ucfirst(str_replace('id_', '', $res->Field)),$type,$target,''));
-            }
-            elseif($res->Key == ""){
-                $t = explode('_',$res->Field);
+                $this->editable->add(new Champ($res->Field, $res->Field, ucfirst(str_replace('id_', '', $res->Field)), $type, $target, ''));
+            } elseif ($res->Key == "") {
+                $t = explode('_', $res->Field);
                 $t = $t[0];
-                $this->editable->add(new Champ($res->Field,$res->Field,ucfirst($t)));
+                $this->editable->add(new Champ($res->Field, $res->Field, ucfirst($t)));
             }
-            
         }
     }
-    
 
-    
-    protected function getIdFieldFrom($tableName){
+    protected function getIdFieldFrom($tableName) {
         
     }
-    
-    public function getAll(){
+
+    public function getAll() {
         $t = array();
         try {
             $Req = $this->bdd->prepare("SELECT * FROM {$this->table}");
@@ -110,7 +106,6 @@ abstract class Entity {
 
         return $t;
     }
-    
 
     public function get($property) {
         return $this->fields[$property];
@@ -126,9 +121,9 @@ abstract class Entity {
         $s .= 'Référencée par la table ' . $this->table . '.<br>';
         $i = 0;
         foreach ($this as $key => $value) {
-            if(!is_a($value, "PDO"))
+            if (!is_a($value, "PDO"))
                 $s .= "$key : $value ($i)<br>";
-            $i ++;
+            $i++;
         }
 
         return $s;
@@ -173,22 +168,40 @@ abstract class Entity {
         $this->fields = $fields;
     }
 
-
-    
 }
 
-class TableEntity extends Entity{
-    
+/**
+ * Classe permettant d'instancier une classe a partir
+ * des valeurs d'une table spécifique
+ */
+class TableEntity extends Entity {
+
+    /**
+     * Crée une nouvelle instance référente à la table 
+     * fournie en parametre. On effectue préalablement 
+     * un scan des tables sur la base de données et on vérifie 
+     * que la table demandée existe. 
+     * Si ce n'est pas le cas, on jette une exception au visage 
+     * de ce pauvre internaute.
+     * 
+     * @param string $name le nom de la table référente
+     * @throws CriticalException si la table n'existe pas
+     */
     public function __construct($name) {
-            if(!Configuration::isValidClass($name)){
-                throw new ErrorException($name.' n\'est pas une classe valide (non instanciable)');
-            }
-            else {
+
+        // Si la table existe dans la bdd
+        if (!Configuration::isValidClass($name)) {
+            // Splaff !
+            throw new CriticalException($name . ' n\'est pas une classe valide (non instanciable)');
+        } else {
             parent::__construct();
-            $this->table = ($name).Configuration::getInstance()->getDbPrefix();
+            // On redéfinit la table référente de l'instance
+            $this->table = ($name) . Configuration::getInstance()->getDbPrefix();
+            // Et on recharge
             $this->reload();
-            }
+        }
     }
+
 }
 
 class MemberAccessException extends Exception {
