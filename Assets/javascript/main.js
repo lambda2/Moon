@@ -141,6 +141,7 @@ $('#deconnexion').click(function(){
             else {
                 console.log("statut inconnu (echec) de la deconnexion");
             }
+            
         }
     });
 });
@@ -655,7 +656,7 @@ function insertField(fields,but,target){
             
                 console.log(dataa);
                 dataa = dataa.replace("\n", "");
-                if(dataa == "0"){
+                if(dataa != "1"){
                     console.log("echec de la mise a jour");
                     but.html('<i class="icon-warning-sign upError"></i>');
                 }

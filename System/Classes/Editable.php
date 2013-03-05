@@ -3,21 +3,55 @@
 class Editable {
 
     private $fields = array();
+    private $buttons = array();
     private $tableName;
     private $classe;
+    private $display;
+    private $insertBL;
 
-    public function __construct($classe, $tableName = "") {
+    public function __construct($classe, $tableName = "", $display="inline") {
         $this->classe = $classe;
         if ($tableName == "")
             $this->tableName = strtolower(get_class($this->classe));
         else
             $this->tableName = $tableName;
+        
+        $this->display = $display;
+        
+        $this->generateLegend();
+        $this->generateButtons();
+    }
+    
+    private function generateButtons(){
+        $insertButton = new Bouton($this->insertBL, "insert", 'insert' . $this->tableName, $this->tableName);
+        $this->buttons[] = $insertButton;
+    }
+    
+    private function generateLegend(){
+        $createLeg = 'Ajouter';
+        $updateLeg = 'Mettre a jour';
+        $readLeg = 'Voir';
+        $deleteLeg = 'Supprimer';
+        $linker = 'le';
+        
+        $name = Entity::getProperName($this->tableName);
+        if(substr($name, -1) == 's'){
+            $linker = 'les';
+        }
+        else if(substr($name, -1) == 'e'){
+            $linker = 'la';
+        }
+        
+        $this->insertBL = $createLeg.' '.$linker.' '.$name;
     }
 
     public function getFields() {
         return $this->fields;
     }
 
+
+
+        
     public function setFields($fields) {
         $this->fields = $fields;
     }
@@ -44,29 +78,103 @@ class Editable {
         $field->setTable($this->tableName);
     }
 
+    public function getDisplay() {
+        return $this->display;
+    }
+
+    public function setDisplay($display) {
+        $this->display = $display;
+    }
+
+        
     public function reset() {
         $this->fields = array();
     }
+    
+    private function getFormClass(){
+        $r = "";
+        switch ($this->display) {
+            case "inline":
+                $r = 'class="form-inline"';
+                break;
+            case "none":
+                $r = '';
+                break;
+            case "block":
+                $r = 'class="form-horizontal"';
+                break;
+            
+            default:
+                $r = '';
+                break;
+        }
+        return $r;
+    }
+    
+    private function openControlFormTag($label){
+        $r = "";
+        switch ($this->display) {
+            case "inline":
+                $r = $label;
+                break;
+            case "none":
+                $r = $label;
+                break;
+            case "block":
+                $r = '<div class="control-group">'.$label.'<div class="controls">';
+                break;
+            
+            default:
+                $r = '';
+                break;
+        }
+        return $r;
+    }
+    
+    private function closeControlFormTag(){
+        $r = "";
+        switch ($this->display) {
+            case "inline":
+                $r = '';
+                break;
+            case "none":
+                $r = '';
+                break;
+            case "block":
+                $r = '</div></div>';
+                break;
+            default:
+                $r = '';
+                break;
+        }
+        return $r;
+    }
+    
+    private function generateLabel($field){
+        $lab = '<label class="control-label form-lw gris-moyen" for="' . $field->getFieldId() . '">' . $field->getFieldPh() . '</label>';
+        return $lab;
+    }
+
 
     public function generateInsertForm($form = true, $label = true, $dataType = "userInfo", $formid = "") {
         $r = "";
+        $formClass="";
+        
         if ($formid == "") {
             $formid = 'insert' . $this->tableName;
         }
         if ($form)
-            $r .= '<form id="' . $formid . '" class="form-inline">';
+            $r .= '<form id="' . $formid . '" '.$this->getFormClass().' >';
         foreach ($this->fields as $field) {
-            //$r.= '<div class="control-group">';
+            $lab="";
             if ($label)
-                $r.= '<label class="control-label form-lw gris-moyen" for="' . $field->getFieldId() . '">' . $field->getFieldPh() . '</label>';
-            //$r.= '<div class="controls">';
+                $lab = $this->generateLabel ($field);
+            $r.= $this->openControlFormTag($lab);
             $r.= $field->genererChampHtml($dataType, $this->getFieldValue($field->nomChamp), "insert");
-            $r.= '';
-            //$r.= '</div>';
-            //$r.= '</div>';
+            $r.= $this->closeControlFormTag();
         }
         $r.= '<div class="control-group form_lw"><div class="controls">';
-        $r.= '<button type="button" data-target="' . $this->tableName . '"  data-form="' . $formid . '" data-role="insert" class="btn button"><i class="icon-save"></i> Ajouter le ' . strtolower(get_class($this->classe)) . '</button>';
+        $r.= $this->getButton('insert')->generateHtml();
         $r.= ' </div></div>';
         if ($form)
             $r .= '</form>';
@@ -103,24 +211,130 @@ class Editable {
     }
 
     public function __toString() {
-        $s = "Formulaire de la classe :<br>";
+        $s.= "<p><b>Formulaire de la classe :</b></p>";
+        $s.= '<table class="table table-striped">';
         foreach ($this->fields as $champ) {
-            $s .= '  - ' . $champ->nomChamp . ' (' . $champ->typeChamp . ')<br>';
+            $s .= '<tr><td>' . $champ->nomChamp . '</td><td><b>' . $champ->typeChamp . '</b></td></tr>';
         }
+        $s.= '</table>';
         return $s;
     }
-    
-    public function getFieldByName($name){
-        $f = null;
-        foreach ($this->fields as $field) {
-            if($field->nomChamp == $name){
-                $f = $field;
-                break;
+
+    public function getFieldByName($name) {
+        try {
+            $f = null;
+            foreach ($this->fields as $field) {
+                if ($field->nomChamp == $name) {
+                    $f = $field;
+                }
             }
+            if ($f == null)
+                throw new AlertException('le champ ' . $name . ' n\'a pas été trouvé');
+            return $f;
+        } catch (Exception $e) {
+            echo $e->getMessage();
         }
-        return $field;
+    }
+    
+    
+       public function getButton($role) {
+        try {
+            $f = null;
+            foreach ($this->buttons as $but) {
+                if ($but->getRole() == $role) {
+                    $f = $but;
+                }
+            }
+            if ($f == null)
+                throw new AlertException('le boutton ' . $role . ' n\'a pas été trouvé');
+            return $f;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
 
+}
+
+class Bouton {
+    private $role;
+    private $type;
+    private $target;
+    private $form;
+    private $icon;
+    private $label;
+    
+    public function __construct($label,$role, $form, $target) {
+        $this->icon = "icon-save";
+        $this->role = $role;
+        $this->form = $form;
+        $this->target = $target;
+        $this->type = "button";
+        $this->label = $label;
+    }
+    
+    public function generateHtml(){
+        $r = '<button 
+            type="'.$this->type.'" 
+            data-target="' . $this->target . '"  
+            data-form="' . $this->form . '" 
+                data-role="' . $this->role . '" class="btn button">
+                <i class="icon-' . $this->icon . '"></i> '.$this->label . 
+                '</button>';
+        return $r;
+    }
+    
+    public function getLabel() {
+        return $this->label;
+    }
+
+    public function setLabel($label) {
+        $this->label = $label;
+    }
+    
+    public function getRole() {
+        return $this->role;
+    }
+
+    public function setRole($role) {
+        $this->role = $role;
+    }
+
+    public function getType() {
+        return $this->type;
+    }
+
+    public function setType($type) {
+        $this->type = $type;
+    }
+
+    public function getTarget() {
+        return $this->target;
+    }
+
+    public function setTarget($target) {
+        $this->target = $target;
+    }
+
+    public function getForm() {
+        return $this->form;
+    }
+
+    public function setForm($form) {
+        $this->form = $form;
+    }
+
+    public function getIcon() {
+        return $this->icon;
+    }
+
+    public function setIcon($icon) {
+        $this->icon = $icon;
+    }
+    
+    
+
+
+    
 }
 
 class Champ {
@@ -235,7 +449,7 @@ class Champ {
 
 
 
-            var_dump($this);
+        //var_dump($this);
         $r = '<select 
                     data-type="' . $dataType . '" 
                     data-target="' . $this->table . '" 

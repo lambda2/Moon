@@ -48,6 +48,7 @@ function dbg($msg, $severity = 0) {
                 $report = '<p class="report-error">' . $msg . ' (Rapport de niveau ' . $severity . ')</p>';
             
             $GLOBALS['System']->debug()->addReport($report);
+            echo $report;
     }
         else {
             echo "Erreur lors de l'initialisation du deboggeur";

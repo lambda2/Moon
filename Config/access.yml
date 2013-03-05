@@ -1,0 +1,25 @@
+## YAML Template.
+---
+default:
+  anonymous :
+    read : true
+    
+  identified :
+    create : true
+    read : true
+    update : true
+    delete : true
+    
+  admin :
+    create : true
+    read : true
+    update : true
+    delete : true
+  
+contrats:
+  admin :
+    create : true
+    read : true
+    update : true
+    delete : true
+  
