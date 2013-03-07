@@ -1,6 +1,5 @@
 <?php
 
-include_once 'Field.php';
 /**
  * Element option d'un select d'un formulaire.
  * Autrement dit, une option d'une liste déroulante.

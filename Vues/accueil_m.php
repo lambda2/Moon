@@ -1,4 +1,21 @@
 <?php
+
+$expected = array(
+            "dataOneContent",
+            "dataTwoContent",
+            "red");
+
+echo "avant : ";
+var_dump($expected);
+echo 'apres : array_remove_value($expected, "red");';
+$expected = array_remove_value($expected, 'red');
+var_dump($expected);
+
+
+echo 'apres : unset($expected["color"];';
+unset($expected["color"]);
+var_dump($expected);
+
 $tring = "bonjour tout le monde !";
 echo "<p>$tring :</p>";
 echo(dbQuote($tring));
