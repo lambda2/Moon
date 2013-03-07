@@ -1,6 +1,11 @@
 <?php
 
 /*
+ * @TODO : Virer cette include
+ */
+//include_once '/var/www/lwf/Helpers/common.php';
+
+/*
  * Représente un élément de formulaire.
  * Cette classe est abstraite et doit donc etre héritée.
  */
@@ -35,6 +40,10 @@ abstract class Field {
         $this->enabled = true;
         $this->visible = true;
     }
+    
+    public function __toString() {
+        return $this->getHtml();
+    }
 
     /**
      * retourne le code HTML du champ
@@ -53,6 +62,14 @@ abstract class Field {
             throw new AlertException("La classe [ $classe ] ne doit pas commencer par un point lors de l'ajout à l'élément {$this->name}");
 
         $this->classes[] = $classe;
+    }
+    
+    /**
+     * retourne les classes de ce champ
+     * @return array les classes du champ
+     */
+    public function getClasses(){
+        return $this->classes;
     }
 
     public function getPlaceholder() {
@@ -137,6 +154,16 @@ abstract class Field {
 
         $this->datas[$field] = $value;
     }
+    
+    /**
+     * Retourne les datas enregistrées a ce champ
+     * sous la forme d'un tableau associatif
+     * (nom data => valeur data)
+     * @return array les datas
+     */
+    public function getDatas(){
+        return $this->datas;
+    }
 
     /**
      * Supprime un élément "data" du champ
@@ -149,7 +176,7 @@ abstract class Field {
         if (isNull($field))
             throw new AlertException("Impossible d'enlever une data nulle ou vide à l'élément {$this->name}");
 
-        array_remove_key($this->datas, $field);
+        $this->datas = array_remove_key($this->datas, $field);
     }
 
     /**
@@ -185,7 +212,7 @@ abstract class Field {
         if (isNull($field))
             throw new AlertException("Impossible d'enlever un attribut personnalisé nulle ou vide à l'élément {$this->name}");
 
-        array_remove_key($this->customAttributes, $field);
+        $this->customAttributes = array_remove_key($this->customAttributes, $field);
     }
 
     /**
@@ -193,6 +220,16 @@ abstract class Field {
      */
     public function clearCustomAttribute() {
         $this->customAttributes = array();
+    }
+    
+    /**
+     * retourne les attributs personnalisés enregistrés 
+     * à ce champ sous la forme d'un tableau associatif
+     * (nom attributs => valeur attributs)
+     * @return array les attributs
+     */
+    public function getCustomAttributes(){
+        return $this->customAttributes;
     }
 
     /**
@@ -237,5 +274,11 @@ abstract class Field {
     }
 
 }
+
+
+/**
+ * TODO : Ajouter plusieurs classes de conteuneurs de formulaire. Comme optgroup 
+ * ou fieldset
+ */
 
 ?>
