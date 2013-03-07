@@ -3,7 +3,7 @@
 /**
  * Element select d'un formulaire.
  * Autrement dit, une liste déroulante.
- * Les éléments de la liste, c'est à dire des [option] peuvent etres
+ * Les éléments de la liste, c'est à dire des [option] peuvent etre
  * rajoutés ou automatiquement générés.
  */
 class Select extends Field {
@@ -26,7 +26,7 @@ class Select extends Field {
         else
             $this->options = $options;
 
-        $this->type = $type;
+        $this->type = "select";
     }
 
     /**
@@ -74,25 +74,44 @@ class Select extends Field {
         if (is_array($options)) {
             $valid = true;
             foreach ($options as $option) {
-                if (!$this->isAValidOption($option))
+                if (!$this->isAValidOption($option)) {
                     $valid = false;
-                throw new AlertException(
-                'Le tableau d\'options semble invalide... ['
-                . dbQuote($options)
-                . ']');
+                    throw new AlertException(
+                    'Le tableau d\'options semble invalide... ['
+                    . dbQuote($options)
+                    . ']');
+                }
             }
         }
         return $valid;
     }
-    
+
     /**
-     * TODO: Ajouter les méthodes pour créer une option,
-     * c'est à dire créer dynamiquement un objet Option et
-     * le rajouter aux options.
-     * 
-     * A ajouter également, 
-     * une méthode pour clear() toutes les options.
+     * Ajoute une option avec la value et le texte spécifié.
+     * Si le texte est vide, alors le texte sera le meme que la value.
+     * @param string $value la valeur de l'attribut "value" de l'option
+     * @param string $text le texte de l'option
+     * @return boolean true si tout c'est ien passé, false sinon
      */
+    public function addOption($value, $text) {
+        $o = new Option($value, $text);
+        return $this->addOptionObject($o);
+    }
+
+    /**
+     * Supprime toutes les options enregistrées dans le select.
+     */
+    public function clearOptions() {
+        $this->options = array();
+    }
+
+    /**
+     * Retourne les options enregistrées dans le select.
+     * @return array(Option) les options
+     */
+    public function getOptions() {
+        return $this->options;
+    }
 
     /**
      * Verifie qu'une variable est une option
@@ -112,10 +131,10 @@ class Select extends Field {
             $s .= 'required';
         else if (!$this->enabled)
             $s .= 'disabled';
-        $s .= '>\n';
+        $s .= '>';
 
         foreach ($this->options as $option) {
-            $s .= $option->getHtml() . '\n';
+            $s .= $option->getHtml();
         }
 
         $s .= '</select>';
