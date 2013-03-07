@@ -1,70 +1,75 @@
 <?php
 
-// les exceptions particulières du framework et les entités
-require_once('System/Classes/Exceptions.php');
-require_once('System/Classes/Configuration.php');
-require_once('System/Classes/Entity.php');
-
-// on ajoute l'autoload des classes et on crée la connexion
-require_once('Helpers/errors.php');
-require_once('Helpers/common.php');
-require_once('Helpers/mail.php');
-require_once('Helpers/user.php');
-
+/**
+ * La configuration, c'est à dire les logins de la base de données, un éventuel
+ * préfixe de table et les modes de développement.
+ */
 require_once('Config/configuration.php');
 
-require_once('System/Debug/Debug.php');
+/*
+ * Le pathFinder, qui va nous permettre d'avoir un autoloader intelligent.
+ */
+require_once('System' . DIRECTORY_SEPARATOR . 'pathfinder.php');
 
-Configuration::startEngine($driver, $host, $dbname, $login, $pass, $dev_mode, $db_prefix);
-$GLOBALS['System'] = Configuration::getInstance();
-
+/**
+ * L'autoloader, qui se sert du pathfinder
+ */
 function __autoload($nomClasse) {
-    $pos = strrpos($nomClasse, '\\');
+    $foundClasses = PathFinder::getClasses('System');
+    $pos          = strrpos($nomClasse, '\\');
     if ($pos > 0) {
         $nomClasse = substr($nomClasse, $pos + 1);
     }
-    if(is_file('Modeles' . DIRECTORY_SEPARATOR . ($nomClasse) . '.php')){
-        require_once('Modeles' . DIRECTORY_SEPARATOR . ($nomClasse) . '.php');
-    }
-    else if(is_file('Controleurs' . DIRECTORY_SEPARATOR . ($nomClasse) . '.php')){
-        require_once('Controleurs' . DIRECTORY_SEPARATOR . ($nomClasse) . '.php');
-    }
-    else if(Configuration::isValidClass($nomClasse)){
-        
-    }
-    else if(is_file('System' . DIRECTORY_SEPARATOR . 'Classes' . DIRECTORY_SEPARATOR . ($nomClasse) . '.php')){
-        require_once('System' . DIRECTORY_SEPARATOR . 'Classes' . DIRECTORY_SEPARATOR . ($nomClasse) . '.php');
-    }
-    else if(is_file('System' . DIRECTORY_SEPARATOR . 'Classes' . DIRECTORY_SEPARATOR . 'Templates' . DIRECTORY_SEPARATOR. ($nomClasse) . '.php')){
-        require_once('System' . DIRECTORY_SEPARATOR . 'Classes' . DIRECTORY_SEPARATOR . 'Templates' . DIRECTORY_SEPARATOR. ($nomClasse) . '.php');
-    }
-    else if(is_file('System' . DIRECTORY_SEPARATOR . 'Classes' . DIRECTORY_SEPARATOR . 'yaml' . DIRECTORY_SEPARATOR. ($nomClasse) . '.php')){
-        require_once('System' . DIRECTORY_SEPARATOR . 'Classes' . DIRECTORY_SEPARATOR . 'yaml' . DIRECTORY_SEPARATOR. ($nomClasse) . '.php');
+    if (array_key_exists($nomClasse, $foundClasses)) {
+        require_once($foundClasses[$nomClasse]);
     }
 }
 
-
-
-
-
-if (isset($_GET['lang'])) {
-    definirLangue($_GET['lang']);
+/**
+ * Le pathfinde rse charger aussi d'inclure les helpers, qui ne sont pas des
+ * classes, et qui ne peuvent donc pas etre chargées automatiquement.
+ * Rapellons que les helpers sont des fichiers regroupant par theme des 
+ * fonctions utilitaires utilisables à n'importe quel endroit.
+ * 
+ */
+$helpers = PathFinder::getHelpers('System');
+foreach ($helpers as $class => $url) {
+    require_once($url);
 }
+
+/**
+ * Enfin, on démarre notre moteur
+ */
+Configuration::startEngine($driver, $host, $dbname, $login, $pass, $dev_mode, $db_prefix);
+
+/*
+ * Pour les gens un peu old school, dégueux, ou les deux, on stocke un pointeur
+ * sur l'instance de notre moteur dans une superglobale accessible partout.
+ * On notera que la configuration est un singleton. Ainsi, ces deux expressions
+ * sont équivalentes à n'importe quel endroit :
+ * > $GLOBALS['System'] === Configuration::getInstance()
+ * 
+ */
+$GLOBALS['System'] = Configuration::getInstance();
 
 mb_internal_encoding("UTF-8");
 session_start();
 
+/**
+ * Ci dessous, des aspects vus un peu trop tot. Le framework n'est pas
+ * encore pret pour ça. Allons y doucement.
+ */
 
-
-// on charge le fichier de langue
-require_once('Langs/' . chargerLangue());
-
-require_once('System/pagination.php');
 /*
-if (isset($_GET['p']) && Page::pageExiste(htmlentities($_GET['p']), $GLOBALS['bdd']))
-        $page = $_GET['p'];
-$page = new Page(Page::getIdPage($page, $GLOBALS['bdd']),$GLOBALS['bdd']);
+  // on charge le fichier de langue
+  require_once('Langs/' . chargerLangue());
 
-gererAcces($role, $page->getDroit());
-*/
+  require_once('System/pagination.php');
+
+  if (isset($_GET['p']) && Page::pageExiste(htmlentities($_GET['p']), $GLOBALS['bdd']))
+  $page = $_GET['p'];
+  $page = new Page(Page::getIdPage($page, $GLOBALS['bdd']),$GLOBALS['bdd']);
+
+  gererAcces($role, $page->getDroit());
+ */
 ?>
