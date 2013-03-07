@@ -326,14 +326,18 @@ function isNull($object) {
 
 # remove by key:
 
-function array_remove_key() {
-    $args = func_get_args();
-    return array_diff_key($args[0], array_flip(array_slice($args, 1)));
+function array_remove_key($tab, $key) {
+    foreach ($tab as $k => $v) {
+        if(strcmp($key, $k) == 0){
+            unset($tab[$k]);
+        }
+    }
+    return $tab;
 }
 
 # remove by value:
 
-function array_remove_value() {
+function array_remove_value($tab, $value) {
     $args = func_get_args();
     return array_diff($args[0], array_slice($args, 1));
 }
