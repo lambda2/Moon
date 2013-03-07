@@ -13,7 +13,7 @@ class Input extends Field{
      * @var array allowed_types Les types de champ input déclarés
      * valides au 5/3/13 par le W3C.
      */
-    const allowed_types = array(
+    protected $allowed_types = array(
         'button', 'checkbox', 'color',
         'date', 'datetime', 'datetime-local', 
         'email ', 'file', 'hidden', 'image', 'month',
@@ -29,7 +29,7 @@ class Input extends Field{
     public function __construct($name, $type="text") {
         parent::__construct();
         $this->name = $name;
-        if(!in_array($type, self::allowed_types)){
+        if(!in_array($type, $this->allowed_types)){
             throw new AlertException("Le type $type ne semble pas etre un type de champ valide...");
         }
         $this->type = $type;
