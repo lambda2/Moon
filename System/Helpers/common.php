@@ -47,8 +47,8 @@ function abrevString($String, $nbCarac = 140, $fin = "...") {
  * @return array le tableau final résultant.
  */
 function extendArray(array &$spec, array &$defaults) {
-    $merged = $array1;
-    foreach ($array2 as $key => &$value) {
+    $merged = $spec;
+    foreach ($defaults as $key => &$value) {
         if (is_array($value) && isset($merged [$key]) && is_array($merged [$key])) {
             $merged [$key] = extendArray($merged [$key], $value);
         }
