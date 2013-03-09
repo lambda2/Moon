@@ -6,10 +6,9 @@
 const sep = DIRECTORY_SEPARATOR;
 
 /**
- * La configuration, c'est à dire les logins de la base de données, un éventuel
- * préfixe de table et les modes de développement.
+ * La configuration (c'est à dire les logins de la base de données, un éventuel
+ * préfixe de table et les modes de développement).
  */
-require_once('Config' . sep . 'configuration.php');
 
 /**
  * Le pathFinder, qui va nous permettre d'avoir un autoloader intelligent.

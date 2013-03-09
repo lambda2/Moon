@@ -11,10 +11,14 @@
 
 class Configuration {
 
+    const userConfigFile = 'Config/configuration.yml';
+    const defaultConfigFile = 'System/Classes/Configuration/configuration.yml';
+    
     private $database;
     private $dev_mode;
     private $db_prefix;
     private $debug;
+    private static $options;
     private static $instance;
     private static $user;
     private static $host_tables = array();
@@ -22,9 +26,32 @@ class Configuration {
     private function __construct($driver, $host, $dbname, $login, $pass, $dev_mode = "DEBUG", $dbPrefix = '') {
         $this->initialize($driver, $host, $dbname, $login, $pass, $dev_mode, $dbPrefix);
     }
+    
+    
+    private static function getOptions(){
+        $userConfigFile = Spyc::YAMLLoad(self::userConfigFile);
+        $defaultConfigFile = Spyc::YAMLLoad(self::defaultConfigFile);
+        self::$options = new ArrayBrowser(extendArray($defaultConfigFile, $userConfigFile));
+        var_dump(extendArray($defaultConfigFile, $userConfigFile));
+        var_dump(self::$options);
+        var_dump(self::$options->database->driver);
+        echo self::$options;
+        
+    }
 
-    public static function startEngine($driver, $host, $dbname, $login, $pass, $dev_mode = "DEBUG", $dbPrefix = '') {
-        self::$instance = new Configuration($driver, $host, $dbname, $login, $pass, $dev_mode, $dbPrefix);
+    public static function startEngine() {
+        
+        self::getOptions();
+        
+        self::$instance = new Configuration(
+                self::$options->database->driver, 
+                self::$options->database->host, 
+                self::$options->database->dbname, 
+                self::$options->database->login, 
+                self::$options->database->pass, 
+                self::$options->system->mode, 
+                self::$options->database->db_prefix);
+        
         self::$user = null;
         
         if(isConnecte()){
