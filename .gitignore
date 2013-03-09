@@ -1,3 +1,6 @@
-/nbproject/node_modules/
+/nbproject/node_modules/*
 /nbproject/
+/nbproject/project.properties
+/nbproject/*
 /Config/configuration.yml
+/Config/configuration.php
