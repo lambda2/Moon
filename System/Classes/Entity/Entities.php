@@ -1,6 +1,8 @@
 <?php
 
-
+/**
+ * Représente un ensemble d'entitées
+ */
 class Entities {
     protected $table;
     protected $bdd;
