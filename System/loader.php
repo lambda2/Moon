@@ -1,20 +1,38 @@
 <?php
 
 /**
+ * Pour raccourcir les urls...
+ */
+const sep = DIRECTORY_SEPARATOR;
+
+/**
  * La configuration, c'est à dire les logins de la base de données, un éventuel
  * préfixe de table et les modes de développement.
  */
-require_once('Config/configuration.php');
+require_once('Config' . sep . 'configuration.php');
 
-/*
+/**
  * Le pathFinder, qui va nous permettre d'avoir un autoloader intelligent.
  */
-require_once('System' . DIRECTORY_SEPARATOR . 'pathfinder.php');
+require_once('System' . sep . 'pathfinder.php');
 
 /**
  * L'autoloader, qui se sert du pathfinder
  */
 function __autoload($nomClasse) {
+    
+    /**
+    * Le moteur de template
+    * @uses Twig -> http://twig.sensiolabs.org/
+    * Vu qu'on a déja notre propre moteur de chargement, on va devoir associer Twig a notre autoloader.
+    */
+    if (is_file($file = dirname(__FILE__) . sep . str_replace(array('_', "\0"), array('/', ''), $nomClasse) . '.php')) {
+        require $file;
+    }
+
+    /**
+     * Et on laisse la main à notre PathFinder
+     */
     $foundClasses = PathFinder::getClasses('System');
     $pos          = strrpos($nomClasse, '\\');
     if ($pos > 0) {
@@ -59,7 +77,6 @@ session_start();
  * Ci dessous, des aspects vus un peu trop tot. Le framework n'est pas
  * encore pret pour ça. Allons y doucement.
  */
-
 /*
   // on charge le fichier de langue
   require_once('Langs/' . chargerLangue());
