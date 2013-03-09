@@ -44,7 +44,7 @@ function __autoload($nomClasse) {
 }
 
 /**
- * Le pathfinde rse charger aussi d'inclure les helpers, qui ne sont pas des
+ * Le pathfinder se charge aussi d'inclure les helpers, qui ne sont pas des
  * classes, et qui ne peuvent donc pas etre chargées automatiquement.
  * Rapellons que les helpers sont des fichiers regroupant par theme des 
  * fonctions utilitaires utilisables à n'importe quel endroit.

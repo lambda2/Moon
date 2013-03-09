@@ -1,39 +1,17 @@
 <?php
 
-$expected = array(
-            "dataOneContent",
-            "dataTwoContent",
-            "red");
-
-echo "avant : ";
-var_dump($expected);
-echo 'apres : array_remove_value($expected, "red");';
-$expected = array_remove_value($expected, 'red');
-var_dump($expected);
 
 
-echo 'apres : unset($expected["color"];';
-unset($expected["color"]);
-var_dump($expected);
-
-$tring = "bonjour tout le monde !";
-echo "<p>$tring :</p>";
-echo(dbQuote($tring));
-
-$tring = ["bonjour","tout","le","monde"];
-echo "<p>$tring :</p>";
-echo(dbQuote($tring,"X"));
+$spyc = new Spyc();
+$var = $spyc->loadFile('System/Classes/Configuration/configuration.yml');
+$vardef = $spyc->loadFile('Config/access_defaults.yml');
+echo '<h3>var_dump($var)</h3>';
+var_dump($var);
+//echo '<h3>var_dump($vardef)</h3>';
+//var_dump($vardef);
+//echo '<h3>var_dump(array_merge_recursive($var,$vardef))</h3>';
+//var_dump(array_merge_recursive($vardef,$var));
+//echo '<h3>var_dump(array_merge_recursive_distinct($var,$vardef))</h3>';
+//var_dump(extendArray($var,$vardef));
 ?>
 
-<textarea>blah</textarea>
-<textarea placeholder="blah"></textarea>
-
-
-<h1>Classe animal</h1>
-<?php echo $animal; ?>
-
-<h1>Formulaire d'insertion</h1>
-<?php echo $animal->getEditable()->generateInsertForm(); ?>
-
-<h1>Formulaire de mise à jour</h1>
-<?php echo $animal->getEditable()->generateUpdateForm(); ?>

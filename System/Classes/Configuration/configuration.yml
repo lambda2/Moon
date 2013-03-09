@@ -1,0 +1,53 @@
+
+# >>> Fichier de configuration par défaut du framework.
+#
+# ------------------------      [ATTENTION]     --------------------------------
+#
+#     Ce fichier ne doit pas édité. 
+#     Il représente les valeurs par défaut des options 
+#     de configuration du framework.
+#     Pour changer les options, éditez le fichier [Config/config.yml] 
+#     sité dans le dossier Config, à la racine du site.
+#
+# ------------------------------------------------------------------------------
+#
+#     This file is part of the Lambda Web Framework.
+#
+#     (c) 2013 Lambdaweb - www.lambdaweb.fr
+#
+#     For the full copyright and license information, please view the LICENSE
+#     file that was distributed with this source code.
+#
+
+info :
+  version : "0.0.1"
+  stable : false
+  supported_sql_drivers : ["mysql"]
+  required : { PHP: 5.2, MySQL: 5.1, Apache: 2.2.20 }
+
+# all the database informations
+database :
+  
+  # the database driver
+  driver : "mysql"
+  
+  # the database hostname
+  host : ""
+  
+  # the database login
+  login : ""
+  
+  # the database password
+  pass : ""
+  
+  # the database name
+  dbname : ""
+  
+  # the prefix for database tables
+  db_prefix : ""
+ 
+ 
+system:
+  # developpement mode : [DEBUG | RELEASE]
+  mode:	"DEBUG" 
+  

@@ -6,16 +6,62 @@
 // Renvoie les $nbCarac premiers caractères d'une chaine
 function abrevString($String, $nbCarac = 140, $fin = "...") {
     if (strlen($String) > (int) $nbCarac) {
-        $pos = strpos($String, ' ', (int) $nbCarac);
+        $pos    = strpos($String, ' ', (int) $nbCarac);
         $String = substr($String, 0, $pos);
         $String = $String . '...';
     }
     return $String;
 }
 
+/**
+ * étend le tableau 2 avec le tableau 1.
+ * Par exemple :
+ * 
+ * Si on merge le tableau defaults (pere) suivant :
+ *  <code>
+ * 'default' => (
+ *    'create' => boolean true
+ *    'read' => boolean true
+ *    'update' => boolean true
+ *    'delete' => boolean true)
+ * </code>
+ * 
+ * Avec le tableau spec (fils) suivant :
+ * 
+ * <code>
+ * 'default' => (
+ *    'create' => boolean <b>false</b>)
+ * </code>
+ * 
+ * On obtient le tableau :
+ *  <code>
+ * 'default' => (
+ *    'create' => boolean <b>false</b>
+ *    'read' => boolean true
+ *    'update' => boolean true
+ *    'delete' => boolean true)
+ * </code>
+ * 
+ * @param array $spec les parametres qui héritent/ le tableau fils
+ * @param array $defaults les parametres hérités / tableau père.
+ * @return array le tableau final résultant.
+ */
+function extendArray(array &$spec, array &$defaults) {
+    $merged = $array1;
+    foreach ($array2 as $key => &$value) {
+        if (is_array($value) && isset($merged [$key]) && is_array($merged [$key])) {
+            $merged [$key] = extendArray($merged [$key], $value);
+        }
+        else {
+            $merged [$key] = $value;
+        }
+    }
+    return $merged;
+}
+
 function isRecent($date, $nbJours = 2) {
-    $e = date_create_from_format("Y-m-d", $date);
-    $now = new DateTime();
+    $e      = date_create_from_format("Y-m-d", $date);
+    $now    = new DateTime();
     $ecoule = date_diff($now, $e, true);
 
     if ((int) $ecoule->days < (int) $nbJours)
@@ -25,13 +71,13 @@ function isRecent($date, $nbJours = 2) {
 }
 
 function getCoolDate($date) {
-    $e = date_create_from_format("Y-m-d", $date);
+    $e      = date_create_from_format("Y-m-d", $date);
     if ($e == false)
         return $e;
-    $now = new DateTime();
+    $now    = new DateTime();
     $ecoule = date_diff($now, $e, true);
-    $jour = array("Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi");
-    $mois = array("", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
+    $jour   = array("Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi");
+    $mois   = array("", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
 
     $datefr = $jour[$e->format("w")] . " " . $e->format("d") . " " . $mois[$e->format("n")] . " " . $e->format("Y");
 
@@ -48,7 +94,7 @@ function getCoolDate($date) {
 }
 
 function getDepartements() {
-    $depts = array();
+    $depts       = array();
     $depts["01"] = "01 - Ain";
     $depts["02"] = "02 - Aisne";
     $depts["03"] = "03 - Allier";
@@ -151,7 +197,7 @@ function getDepartements() {
 }
 
 function getNomDepartement($numDept) {
-    $depts = array();
+    $depts       = array();
     $depts["01"] = "01 - Ain";
     $depts["02"] = "02 - Aisne";
     $depts["03"] = "03 - Allier";
@@ -264,8 +310,8 @@ function isEmailAdress($email) {
 }
 
 function formaterNumeroTel($numTel) {
-    $i = 0;
-    $j = 0;
+    $i       = 0;
+    $j       = 0;
     $formate = "";
     while ($i < strlen($numTel)) { //tant qu il y a des caracteres
         if ($j < 2) {
@@ -274,7 +320,8 @@ function formaterNumeroTel($numTel) {
                 $j++;
             }
             $i++;
-        } else { //si on a mis 2 chiffres a la suite on met un espace
+        }
+        else { //si on a mis 2 chiffres a la suite on met un espace
             $formate .= ".";
             $j = 0;
         }
@@ -289,7 +336,7 @@ function definirLangue($langue) {
 
 function chargerLangue() {
     $langFile = "fr.php";
-    $lg = array("fr", "en");
+    $lg       = array("fr", "en");
     if (isset($_COOKIE['lang'])) {
         if (in_array($_COOKIE['lang'], $lg))
             $langFile = $_COOKIE['lang'] . ".php";
@@ -328,7 +375,7 @@ function isNull($object) {
 
 function array_remove_key($tab, $key) {
     foreach ($tab as $k => $v) {
-        if(strcmp($key, $k) == 0){
+        if (strcmp($key, $k) == 0) {
             unset($tab[$k]);
         }
     }
