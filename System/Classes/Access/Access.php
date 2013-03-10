@@ -76,12 +76,12 @@ class Access {
     }
 
     public static function haveDefinedRoles($table) {
-        $bdd = Configuration::getBdd();
+        $bdd = Core::getBdd();
         $t = array();
         try {
             $Req = $bdd->prepare('
                 SELECT can_create,can_update,can_delete,can_read 
-                FROM access' . Configuration::getInstance()->getDbPrefix() . '
+                FROM access' . Core::getInstance()->getDbPrefix() . '
                 WHERE class = ?');
             $o = strtolower($table);
             $Req->execute(array($o));
@@ -103,12 +103,12 @@ class Access {
 
     public function loadFromTable($table) {
         if (self::haveDefinedRoles($table)) {
-            $bdd = Configuration::getBdd();
+            $bdd = Core::getBdd();
             $t = array();
             try {
                 $Req = $bdd->prepare('
                 SELECT can_create,can_update,can_delete,can_read 
-                FROM access' . Configuration::getInstance()->getDbPrefix() . '
+                FROM access' . Core::getInstance()->getDbPrefix() . '
                 WHERE class = ?');
                 $o = strtolower($table);
                 $Req->execute(array($o));

@@ -24,9 +24,9 @@ abstract class Entity {
     public function __construct() {
 
 
-        $this->table    = strtolower(get_class($this)) . Configuration::getInstance()->getDbPrefix();
+        $this->table    = strtolower(get_class($this)) . Core::getInstance()->getDbPrefix();
         $this->editable = new Editable($this, $this->table);
-        $this->bdd      = Configuration::getInstance()->bdd();
+        $this->bdd      = Core::getInstance()->bdd();
         $this->access   = new Access();
         $this->access->loadFromTable(strtolower(get_class($this)));
         $this->clearLinkedClasses();
@@ -38,9 +38,9 @@ abstract class Entity {
     }
 
     protected function reload($table) {
-        $this->table    = strtolower($table) . Configuration::getInstance()->getDbPrefix();
+        $this->table    = strtolower($table) . Core::getInstance()->getDbPrefix();
         $this->editable = new Editable($this, $this->table);
-        $this->bdd      = Configuration::getInstance()->bdd();
+        $this->bdd      = Core::getInstance()->bdd();
         $this->access   = new Access();
         $this->access->loadFromTable(strtolower(get_class($this)));
 
@@ -65,7 +65,7 @@ abstract class Entity {
                   else
                   dg('aucune relation trouvée pour ' . $key . '(' . $value . ')'); */
                 $className = split('\.', $this->getNameWithoutId($key))[0];
-                if ($s != null && strcmp($className . Configuration::getInstance()->getDbPrefix(), $this->table) != 0) {
+                if ($s != null && strcmp($className . Core::getInstance()->getDbPrefix(), $this->table) != 0) {
                     $this->addLinkedClass($s, $this->getForeignLink($key));
                 }
             }
@@ -143,7 +143,7 @@ abstract class Entity {
         else if (strripos($field, '_' . $this->table) == false) {
             if(! $this->loadBy($field . '_' . $this->table, $value)){
                 
-                $prefix = Configuration::getInstance()->getDbPrefix();
+                $prefix = Core::getInstance()->getDbPrefix();
                 if(strripos($field. '_' . $this->table, $prefix) != FALSE){
                     echo "la table finit par le préfixe ! Beurk !";
                     $field =  $field.substr_replace(
@@ -203,7 +203,7 @@ abstract class Entity {
         $foreignRow   = "";
         $split        = split('_', $rowName);
         if (count($split) > 2) {
-            $foreignTable = join('_', array_slice($split, 1, -1)) . Configuration::getInstance()->getDbPrefix();
+            $foreignTable = join('_', array_slice($split, 1, -1)) . Core::getInstance()->getDbPrefix();
             $foreignRow   = join('_', array_slice($split, 0, -1));
         }
         return $foreignTable . '.' . $foreignRow;
@@ -367,7 +367,7 @@ abstract class Entity {
         //var_dump(split('\.',$this->getForeignLink($field)));
         $cl = split('\.', $this->getForeignLink($field));
         $cl = $cl[0];
-        if (!Configuration::isValidClass($cl)) {
+        if (!Core::isValidClass($cl)) {
             $cl = null;
         }
         return $cl;
@@ -410,8 +410,8 @@ abstract class Entity {
 
     public static function getProperName($name, $upper = false, $singularize = false) {
         $reducClassName = $name;
-        if (strstr($reducClassName, Configuration::getInstance()->getDbPrefix()) != FALSE) {
-            $reducClassName = substr_replace($reducClassName, '', -(strlen(Configuration::getInstance()->getDbPrefix())), strlen(Configuration::getInstance()->getDbPrefix()));
+        if (strstr($reducClassName, Core::getInstance()->getDbPrefix()) != FALSE) {
+            $reducClassName = substr_replace($reducClassName, '', -(strlen(Core::getInstance()->getDbPrefix())), strlen(Core::getInstance()->getDbPrefix()));
         }
         if ($upper) {
             $reducClassName = ucfirst($reducClassName);
