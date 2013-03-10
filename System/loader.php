@@ -33,6 +33,7 @@ function __autoload($nomClasse) {
      * Et on laisse la main à notre PathFinder
      */
     $foundClasses = PathFinder::getClasses('System');
+    //var_dump($foundClasses);
     $pos          = strrpos($nomClasse, '\\');
     if ($pos > 0) {
         $nomClasse = substr($nomClasse, $pos + 1);
@@ -53,21 +54,6 @@ $helpers = PathFinder::getHelpers('System');
 foreach ($helpers as $class => $url) {
     require_once($url);
 }
-
-/**
- * Enfin, on démarre notre moteur
- */
-Configuration::startEngine($driver, $host, $dbname, $login, $pass, $dev_mode, $db_prefix);
-
-/*
- * Pour les gens un peu old school, dégueux, ou les deux, on stocke un pointeur
- * sur l'instance de notre moteur dans une superglobale accessible partout.
- * On notera que la configuration est un singleton. Ainsi, ces deux expressions
- * sont équivalentes à n'importe quel endroit :
- * > $GLOBALS['System'] === Configuration::getInstance()
- * 
- */
-$GLOBALS['System'] = Configuration::getInstance();
 
 mb_internal_encoding("UTF-8");
 session_start();

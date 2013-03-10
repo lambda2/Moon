@@ -18,6 +18,7 @@ class Configuration {
     private $dev_mode;
     private $db_prefix;
     private $debug;
+    private static $router;
     private static $options;
     private static $instance;
     private static $user;
@@ -32,10 +33,6 @@ class Configuration {
         $userConfigFile = Spyc::YAMLLoad(self::userConfigFile);
         $defaultConfigFile = Spyc::YAMLLoad(self::defaultConfigFile);
         self::$options = new ArrayBrowser(extendArray($defaultConfigFile, $userConfigFile));
-        var_dump(extendArray($defaultConfigFile, $userConfigFile));
-        var_dump(self::$options);
-        var_dump(self::$options->database->driver);
-        echo self::$options;
         
     }
 
@@ -53,11 +50,23 @@ class Configuration {
                 self::$options->database->db_prefix);
         
         self::$user = null;
+        self::$router = new Router();
         
         if(isConnecte()){
             $membre = new Membre();
             $membre->loadBy('id_membre', getId($_SESSION['login'], $this->database));
         }
+        
+        /*
+         * Pour les gens un peu old school, dégueux, ou les deux, on stocke un pointeur
+         * sur l'instance de notre moteur dans une superglobale accessible partout.
+         * On notera que la configuration est un singleton. Ainsi, ces deux expressions
+         * sont équivalentes à n'importe quel endroit :
+         * > $GLOBALS['System'] === Configuration::getInstance()
+         * 
+         * @TODO : Virer cette superglobale. elle est quand meme crasseuse.
+         */
+        $GLOBALS['System'] = self::$instance;
     }
     
     public static function getUser(){
@@ -155,6 +164,14 @@ class Configuration {
         $a = new Access();
         $a->loadFromTable($classe);
         return $a;
+    }
+    
+    public static function route($url){
+        
+        if(is_array($url)){
+            $tpl = self::$router->route($url);
+        }
+        
     }
 
 }

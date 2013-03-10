@@ -14,8 +14,15 @@ $INDEX = true;
 // on ajoute l'autoload des classes et on crée la connexion
 require_once('System/loader.php');
 
-$membre = Configuration::getUser();
+/**
+ * Enfin, on démarre notre moteur
+ */
+Configuration::startEngine();
 
+Configuration::route($_GET);
+
+//$membre = Configuration::getUser();
+/*
 if (isset($_GET['m'])) {
     include_once('Callers/index.php');
 } 
@@ -45,5 +52,5 @@ elseif (isset($_GET['s'])) {
 // On ajoute le footer
     include_once('Webroot/footer_m.php');
 }
-
+*/
 ?>

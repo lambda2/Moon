@@ -15,12 +15,31 @@
  * @author lambda2
  */
 class Router {
+
     protected $requestedFile;
-    
-    public function __construct($params){
+
+    public function __construct() {
         
     }
-    
+
+    public function route($params) {
+        if (isset($params['p'])) {
+            // Et que cette page existe
+            if (file_exists('Controleurs/' . strtolower($params['p']) . '.php')) {
+                // On la charge
+                include_once('Controleurs/' . strtolower($params['p']) . '.php');
+            }
+            else {
+                // Sinon, page introuvable
+                include_once('WebRoot/404.php'); //TODO : faire une page 404 respectable
+            }
+        }
+        else {
+            // Si aucune page n'est définie, on va sur la page d'accueil
+            include_once('Controleurs/accueil_m.php');
+        }
+    }
+
 }
 
 ?>
