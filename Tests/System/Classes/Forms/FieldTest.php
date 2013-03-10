@@ -1,7 +1,7 @@
 <?php
 
-//include_once '/var/www/lwf/Helpers/common.php'; //-> ne marche pas !
-include_once '/var/www/lwf/System/Classes/Forms/Field.php';
+//include_once '/var/www/moon/Helpers/common.php'; //-> ne marche pas !
+include_once '/var/www/moon/System/Classes/Forms/Field.php';
 
 /**
  * Classe de Test pour Field

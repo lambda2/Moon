@@ -17,7 +17,7 @@ sayhello:
 	@echo ""
 	@echo "Hi people !"
 	@echo "   ------------------------------------"
-	@echo "  |  Building Lambda Web Framework...  |"
+	@echo "  |  Building moon framework...  |"
 	@echo "   ------------------------------------"
 	@echo ""
 
@@ -25,7 +25,7 @@ saygoodbye:
 	@echo "   --------------------------------"
 	@echo "‣ Look at your clock ! It's ${DATE}, tea time !."
 	@echo ""
-	@echo "‣ You can now use the lambda web framework,"
+	@echo "‣ You can now use the moon framework,"
 	@echo "‣ Thanks you !"
 	@echo ""
 	@echo "(c) lambdaweb - www.lambdaweb.fr"

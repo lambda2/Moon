@@ -54,7 +54,7 @@ class Debug {
 
     public function showReport() {
         
-        $report = '<div class="lwf-debug-block">'
+        $report = '<div class="moon-debug-block">'
                 .$this->getModalLink(count($this->content),count($this->content))
                 .'</div>';
         

@@ -3,7 +3,7 @@
 /*
  * @TODO : Virer cette include
  */
-//include_once '/var/www/lwf/Helpers/common.php';
+//include_once '/var/www/moon/Helpers/common.php';
 
 /*
  * Représente un élément de formulaire.

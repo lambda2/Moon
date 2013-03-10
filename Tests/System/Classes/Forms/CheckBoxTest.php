@@ -1,7 +1,7 @@
 <?php
 
-include_once '/var/www/lwf/System/Classes/Forms/Field.php';
-include_once '/var/www/lwf/System/Classes/Forms/CheckBox.php';
+include_once '/var/www/moon/System/Classes/Forms/Field.php';
+include_once '/var/www/moon/System/Classes/Forms/CheckBox.php';
 
 class CheckBoxTest extends PHPUnit_Framework_TestCase {
 

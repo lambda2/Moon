@@ -2,7 +2,7 @@ BOOTSTRAP = ./docs/assets/css/bootstrap.css
 BOOTSTRAP_LESS = ./less/bootstrap.less
 BOOTSTRAP_RESPONSIVE = ./docs/assets/css/bootstrap-responsive.css
 BOOTSTRAP_RESPONSIVE_LESS = ./less/responsive.less
-LWF_ASSETS_DIR = ../../Assets
+MOON_ASSETS_DIR = ../../Assets
 DATE=$(shell date +%I:%M%p)
 CHECK=\033[32m✔\033[39m
 HR=\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
@@ -58,34 +58,34 @@ bootstrap: bootstrap-img bootstrap-css bootstrap-js
 #
 # JS COMPILE
 #
-bootstrap-js: $(LWF_ASSETS_DIR)/js/*.js
+bootstrap-js: $(MOON_ASSETS_DIR)/js/*.js
 
-$(LWF_ASSETS_DIR)/js/*.js: js/*.js
-	@mkdir -p $(LWF_ASSETS_DIR)/js
-	@cat js/bootstrap-transition.js js/bootstrap-alert.js js/bootstrap-button.js js/bootstrap-carousel.js js/bootstrap-collapse.js js/bootstrap-dropdown.js js/bootstrap-modal.js js/bootstrap-tooltip.js js/bootstrap-popover.js js/bootstrap-scrollspy.js js/bootstrap-tab.js js/bootstrap-typeahead.js js/bootstrap-affix.js > $(LWF_ASSETS_DIR)/js/bootstrap.js
-	./node_modules/.bin/uglifyjs -nc $(LWF_ASSETS_DIR)/js/bootstrap.js > $(LWF_ASSETS_DIR)/js/bootstrap.min.js
-	@rm $(LWF_ASSETS_DIR)/js/bootstrap.js
+$(MOON_ASSETS_DIR)/js/*.js: js/*.js
+	@mkdir -p $(MOON_ASSETS_DIR)/js
+	@cat js/bootstrap-transition.js js/bootstrap-alert.js js/bootstrap-button.js js/bootstrap-carousel.js js/bootstrap-collapse.js js/bootstrap-dropdown.js js/bootstrap-modal.js js/bootstrap-tooltip.js js/bootstrap-popover.js js/bootstrap-scrollspy.js js/bootstrap-tab.js js/bootstrap-typeahead.js js/bootstrap-affix.js > $(MOON_ASSETS_DIR)/js/bootstrap.js
+	./node_modules/.bin/uglifyjs -nc $(MOON_ASSETS_DIR)/js/bootstrap.js > $(MOON_ASSETS_DIR)/js/bootstrap.min.js
+	@rm $(MOON_ASSETS_DIR)/js/bootstrap.js
 
 #
 # CSS COMPLILE
 #
 
-bootstrap-css: $(LWF_ASSETS_DIR)/css/*.css
+bootstrap-css: $(MOON_ASSETS_DIR)/css/*.css
 
-$(LWF_ASSETS_DIR)/css/*.css: less/*.less
-	mkdir -p $(LWF_ASSETS_DIR)/css
-	./node_modules/.bin/recess --compress ${BOOTSTRAP_LESS} > $(LWF_ASSETS_DIR)/css/bootstrap.min.css
-	./node_modules/.bin/recess --compress ${BOOTSTRAP_RESPONSIVE_LESS} > $(LWF_ASSETS_DIR)/css/bootstrap-responsive.min.css
+$(MOON_ASSETS_DIR)/css/*.css: less/*.less
+	mkdir -p $(MOON_ASSETS_DIR)/css
+	./node_modules/.bin/recess --compress ${BOOTSTRAP_LESS} > $(MOON_ASSETS_DIR)/css/bootstrap.min.css
+	./node_modules/.bin/recess --compress ${BOOTSTRAP_RESPONSIVE_LESS} > $(MOON_ASSETS_DIR)/css/bootstrap-responsive.min.css
 
 #
 # IMAGES
 #
 
-bootstrap-img: $(LWF_ASSETS_DIR)/img/*
+bootstrap-img: $(MOON_ASSETS_DIR)/img/*
 
-$(LWF_ASSETS_DIR)/img/*: img/*
-	mkdir -p $(LWF_ASSETS_DIR)/img
-	cp img/* $(LWF_ASSETS_DIR)/img/
+$(MOON_ASSETS_DIR)/img/*: img/*
+	mkdir -p $(MOON_ASSETS_DIR)/img
+	cp img/* $(MOON_ASSETS_DIR)/img/
 
 
 #

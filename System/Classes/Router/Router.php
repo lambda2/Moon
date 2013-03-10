@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Lambda Web Framework.
+ * This file is part of the moon framework.
  *
  * (c) 2013 Lambdaweb - www.lambdaweb.fr
  *
@@ -24,14 +24,15 @@ class Router {
 
     public function route($params) {
         
-        $c = new Home('');
-        $c->setTemplate('index.twig');
-        $c->render();
-        /*if (isset($params['p'])) {
+        
+        
+        if (isset($params['p'])) {
             // Et que cette page existe
-            if (file_exists('Controleurs/' . strtolower($params['p']) . '.php')) {
+            if (file_exists('Controllers/' . $params['p'] . '.php')) {
                 // On la charge
-                include_once('Controleurs/' . strtolower($params['p']) . '.php');
+                $classe = $params['p'];
+                $c = new $classe($params);
+                $c->render();
             }
             else {
                 // Sinon, page introuvable
@@ -40,8 +41,9 @@ class Router {
         }
         else {
             // Si aucune page n'est définie, on va sur la page d'accueil
-            include_once('Controleurs/accueil_m.php');
-        }*/
+            $c = new Home($params);
+            $c->render();
+        }
     }
 
 }

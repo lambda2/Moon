@@ -1,10 +1,10 @@
 <?php
 
 
-include_once '/var/www/lwf/System/Classes/Exceptions.php';
-include_once '/var/www/lwf/System/Classes/Configuration.php';
-include_once '/var/www/lwf/System/Classes/Forms/Field.php';
-include_once '/var/www/lwf/System/Classes/Forms/Input.php';
+include_once '/var/www/moon/System/Classes/Exceptions.php';
+include_once '/var/www/moon/System/Classes/Configuration.php';
+include_once '/var/www/moon/System/Classes/Forms/Field.php';
+include_once '/var/www/moon/System/Classes/Forms/Input.php';
 
 class InputTest extends PHPUnit_Framework_TestCase {
 

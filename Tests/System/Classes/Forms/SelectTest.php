@@ -1,10 +1,10 @@
 <?php
 
-include_once '/var/www/lwf/System/Classes/Exceptions.php';
-include_once '/var/www/lwf/System/Classes/Configuration.php';
-include_once '/var/www/lwf/System/Classes/Forms/Field.php';
-include_once '/var/www/lwf/System/Classes/Forms/Select.php';
-include_once '/var/www/lwf/System/Classes/Forms/Option.php';
+include_once '/var/www/moon/System/Classes/Exceptions.php';
+include_once '/var/www/moon/System/Classes/Configuration.php';
+include_once '/var/www/moon/System/Classes/Forms/Field.php';
+include_once '/var/www/moon/System/Classes/Forms/Select.php';
+include_once '/var/www/moon/System/Classes/Forms/Option.php';
 
 class SelectTest extends PHPUnit_Framework_TestCase {
 

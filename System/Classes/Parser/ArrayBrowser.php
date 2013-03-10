@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Lambda Web Framework.
+ * This file is part of the moon framework.
  *
  * (c) 2013 Lambdaweb - www.lambdaweb.fr
  *

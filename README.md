@@ -1,4 +1,4 @@
-lwf, A light and smart PHP Framework
+Moon, A light and smart PHP Framework
 ====================================
 
 > Currently, this project is not functional. 

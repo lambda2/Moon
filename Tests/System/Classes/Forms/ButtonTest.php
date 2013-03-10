@@ -1,7 +1,7 @@
 <?php
 
-include_once '/var/www/lwf/System/Classes/Forms/Field.php';
-include_once '/var/www/lwf/System/Classes/Forms/Button.php';
+include_once '/var/www/moon/System/Classes/Forms/Field.php';
+include_once '/var/www/moon/System/Classes/Forms/Button.php';
 
 
 class ButtonTest extends PHPUnit_Framework_TestCase {
