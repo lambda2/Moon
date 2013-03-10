@@ -1,5 +1,7 @@
 BOOTSTRAP = ./docs/assets/css/bootstrap.css
 BOOTSTRAP_LESS = ./less/bootstrap.less
+BOOTSTRAP_MOON_LESS = ./less/moon-theme/bootstrap.less
+BOOTSTRAP_MOON_RESPONSIVE_LESS = ./less/moon-theme/responsive.less
 BOOTSTRAP_RESPONSIVE = ./docs/assets/css/bootstrap-responsive.css
 BOOTSTRAP_RESPONSIVE_LESS = ./less/responsive.less
 MOON_ASSETS_DIR = ../../Assets
@@ -76,6 +78,9 @@ $(MOON_ASSETS_DIR)/css/*.css: less/*.less
 	mkdir -p $(MOON_ASSETS_DIR)/css
 	./node_modules/.bin/recess --compress ${BOOTSTRAP_LESS} > $(MOON_ASSETS_DIR)/css/bootstrap.min.css
 	./node_modules/.bin/recess --compress ${BOOTSTRAP_RESPONSIVE_LESS} > $(MOON_ASSETS_DIR)/css/bootstrap-responsive.min.css
+	./node_modules/.bin/recess --compress ${BOOTSTRAP_MOON_LESS} > $(MOON_ASSETS_DIR)/css/bootstrap_moon.min.css
+	./node_modules/.bin/recess --compress ${BOOTSTRAP_MOON_RESPONSIVE_LESS} > $(MOON_ASSETS_DIR)/css/bootstrap-responsive_moon.min.css
+
 
 #
 # IMAGES
