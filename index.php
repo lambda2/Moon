@@ -17,9 +17,9 @@ require_once('System/loader.php');
 /**
  * Enfin, on démarre notre moteur
  */
-Configuration::startEngine();
+Core::startEngine();
 
-Configuration::route($_GET);
+Core::route($_GET);
 
 //$membre = Configuration::getUser();
 /*

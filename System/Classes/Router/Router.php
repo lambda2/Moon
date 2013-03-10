@@ -23,7 +23,11 @@ class Router {
     }
 
     public function route($params) {
-        if (isset($params['p'])) {
+        
+        $c = new Home('');
+        $c->setTemplate('index.twig');
+        $c->render();
+        /*if (isset($params['p'])) {
             // Et que cette page existe
             if (file_exists('Controleurs/' . strtolower($params['p']) . '.php')) {
                 // On la charge
@@ -37,7 +41,7 @@ class Router {
         else {
             // Si aucune page n'est définie, on va sur la page d'accueil
             include_once('Controleurs/accueil_m.php');
-        }
+        }*/
     }
 
 }

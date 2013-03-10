@@ -15,6 +15,12 @@ class PathFinder {
         self::listDir($dir. DIRECTORY_SEPARATOR .'Helpers');
             return self::$res;
     }
+    
+    public static function getControllers($dir) {
+        self::$res = array();
+        self::listDir($dir. DIRECTORY_SEPARATOR .'Controllers');
+            return self::$res;
+    }
 
     private static function removeExt($string, $ext = '.php') {
         return substr($string, 0, strpos($string, $ext));

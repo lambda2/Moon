@@ -33,13 +33,17 @@ function __autoload($nomClasse) {
      * Et on laisse la main à notre PathFinder
      */
     $foundClasses = PathFinder::getClasses('System');
-    //var_dump($foundClasses);
+    $foundControllers = PathFinder::getControllers('.');
+    //var_dump($foundControllers);
     $pos          = strrpos($nomClasse, '\\');
     if ($pos > 0) {
         $nomClasse = substr($nomClasse, $pos + 1);
     }
     if (array_key_exists($nomClasse, $foundClasses)) {
         require_once($foundClasses[$nomClasse]);
+    }
+    else if (array_key_exists($nomClasse, $foundControllers)) {
+        require_once($foundControllers[$nomClasse]);
     }
 }
 

@@ -54,7 +54,7 @@
         <div class="span2"><!--span3-->
             <div class="well sidebar-nav">
                 <ul class="nav nav-list">
-                    <?php echo Page::getMenu(Configuration::getInstance()->bdd()); ?>
+                    <?php echo Page::getMenu(Core::getInstance()->bdd()); ?>
                 </ul>
             </div>
         </div><!--/span3-->

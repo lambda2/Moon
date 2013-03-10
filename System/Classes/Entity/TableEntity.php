@@ -30,7 +30,7 @@ class TableEntity extends Entity {
     public function __construct($name) {
 
         // Si la table existe dans la bdd
-        if (Configuration::isValidClass($name . Configuration::getInstance()->getDbPrefix())) {
+        if (Core::isValidClass($name . Core::getInstance()->getDbPrefix())) {
 
             parent::__construct();
             // On recharge

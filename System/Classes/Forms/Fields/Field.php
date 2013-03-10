@@ -266,7 +266,7 @@ abstract class Field {
                 $s .= 'class=' . dbQuote($this->classes) . ' ';
             
         }
-        else if(Configuration::getInstance()->getDevMode() == 'DEBUG'){
+        else if(Core::getInstance()->getDevMode() == 'DEBUG'){
             $s .= '<!--- Element de formulaire masqué : '.$this->name.' ('.$this->type.') -->';
         }
         
