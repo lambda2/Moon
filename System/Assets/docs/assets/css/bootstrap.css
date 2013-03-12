@@ -6156,3 +6156,14 @@ a.badge:focus {
 .affix {
   position: fixed;
 }
+
+.moon-debug-block {
+  position: fixed;
+  bottom: 10px;
+  left: 15px;
+  display: block;
+  width: auto;
+  height: auto;
+  font-size: 3em;
+  text-align: center;
+}

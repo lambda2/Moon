@@ -113,18 +113,7 @@ function pageNotFound($args = '', $rel='') {
 
 function dbg($msg, $severity = 0) {
     if (Core::getInstance()->debug()) {
-       
-            $report = "";
-            if ($severity == -1)
-                $report = '<p class="report-succes">' . $msg . '</p>';
-            elseif ($severity == 0)
-                $report = '<p class="report-warning">' . $msg . '</p>';
-            elseif ($severity == 1)
-                $report = '<p class="report-error">' . $msg . '</p>';
-            else
-                $report = '<p class="report-error">' . $msg . ' (Rapport de niveau ' . $severity . ')</p>';
-            
-            Core::getInstance()->debug()->addReport($report);
+            Core::getInstance()->debug()->addReport($msg,$severity);
             //echo $report;
     }
         

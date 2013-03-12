@@ -51,6 +51,12 @@ system:
   # developpement mode : [DEBUG | RELEASE]
   mode:	"DEBUG" 
   
+  # racine du site
+  siteroot: "/"
+  
+  # Le chemin du ou des fichiers de routage de l'utilisateur
+  routes_files: ["Config/routes"]
+  
 templates:
   
   # Le template qui sera utilisé par défaut
@@ -67,4 +73,22 @@ templates:
   
   # Le chemin du cache des templates
   cache_path: "System/Cache/"
+  
+  # Le chemin du repertoire contenant les feuilles de style
+  stylesheets_path: "Assets/css/"
+  
+  # Le chemin du repertoire contenant les images
+  img_path: "Assets/img/"
+  
+  # Le chemin du repertoire contenant les scripts
+  js_path: "Assets/js/"
+    
+  # Le chemin du repertoire contenant les feuilles de style du systeme
+  system_stylesheets_path: "Assets/css/"
+  
+  # Le chemin du repertoire contenant les images du systeme
+  system_img_path: "Assets/img/"
+  
+  # Le chemin du repertoire contenant les scripts du systeme
+  system_js_path: "Assets/js/"
   

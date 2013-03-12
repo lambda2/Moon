@@ -11,8 +11,6 @@
             <meta name="author" content="">
     {% endblock %}
 
-            <!-- Le styles -->
-            <link href="Assets/css/bootstrap.min.css" rel="stylesheet">
     {% block style %}
             <style type="text/css">
                     body {
@@ -34,7 +32,10 @@
                 </style>
     {% endblock %}
     {% block css_includes %}
-                <link href="Assets/css/bootstrap-responsive.min.css" rel="stylesheet">
+                <!-- Le styles -->
+                {% for stylesheet in webdata.stylesheets %}
+                    <link href="{{ webdata.base }}{{ stylesheet }}" rel="stylesheet">
+                {% endfor %}
     {% endblock %}
                 <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
                 <!--[if lt IE 9]>
@@ -62,10 +63,10 @@
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
-                            </button>
+                            </button>{% block nav_title %}
                             <a class="brand" href="#">
-                                    {% block nav_title %}Moon{% endblock %}
-                                </a>
+                                    Moon
+                                </a>{% endblock %}
                                 <div class="nav-collapse collapse">
                                     <p class="navbar-text pull-right">
                                     {% block nav_text %}{% endblock %}
@@ -115,24 +116,15 @@
                                     <div class="span9">
                                     {% block right_container %}
                                         {% block hero_container %}
-                                            <div class="hero-unit">
-                                            <h1>Hello, world!</h1>
-                                            <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-                                            <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-                                        
-                                        </div>{% endblock %}
+                                            
+                                        {% endblock %}
                                         <div class="row-fluid">
-                                            <div class="span4">
+                                            <div class="span6">
                                                 <h2>Heading</h2>
                                                 <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
                                                 <p><a class="btn" href="#">View details &raquo;</a></p>
                                             </div><!--/span-->
-                                            <div class="span4">
-                                                <h2>Heading</h2>
-                                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                                                <p><a class="btn" href="#">View details &raquo;</a></p>
-                                            </div><!--/span-->
-                                            <div class="span4">
+                                            <div class="span6">
                                                 <h2>Heading</h2>
                                                 <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
                                                 <p><a class="btn" href="#">View details &raquo;</a></p>
@@ -163,7 +155,7 @@
 
                                 <footer>
                         {% block footer %}
-                                        <p>&copy; The moon framework, by Lambdaweb 2013</p>
+                                        <p>&copy; <b>The Moon framework</b> - 2013 - Performed by lambdaweb </p>
                         {% endblock %}
                                         {% block debug %}
                                         {# Shows the debug lines #}
@@ -175,11 +167,11 @@
                                 </div><!--/.fluid-container-->
 
                  {% block javascript %}
-                                <!-- Le javascript
-                                ================================================== -->
+                                <!-- ============= Le javascript =========== -->
                                 <!-- Placed at the end of the document so the pages load faster -->
-                                <script src="Assets/js/jquery.js"></script>
-                                <script src="Assets/js/bootstrap.min.js"></script>
+                                {% for js in webdata.scripts %}
+                                     <script src="{{ webdata.base }}{{ js }}"></script>
+                                {% endfor %}
 
                 {% endblock %}      
 {% endblock %}

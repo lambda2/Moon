@@ -42,6 +42,7 @@ abstract class Controller {
           )); */
         $this->initialize();
 
+
         if ($request == '')
             $this->index();
     }
@@ -98,7 +99,6 @@ abstract class Controller {
 
         $this->template = strtolower(get_class($this)) . '.twig';
 
-        $this->webdata = array();
 
         $this->loader = new Twig_Loader_Filesystem(
                 $this->getTemplatePathsArray()
@@ -110,10 +110,115 @@ abstract class Controller {
         $escaper    = new Twig_Extension_Escaper(false);
         $this->twig->addExtension($escaper);
 
-        $this->webdata['template_extend'] =
-                Core::opts()->templates->default_template;
+        $this->initializeWebData();
 
         // Le template par défaut à étendre est défini dans le fichier de conf
+    }
+
+    /**
+     * Crée la webdata de base et supprime les anciennes webdatas enregistrées.
+     */
+    protected function initializeWebData() {
+        // On nettoie tout ça...
+        $this->webdata = array();
+
+        $this->webdata['template_extend'] =
+                Core::opts()->templates->default_template;
+        $this->webdata['info']            = Core::opts()->info->childs();
+        $this->webdata['base']            = Core::opts()->system->siteroot;
+        $this->webdata['stylesheets']     = array();
+        $this->webdata['scripts']         = array();
+    }
+
+    /**
+     * Ajoute la feuille de style spécifiée aux feuilles de style de la page.
+     * @param string $name le nom de la css
+     */
+    public function addCss($name) {
+        if (file_exists($name)) {
+            $this->webdata['stylesheets'][] = $name;
+        }
+        else if (file_exists(Core::opts()->system->siteroot
+                        . Core::opts()->templates->stylesheets_path
+                        . $name)) {
+            $this->webdata['stylesheets'][] =
+                    Core::opts()->system->siteroot
+                    . Core::opts()->templates->stylesheets_path
+                    . $name;
+        }
+        else if (file_exists(Core::opts()->templates->stylesheets_path
+                        . $name)) {
+            $this->webdata['stylesheets'][] =
+                    Core::opts()->templates->stylesheets_path
+                    . $name;
+        }
+        else if (file_exists(Core::opts()->templates->stylesheets_path
+                        . $name.'.css')) {
+            $this->webdata['stylesheets'][] =
+                    Core::opts()->templates->stylesheets_path
+                    . $name.'.css';
+        }
+        else {
+            /** @TODO : Retirer cet echo malfaisant, et gerer une exception. */
+            /*echo "il semblerait que " . Core::opts()->system->siteroot
+            . Core::opts()->templates->stylesheets_path
+            . $name . " ne soit pas un fichier...";*/
+            dbg("la feuille de style [$name] est introuvable.",1);
+        }
+    }
+
+    /**
+     * Ajoute le script (javascript) spécifié aux scripts de la page.
+     * @param string $name le nom du script
+     */
+    public function addJs($name) {
+        if (file_exists($name)) {
+            $this->webdata['scripts'][] = $name;
+        }
+        else if (file_exists(Core::opts()->system->siteroot
+                        . Core::opts()->templates->js_path
+                        . $name)) {
+            $this->webdata['scripts'][] =
+                    Core::opts()->system->siteroot
+                    . Core::opts()->templates->js_path
+                    . $name;
+        }
+        else if (file_exists(Core::opts()->templates->js_path
+                        . $name)) {
+            $this->webdata['scripts'][] =
+                    Core::opts()->templates->js_path
+                    . $name;
+        }
+        else if (file_exists(Core::opts()->templates->js_path
+                        . $name .'.js')) {
+            $this->webdata['scripts'][] =
+                    Core::opts()->templates->js_path
+                    . $name .'.js';
+        }
+        else {
+            /** @TODO : Retirer cet echo malfaisant, et gerer une exception. */
+            /*echo "il semblerait que " . Core::opts()->system->siteroot
+            . Core::opts()->templates->js_path
+            . $name . " ne soit pas un fichier...";*/
+            
+            dbg("le script [$name] est introuvable.",1);
+        }
+    }
+
+    /**
+     * Va definir quels sont les fichiers css et js à charger par défaut.
+     * --> <b>Surchargez la</b> dans vos controlleurs pour inclure 
+     * systématiquement les memes fichiers dans vos templates.
+     */
+    protected function addTemplateBaseIncludes() {
+        
+        $this->addCss('bootstrap.min');
+        $this->addCss('bootstrap-responsive.min');
+        $this->addCss('penis');
+        
+        $this->addJs('jquery');
+        $this->addJs('bootstrap.min');
+        $this->addJs('bootstrap.miyn');
     }
 
     protected function loadWebData() {
@@ -181,6 +286,7 @@ abstract class Controller {
     }
 
     public function render() {
+        $this->addTemplateBaseIncludes();
         echo $this->twig->render($this->template, $this->mergeData());
     }
 

@@ -1,0 +1,7 @@
+## Définit les routes pour les controlleurs.
+
+routes: 
+    'Accueil'       :   'Home'
+    'Maison'        :   'Home'
+    'ChezMoi'       :   'Home'
+    'ChezLulu'      :   'Home'

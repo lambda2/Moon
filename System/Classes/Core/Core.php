@@ -19,6 +19,7 @@ class Core {
     private $db_prefix;
     private $debug;
     private static $router;
+    private static $user_routes;
     private static $options = null;
     private static $instance;
     private static $user;
@@ -33,7 +34,6 @@ class Core {
         $userConfigFile = Spyc::YAMLLoad(self::userConfigFile);
         $defaultConfigFile = Spyc::YAMLLoad(self::defaultConfigFile);
         self::$options = new ArrayBrowser(extendArray($defaultConfigFile, $userConfigFile));
-        
     }
     
     public static function opts(){
@@ -42,11 +42,26 @@ class Core {
         return self::$options;
     }
     
+    private static function loadRoutes(){
+        $routeFiles = Core::opts()->system->routes_files;
+        $r = array();
+        foreach ($routeFiles as $route) {
+            $a = Spyc::YAMLLoad($route);
+            $r = array_merge($r,$a);
+        }
+        self::$user_routes = new ArrayBrowser($r['routes']);
+    }
     
-
+    public static function routes(){
+        if(isNull(self::$user_routes))
+            self::loadRoutes();
+        return self::$user_routes;
+    }
+    
     public static function startEngine() {
         
         self::loadOptions();
+        self::loadRoutes();
         
         self::$instance = new Core(
                 self::$options->database->driver, 
@@ -178,10 +193,15 @@ class Core {
     }
     
     public static function route($url){
-        
-        if(is_array($url)){
-            $tpl = self::$router->route($url);
+        try {
+            if(is_array($url)){
+                $tpl = self::$router->route($url);
+            }
+        } catch (Exception $exc) {
+            continue;
         }
+
+        
         
     }
 

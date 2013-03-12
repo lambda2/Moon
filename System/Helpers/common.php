@@ -390,6 +390,31 @@ function array_remove_value($tab, $value) {
 }
 
 /**
+ * Effectue un petit nettoyage du tableau...
+ * Supprime les cases vides et reorganises les index.
+ * Attention : Pour les tableaux associatifs, vous perdrez toutes vos clés.
+ * @param array $tab le tableau à nettoyer
+ * @return array le tableau
+ */
+function array_index_clean($tab) {
+    return array_values(array_clean($tab));
+}
+
+/**
+ * Effectue un petit nettoyage du tableau...
+ * Supprime les cases vides et reorganises les index
+ * @param array $tab le tableau à nettoyer
+ * @return array le tableau
+ */
+function array_clean($tab) {
+    foreach ($tab as $key => $value) {
+        if($value == null || $value == "")
+            unset($tab[$key]);
+    }
+    return $tab;
+}
+
+/**
  * Retourne la chaine ou le tableau passé en paramètre
  * entouré de doubles quotes ("). Si l'élément est un tableau,
  * chaque élément sera séparé par le séparateur défini.
