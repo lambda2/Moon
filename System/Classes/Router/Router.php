@@ -145,7 +145,8 @@ class Router {
                     // On la charge
                     $classe = $params['p'];
                     $c      = new $classe($params);
-                    $c->render();
+                    $c->index();
+                    //$c->render();
                 }
                 else {
                     // Sinon, page introuvable
@@ -157,13 +158,15 @@ class Router {
                     $ctrl = $this->getGoodControler();
                     if ($ctrl != false) {
                         $c = new $ctrl($params);
-                        $c->render();
+                        $c->index();
+                        //$c->render();
                     }
                 }
                 else {
                     // Si aucune page n'est définie, on va sur la page d'accueil
                     $c = new Home($params);
-                    $c->render();
+                    $c->index();
+                    //$c->render();
                 }
             }
         

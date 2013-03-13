@@ -16,6 +16,13 @@
  */
 class Home extends Controller {
     
+    public function index(){
+        $this->render();
+    }
+    
+    public function compterLesMamies(){
+        $this->render();
+    }
     
     
 }

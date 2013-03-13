@@ -198,7 +198,7 @@ class Core {
                 $tpl = self::$router->route($url);
             }
         } catch (Exception $exc) {
-            continue;
+            displayMoonException($exc);
         }
 
         

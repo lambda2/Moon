@@ -58,7 +58,7 @@ abstract class Controller {
      * 
      * @see Twig_Environment
      */
-    protected function getTemplateLoaderOptionsArray() {
+    final protected function getTemplateLoaderOptionsArray() {
         /**
          * On charge les options de configuration du moteur de templates
          * en fonction des options définies dans le fichier de configuration
@@ -77,7 +77,7 @@ abstract class Controller {
      * les templates
      * @return array les chemins des dossiers contenant les templates
      */
-    protected function getTemplatePathsArray() {
+    final protected function getTemplatePathsArray() {
         /**
          * On récupère depuis le fichier de configuration les
          * chemins des dossiers contenant les templates,
@@ -95,7 +95,7 @@ abstract class Controller {
      * Va initialiser le controleur, c'est à dire initialiser toutes les 
      * propriétés du controleur à leur valeur par défaut.
      */
-    protected function initialize() {
+    final protected function initialize() {
 
         $this->template = strtolower(get_class($this)) . '.twig';
 
@@ -118,7 +118,7 @@ abstract class Controller {
     /**
      * Crée la webdata de base et supprime les anciennes webdatas enregistrées.
      */
-    protected function initializeWebData() {
+    final protected function initializeWebData() {
         // On nettoie tout ça...
         $this->webdata = array();
 
@@ -134,7 +134,7 @@ abstract class Controller {
      * Ajoute la feuille de style spécifiée aux feuilles de style de la page.
      * @param string $name le nom de la css
      */
-    public function addCss($name) {
+    final public function addCss($name) {
         if (file_exists($name)) {
             $this->webdata['stylesheets'][] = $name;
         }
@@ -153,17 +153,17 @@ abstract class Controller {
                     . $name;
         }
         else if (file_exists(Core::opts()->templates->stylesheets_path
-                        . $name.'.css')) {
+                        . $name . '.css')) {
             $this->webdata['stylesheets'][] =
                     Core::opts()->templates->stylesheets_path
-                    . $name.'.css';
+                    . $name . '.css';
         }
         else {
             /** @TODO : Retirer cet echo malfaisant, et gerer une exception. */
-            /*echo "il semblerait que " . Core::opts()->system->siteroot
-            . Core::opts()->templates->stylesheets_path
-            . $name . " ne soit pas un fichier...";*/
-            dbg("la feuille de style [$name] est introuvable.",1);
+            /* echo "il semblerait que " . Core::opts()->system->siteroot
+              . Core::opts()->templates->stylesheets_path
+              . $name . " ne soit pas un fichier..."; */
+            dbg("la feuille de style [$name] est introuvable.", 1);
         }
     }
 
@@ -171,7 +171,7 @@ abstract class Controller {
      * Ajoute le script (javascript) spécifié aux scripts de la page.
      * @param string $name le nom du script
      */
-    public function addJs($name) {
+    final public function addJs($name) {
         if (file_exists($name)) {
             $this->webdata['scripts'][] = $name;
         }
@@ -190,18 +190,18 @@ abstract class Controller {
                     . $name;
         }
         else if (file_exists(Core::opts()->templates->js_path
-                        . $name .'.js')) {
+                        . $name . '.js')) {
             $this->webdata['scripts'][] =
                     Core::opts()->templates->js_path
-                    . $name .'.js';
+                    . $name . '.js';
         }
         else {
             /** @TODO : Retirer cet echo malfaisant, et gerer une exception. */
-            /*echo "il semblerait que " . Core::opts()->system->siteroot
-            . Core::opts()->templates->js_path
-            . $name . " ne soit pas un fichier...";*/
-            
-            dbg("le script [$name] est introuvable.",1);
+            /* echo "il semblerait que " . Core::opts()->system->siteroot
+              . Core::opts()->templates->js_path
+              . $name . " ne soit pas un fichier..."; */
+
+            dbg("le script [$name] est introuvable.", 1);
         }
     }
 
@@ -211,17 +211,17 @@ abstract class Controller {
      * systématiquement les memes fichiers dans vos templates.
      */
     protected function addTemplateBaseIncludes() {
-        
+
         $this->addCss('bootstrap.min');
         $this->addCss('bootstrap-responsive.min');
         $this->addCss('penis');
-        
+
         $this->addJs('jquery');
         $this->addJs('bootstrap.min');
         $this->addJs('bootstrap.miyn');
     }
 
-    protected function loadWebData() {
+    final protected function loadWebData() {
         if (Core::getInstance()->debug()) {
             $this->webdata['debug'] =
                     Core::getInstance()->debug()->showReport();
@@ -237,7 +237,7 @@ abstract class Controller {
      * est vide, nulle, ou égale à 0;
      * @return Controller L'instance courante
      */
-    public function addData($key, $data, $strict = True) {
+    final public function addData($key, $data, $strict = True) {
         if ($strict) {
             if (!isNull($data)) {
                 $this->data[$key] = $data;
@@ -255,7 +255,7 @@ abstract class Controller {
      * @return array le tableau contenant toutes les données système et 
      * utilisateur.
      */
-    protected function mergeData() {
+    final protected function mergeData() {
         $this->loadWebData();
 
         $tab            = $this->data;
@@ -268,7 +268,7 @@ abstract class Controller {
      * La liste des templates sont disponibles dans la documentation.
      * @param string $template le nom du template a utiliser
      */
-    public function setBaseTemplate($template) {
+    final public function setBaseTemplate($template) {
         $this->webdata['template_extend'] = $template;
     }
 
@@ -277,17 +277,55 @@ abstract class Controller {
      * Par défaut, la template est "[nom du controlleur].twig"
      * @param string $template le nom de la template a afficher.
      */
-    public function setTemplate($template) {
+    final protected function setTemplate($template) {
         $this->template = $template;
     }
-
-    public function index() {
-        
+    
+    final protected function getTemplateFileName(){
+        $index = 0;
+        $trace  = debug_backtrace();
+        foreach ($trace as $step) {
+            if(strcasecmp($step['function'],'getTemplateFileName') != 0
+                    && strcasecmp($step['function'],'render') != 0){
+                return get_class($this).'.'.$trace[$index]['function'];
+            }
+            $index++;
+        }
+        return false;
     }
 
-    public function render() {
+    public abstract function index();
+    
+    final private function tryToRender(){
+        try {
+            echo $this->twig->render($this->template, $this->mergeData());
+        } catch (Twig_Error_Loader $exc) {
+            try {
+                echo $this->twig->render(strtolower($this->template), $this->mergeData());
+            } catch (Twig_Error_Loader $excTwo) {
+                dbg($excTwo->getMessage(), 2);
+                dbg("La template {$this->template} n'a pas pu etre chargée ! Le fichier existe t'il ?", 2);
+                dbg("Chargement de la template de base du controlleur", 0);
+                $this->template = strtolower(get_class($this)) . '.twig';
+                echo $this->twig->render(strtolower($this->template), $this->mergeData());
+            }
+            dbg($exc->getMessage(), 1);
+        }
+    }
+
+    final public function render() {
+        $this->template = $this->getTemplateFileName();
+        if($this->template == false){
+            dbg("le template de destination n'a pas pu etre calcule...", 2);
+            $this->template = strtolower(get_class($this)) . '.twig';
+        }
+        else {
+            $this->template .= '.twig';
+        }
         $this->addTemplateBaseIncludes();
-        echo $this->twig->render($this->template, $this->mergeData());
+        $this->tryToRender();
+
+        
     }
 
 }

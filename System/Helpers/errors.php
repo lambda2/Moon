@@ -98,26 +98,32 @@ function redirectStatut($codeStat = 0, $page = '') {
  * Redirige l'utilisateur sur une page d'erreur 404
  * @param type $args les parametres a passer en plus dans l'url
  */
-function pageNotFound($args = '', $rel='') {
+function pageNotFound($args = '', $rel = '') {
     if ($args != '')
         $args = '?p=404&' . $args;
     else
         $args = '?p=404';
-    if (!headers_sent()) 
-        header('Location: '.$rel.'index.php' . $args);
+    if (!headers_sent())
+        header('Location: ' . $rel . 'index.php' . $args);
     else
-        echo('<script language="javascript">document.location.href="'.$rel.'index.php' . $args . '"</script>');
-    
+        echo('<script language="javascript">document.location.href="' . $rel . 'index.php' . $args . '"</script>');
 }
 
+function displayMoonException($exc) {
+    echo '<hr>';
+    echo '<h1 style="font-family: monospace;"><span style="color: #999;">MOON FRAMEWORK</span><span style="color: #666;"> - What a lunar error !</span></h1>';
+    echo '<hr><br>';
+    echo '<table>' . $exc->xdebug_message . '</table>';
+    echo '<br><hr><br>';
+    var_dump($exc);
+    echo '<br><hr><br>';
+}
 
 function dbg($msg, $severity = 0) {
     if (Core::getInstance()->debug()) {
-            Core::getInstance()->debug()->addReport($msg,$severity);
-            //echo $report;
+        Core::getInstance()->debug()->addReport($msg, $severity);
+        //echo $report;
     }
-        
-    
 }
 
 ?>

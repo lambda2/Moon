@@ -60,7 +60,7 @@ system:
 templates:
   
   # Le template qui sera utilisé par défaut
-  default_template: "base_fluid.twig"
+  default_template: "base_fix.twig"
   
   # Définit si le cache des templates est activé ou non
   cache_enabled: false
