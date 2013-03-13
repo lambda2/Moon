@@ -43,13 +43,14 @@ class Router {
 
             // On cherche dans les routes définies par l'utilisateur
             $foundInRoutes = $this->findControllerInRoutes($request);
-            if ($foundInRoutes != false)
-                return $foundInRoutes;
+            if ($foundInRoutes != false){
+                return $this->getRequestedTarget($foundInRoutes, $request);
+            }
 
             // On cherche dans les controleurs
             $foundInCtrls = $this->findControllerInFiles($request);
             if ($foundInCtrls != false)
-                return $foundInCtrls;
+                return $this->getRequestedTarget($foundInCtrls, $request);
         }
         else {
             echo ("aucune url de redirection...");
@@ -110,6 +111,31 @@ class Router {
             return true;
         return false;
     }
+    
+    /**
+     * Essaye de retrouver la méthode demandée dans l'url.
+     * @param type $controller le controlleur demandé
+     * @param type $request l'a'url demandée par l'internaute
+     * @return mixed false si rien n'a été trouvé, le nom de la méthode sinon.
+     */
+    protected function getValidMethod($controller,$request){
+        $metod = false;
+        $url = self::splitUrl($request);
+        foreach ($url as $elem) {
+            if(method_exists($controller, $elem)){
+                $metod = $elem;
+            }
+        }
+        
+        return $metod;
+    }
+    
+    protected function getRequestedTarget($controller,$request){
+        $method = $this->getValidMethod($controller, $request);
+        if($method == false)
+            $method = 'index';
+        return $controller.'.'.$method;
+    }
 
     /**
      * Recoit une url et renvoie un tableau composé de tous les éléments de 
@@ -131,6 +157,33 @@ class Router {
         }
         return array_index_clean($splitted);
     }
+    
+    /**
+     * Instancie le controlleur et apelle la bonne méthode
+     * @param type $controllerUrl l'url du controlleur sous la forme 
+     * [Classe].[Methode]
+     * @return boolean True si tout est bon, false sinon.
+     */
+    protected function callController($controllerUrl,$params){
+        $s = split('\.',$controllerUrl);
+        if (count($s) > 1) {
+            $c = new $s[0]($params);
+            $c->$s[1]();
+            return true;
+        }
+        else 
+            return false;
+    }
+    
+    /**
+     * Apelle la méthode index du controlleur par défaut.
+     * @param array $params les parametres de la requete
+     */
+    protected function callDefaultController($params){
+        $defC = Core::opts()->system->default_controller;
+        $c = new $defC($params);
+        $c->index();
+    }
 
     /**
      * Méthode principale de la classe, chargée de déterminer le controlleur 
@@ -146,7 +199,6 @@ class Router {
                     $classe = $params['p'];
                     $c      = new $classe($params);
                     $c->index();
-                    //$c->render();
                 }
                 else {
                     // Sinon, page introuvable
@@ -156,17 +208,14 @@ class Router {
             else {
                 if (isset($params['handle'])) {
                     $ctrl = $this->getGoodControler();
-                    if ($ctrl != false) {
-                        $c = new $ctrl($params);
-                        $c->index();
-                        //$c->render();
+                    if(!$this->callController($ctrl, $params)){
+                        $this->callDefaultController($params);
                     }
+                    
                 }
                 else {
-                    // Si aucune page n'est définie, on va sur la page d'accueil
-                    $c = new Home($params);
-                    $c->index();
-                    //$c->render();
+                    // Si aucune page n'est définie, on va sur la page par défaut
+                    $this->callDefaultController($params);
                 }
             }
         

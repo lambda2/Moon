@@ -48,6 +48,9 @@ database :
  
  
 system:
+  
+  default_controller: 'Home'
+  
   # developpement mode : [DEBUG | RELEASE]
   mode:	"DEBUG" 
   
