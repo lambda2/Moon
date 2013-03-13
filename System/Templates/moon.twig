@@ -1,0 +1,5 @@
+{# définit des fonctions usuelles pour les templates #}
+
+{% macro link(controller, method, text, id, class) %}
+    <a href="{{ webdata.base }}/{{ controller }}/{{ method|default('index') }}" id="{{ id|default('') }}" class="{{ class|default('') }}">{{ text|default(controller) }}</a>
+{% endmacro %}

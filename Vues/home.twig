@@ -1,11 +1,12 @@
 {% extends webdata.template_extend %}
+{% import "moon.twig" as moon %}
 
 {% block nav_title %}
 <a class="brand" href="#">Moon</a>
 {% endblock %}
 
 
-                   {% block right_container %}<div class="row-fluid"> 
+                   {% block main_container %}<div class="row-fluid"> 
     <div class="jumbotron">
         <h1>Moon Framework</h1>
         <p>A light and smart PHP Framework</p>
@@ -31,12 +32,11 @@
                 </div><!--/row-->
                 <div class="row">
                     <div class="span12">
-                        <h2>Methode apellante</h2>
-                        <p>function : {{ trace }}</p>
-                        <p>classe : {{ tracecl }}</p>
-                        <h3>Pour le controleur : </h3>
-                        <p>function : {{ tracea }}</p>
-                        <p>classe : {{ tracecla }}</p>
+                        <h2>Index</h2>
+                        base = {{ _context.webdata.base }}   
+                        {% set url = 'Home.compterLesMamies' %}
+                        <p>voulez vous aller {{ moon.link('Home','compterLesMamies','compter les mamies ?') }}</p>
+                        <p>voulez vous aller {{ url|moonlink('compter les mamies ?') }}</p>
                     </div>
                 </div>
 {% endblock %}

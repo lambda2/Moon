@@ -109,10 +109,23 @@ abstract class Controller {
         );
         $escaper    = new Twig_Extension_Escaper(false);
         $this->twig->addExtension($escaper);
+        // add custom filter
+        $this->twig->addFilter('moonlink', 
+          new Twig_Filter_Function('Controller::moonlink', array('is_safe' => array('html')))
+        );
 
         $this->initializeWebData();
 
         // Le template par défaut à étendre est défini dans le fichier de conf
+    }
+    
+    public static function moonlink($str, $text='') {
+        $pl = explode('.',$str);
+    if(strcmp($text,'') == 0){
+        $text = $pl[0];
+    }
+    $str = Core::opts()->system->siteroot.implode(DIRECTORY_SEPARATOR, $pl);
+    return '<a href="'.$str.'">' . $text . '</a>';
     }
 
     /**
@@ -214,11 +227,9 @@ abstract class Controller {
 
         $this->addCss('bootstrap.min');
         $this->addCss('bootstrap-responsive.min');
-        $this->addCss('penis');
 
         $this->addJs('jquery');
         $this->addJs('bootstrap.min');
-        $this->addJs('bootstrap.miyn');
     }
 
     final protected function loadWebData() {
@@ -303,13 +314,12 @@ abstract class Controller {
             try {
                 echo $this->twig->render(strtolower($this->template), $this->mergeData());
             } catch (Twig_Error_Loader $excTwo) {
-                dbg($excTwo->getMessage(), 2);
-                dbg("La template {$this->template} n'a pas pu etre chargée ! Le fichier existe t'il ?", 2);
-                dbg("Chargement de la template de base du controlleur", 0);
+                dbg($excTwo->getMessage()
+                        ."<p>La template {$this->template} n'a pas pu etre chargée ! Le fichier existe t'il ?</p>"
+                        ."<p><b>Chargement de la template de base du controlleur</b></p>", 2);
                 $this->template = strtolower(get_class($this)) . '.twig';
                 echo $this->twig->render(strtolower($this->template), $this->mergeData());
             }
-            dbg($exc->getMessage(), 1);
         }
     }
 
