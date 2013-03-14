@@ -99,7 +99,15 @@ abstract class Controller {
 
         $this->template = strtolower(get_class($this)) . '.twig';
 
+        
+        $this->getMainTwigEngine();
 
+        $this->initializeWebData();
+
+        // Le template par défaut à étendre est défini dans le fichier de conf
+    }
+    
+    final protected function getMainTwigEngine(){
         $this->loader = new Twig_Loader_Filesystem(
                 $this->getTemplatePathsArray()
         );
@@ -109,16 +117,14 @@ abstract class Controller {
         );
         $escaper    = new Twig_Extension_Escaper(false);
         $this->twig->addExtension($escaper);
+        
+        $this->twig->addExtension(new MoonTwig());
         // add custom filter
-        $this->twig->addFilter('moonlink', 
+        /*$this->twig->addFilter('moonlink', 
           new Twig_Filter_Function('Controller::moonlink', array('is_safe' => array('html')))
-        );
-
-        $this->initializeWebData();
-
-        // Le template par défaut à étendre est défini dans le fichier de conf
+        );*/
     }
-    
+    /*
     public static function moonlink($str, $text='') {
         $pl = explode('.',$str);
     if(strcmp($text,'') == 0){
@@ -126,7 +132,7 @@ abstract class Controller {
     }
     $str = Core::opts()->system->siteroot.implode(DIRECTORY_SEPARATOR, $pl);
     return '<a href="'.$str.'">' . $text . '</a>';
-    }
+    }*/
 
     /**
      * Crée la webdata de base et supprime les anciennes webdatas enregistrées.

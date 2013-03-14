@@ -35,8 +35,8 @@
                         <h2>Index</h2>
                         base = {{ _context.webdata.base }}   
                         {% set url = 'Home.compterLesMamies' %}
-                        <p>voulez vous aller {{ moon.link('Home','compterLesMamies','compter les mamies ?') }}</p>
-                        <p>voulez vous aller {{ url|moonlink('compter les mamies ?') }}</p>
+                        <p>voulez vous aller {{ link('Home.compterLesMamies','compter les mamies ?') }} pour aller vers : {{ href('Home.compterLesMamies') }}</p>
+                        
                     </div>
                 </div>
 {% endblock %}
