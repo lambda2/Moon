@@ -18,7 +18,6 @@ class MoonTwig extends Twig_Extension
 {
     /**
      * Returns a list of functions to add to the existing list.
-     *
      * @return array An array of functions
      */
     public function getFunctions()
@@ -29,6 +28,16 @@ class MoonTwig extends Twig_Extension
             );
     }
     
+    /**
+     * Retourne un lien vers le controlleur spécifié
+     * @param string $str la reference du controleur [Classe].[Methode]
+     * @param type $text le texte du lien (optionnel)
+     * @return type le lien HTML sous la forme <a href=moonHref($str)>$text</a>
+     * @see MoonTwig::moonHref
+     * 
+     * @TODO : Ajouter une petite gestion des exceptions. Il est par exemple
+     * invraisemblable de mettre un lien avec des nombres ou du genre...
+     */
     public static function moonLink($str, $text='') {
         $pl = explode('.',$str);
         if(strcmp($text,'') == 0){
@@ -38,14 +47,17 @@ class MoonTwig extends Twig_Extension
         return '<a href="'.$str.'">' . $text . '</a>';
     }
     
+    /**
+     * Retourne juste l'adresse du controleur spécifié.
+     * @param string $str la reference du controleur [Classe].[Methode]
+     * @return string le lien. Pratique pour créer des href un peu personnalisés
+     */
     public static function moonHref($str) {
         $pl = explode('.',$str);
         $str = Core::opts()->system->siteroot.implode(DIRECTORY_SEPARATOR, $pl);
         return $str;
     }
     
-    
- 
     function getName() {
         'Moon';
     }

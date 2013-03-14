@@ -1,0 +1,34 @@
+{% extends webdata.template_extend %}
+
+{% block nav_title %}
+<a class="brand" href="#">Moon</a>
+{% endblock %}
+
+
+                   {% block main_container %}<div class="row-fluid">
+    <div class="jumbotron">
+        <h1>Moon Framework</h1>
+        <p>A light and smart PHP Framework</p>
+        <p><a href="https://github.com/lambda2/Moon" class="btn btn-info btn-large">Fork us on Github &raquo;</a></p>
+    </div>
+</div>
+<div class="row">
+    <div class="span12">
+        <h2>Quels astres avons nous aujourd'hui ?</h2>
+        <p>dump : {# dump(astresH) #}</p>
+        {% for astre in astres %}
+        <p>Nous avons {{ astre.nom }}, qui est un(e) {{ astre.type }} !</p>
+        {% endfor %}
+        <span>Cette opération légère a pris {{time.countOne}} ms </span>
+        
+        <h2>Quels astres avons nous aujourd'hui ?</h2>
+        {% for astre in astresH %}
+        <p>Nous avons {{ astre.nom }}, qui est un(e) {{ astre.systeme.nom }} !</p>
+        {% endfor %}
+        <span>Cette opération lourde a pris {{time.countTwo}} ms </span>
+        
+        
+        <span>Le fonction legere est donc <b>{{time.mult}}</b> fois plus rapide que la fonction lente... </span>
+    </div>
+</div>
+{% endblock %}

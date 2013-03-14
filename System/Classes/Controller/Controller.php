@@ -68,6 +68,9 @@ abstract class Controller {
         if (Core::opts()->templates->cache_enabled) {
             $tplConfig['cache'] = Core::opts()->templates->cache_path;
         }
+        if (Core::opts()->system->mode == 'DEBUG') {
+            $tplConfig['debug'] = true;
+        }
 
         return $tplConfig;
     }
@@ -99,15 +102,15 @@ abstract class Controller {
 
         $this->template = strtolower(get_class($this)) . '.twig';
 
-        
+
         $this->getMainTwigEngine();
 
         $this->initializeWebData();
 
         // Le template par défaut à étendre est défini dans le fichier de conf
     }
-    
-    final protected function getMainTwigEngine(){
+
+    final protected function getMainTwigEngine() {
         $this->loader = new Twig_Loader_Filesystem(
                 $this->getTemplatePathsArray()
         );
@@ -117,22 +120,27 @@ abstract class Controller {
         );
         $escaper    = new Twig_Extension_Escaper(false);
         $this->twig->addExtension($escaper);
-        
+
         $this->twig->addExtension(new MoonTwig());
+        
+        if (Core::opts()->system->mode == 'DEBUG') {
+            $this->twig->addExtension(new Twig_Extension_Debug());
+        }
         // add custom filter
-        /*$this->twig->addFilter('moonlink', 
+        /* $this->twig->addFilter('moonlink', 
           new Twig_Filter_Function('Controller::moonlink', array('is_safe' => array('html')))
-        );*/
+          ); */
     }
+
     /*
-    public static function moonlink($str, $text='') {
-        $pl = explode('.',$str);
-    if(strcmp($text,'') == 0){
-        $text = $pl[0];
-    }
-    $str = Core::opts()->system->siteroot.implode(DIRECTORY_SEPARATOR, $pl);
-    return '<a href="'.$str.'">' . $text . '</a>';
-    }*/
+      public static function moonlink($str, $text='') {
+      $pl = explode('.',$str);
+      if(strcmp($text,'') == 0){
+      $text = $pl[0];
+      }
+      $str = Core::opts()->system->siteroot.implode(DIRECTORY_SEPARATOR, $pl);
+      return '<a href="'.$str.'">' . $text . '</a>';
+      } */
 
     /**
      * Crée la webdata de base et supprime les anciennes webdatas enregistrées.
@@ -297,14 +305,13 @@ abstract class Controller {
     final protected function setTemplate($template) {
         $this->template = $template;
     }
-    
-    final protected function getTemplateFileName(){
+
+    final protected function getTemplateFileName() {
         $index = 0;
-        $trace  = debug_backtrace();
+        $trace = debug_backtrace();
         foreach ($trace as $step) {
-            if(strcasecmp($step['function'],'getTemplateFileName') != 0
-                    && strcasecmp($step['function'],'render') != 0){
-                return get_class($this).'.'.$trace[$index]['function'];
+            if (strcasecmp($step['function'], 'getTemplateFileName') != 0 && strcasecmp($step['function'], 'render') != 0) {
+                return get_class($this) . '.' . $trace[$index]['function'];
             }
             $index++;
         }
@@ -312,8 +319,8 @@ abstract class Controller {
     }
 
     public abstract function index();
-    
-    final private function tryToRender(){
+
+    final private function tryToRender() {
         try {
             echo $this->twig->render($this->template, $this->mergeData());
         } catch (Twig_Error_Loader $exc) {
@@ -321,8 +328,8 @@ abstract class Controller {
                 echo $this->twig->render(strtolower($this->template), $this->mergeData());
             } catch (Twig_Error_Loader $excTwo) {
                 dbg($excTwo->getMessage()
-                        ."<p>La template {$this->template} n'a pas pu etre chargée ! Le fichier existe t'il ?</p>"
-                        ."<p><b>Chargement de la template de base du controlleur</b></p>", 2);
+                        . "<p>La template {$this->template} n'a pas pu etre chargée ! Le fichier existe t'il ?</p>"
+                        . "<p><b>Chargement de la template de base du controlleur</b></p>", 2);
                 $this->template = strtolower(get_class($this)) . '.twig';
                 echo $this->twig->render(strtolower($this->template), $this->mergeData());
             }
@@ -331,7 +338,7 @@ abstract class Controller {
 
     final public function render() {
         $this->template = $this->getTemplateFileName();
-        if($this->template == false){
+        if ($this->template == false) {
             dbg("le template de destination n'a pas pu etre calcule...", 2);
             $this->template = strtolower(get_class($this)) . '.twig';
         }
@@ -340,8 +347,6 @@ abstract class Controller {
         }
         $this->addTemplateBaseIncludes();
         $this->tryToRender();
-
-        
     }
 
 }

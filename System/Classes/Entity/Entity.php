@@ -9,8 +9,15 @@
  * ...et font des trous.
  * ...et il pleut.
  * 
- * @TODO enlever tous les vieux echo(...) dégeulasses après avoir testé
+ * @TODO : enlever tous les vieux echo(...) dégeulasses après avoir testé
  * [serieusement] cette classe. 
+ * 
+ * @TODO : [UNE FOIS LES TESTS UNITAIRES FAITS] Gerer les relations multiples
+ * et récursives. Pour l'instant on ne gere que les relations 1..0 à 1..0 et
+ * seulement une relation par table ! Voir l'attribut [$linkedClasses] qui est 
+ * un put*** de tableau associatif ou la clé est la table distante référencée 
+ * et qui ne peut pas contenir deux clés de meme valeur, donc pas deux fois
+ * la meme table... Pas de parrains pour les filleuls quoi...
  */
 abstract class Entity {
 
@@ -27,8 +34,8 @@ abstract class Entity {
         $this->table    = strtolower(get_class($this)) . Core::getInstance()->getDbPrefix();
         $this->editable = new Editable($this, $this->table);
         $this->bdd      = Core::getInstance()->bdd();
-        $this->access   = new Access();
-        $this->access->loadFromTable(strtolower(get_class($this)));
+        //$this->access   = new Access();
+        //$this->access->loadFromTable(strtolower(get_class($this)));
         $this->clearLinkedClasses();
 
         if (get_class($this) != 'TableEntity') {
@@ -41,8 +48,8 @@ abstract class Entity {
         $this->table    = strtolower($table) . Core::getInstance()->getDbPrefix();
         $this->editable = new Editable($this, $this->table);
         $this->bdd      = Core::getInstance()->bdd();
-        $this->access   = new Access();
-        $this->access->loadFromTable(strtolower(get_class($this)));
+        /* $this->access   = new Access();
+          $this->access->loadFromTable(strtolower(get_class($this))); */
 
         $this->generateProperties();
         $this->generateFields();
@@ -60,17 +67,40 @@ abstract class Entity {
             // Si le champ n'a pas de valeur, il ne peux y avoir de classe associée...
             if ($value != null) {
                 $s         = $this->getRelationClassInstance($key);
-                /* if ($s != null)
-                  dg($s->getTable() . ' pour ' . $key . '(' . $value . ')');
-                  else
-                  dg('aucune relation trouvée pour ' . $key . '(' . $value . ')'); */
                 $className = split('\.', $this->getNameWithoutId($key))[0];
                 if ($s != null && strcmp($className . Core::getInstance()->getDbPrefix(), $this->table) != 0) {
-                    $this->addLinkedClass($s, $this->getForeignLink($key));
+                    $this->addLinkedClass($key, $s, $this->getForeignLink($key));
                 }
             }
         }
-        //var_dump($this->linkedClasses);
+    }
+
+    
+    public function __get($name) {
+        $i = $this->getExternalInstance($name);
+        if ($i != false)
+            return $i;
+        else {
+            $meth = 'get' . ucfirst($name);
+            return $this->$meth();
+        }
+    }
+    
+    /**
+     * Implémentation nécessaire pour que twig accepte d'apeller __get()
+     * @param type $name
+     * @return boolean
+     */
+    public function __isset($name)
+    {
+        try {
+            $e = $this->$name;
+        } catch (Exception $exc) {
+            dbg($exc->getMessage(),20);
+            return false;
+        }
+        return true;
+
     }
 
     public function __call($methodName, $args) {
@@ -141,19 +171,18 @@ abstract class Entity {
             return true;
         }
         else if (strripos($field, '_' . $this->table) == false) {
-            if(! $this->loadBy($field . '_' . $this->table, $value)){
-                
+            if (!$this->loadBy($field . '_' . $this->table, $value)) {
+
                 $prefix = Core::getInstance()->getDbPrefix();
-                if(strripos($field. '_' . $this->table, $prefix) != FALSE){
+                if (strripos($field . '_' . $this->table, $prefix) != FALSE) {
                     echo "la table finit par le préfixe ! Beurk !";
-                    $field =  $field.substr_replace(
-                            '_' . $this->table,'', -(strlen($prefix)),strlen($prefix));
+                    $field = $field . substr_replace(
+                                    '_' . $this->table, '', -(strlen($prefix)), strlen($prefix));
                     return $this->loadBy($field, $value);
                 }
                 else {
                     //echo "la table ne finit pas par le préfixe ! Ouf !";
                     return false;
-                    
                 }
             }
             else {
@@ -209,8 +238,29 @@ abstract class Entity {
         return $foreignTable . '.' . $foreignRow;
     }
 
-    protected function getIdFieldFrom($tableName) {
-        
+    /**
+     * Retourne toutes les instances de l'objet définies dans la base de données
+     * dans un tableau.
+     * @return array toutes les instances de l'objet dans la bdd
+     */
+    public static function getAllObjects($classe) {
+        $c = EntityLoader::getClass($classe);
+        $t = array();
+        try {
+            $Req = Core::getBdd()->prepare("SELECT * FROM {$c->getTable()}");
+            $Req->execute(array());
+        } catch (Exception $e) { //interception de l'erreur
+            die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
+        }
+        while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
+            $f   = EntityLoader::getClass($classe);
+            $tb  = 'id_' . $f->getTable();
+            $f->loadBy($tb, $res->$tb);
+            $f->autoLoadLinkedClasses();
+            $t[] = $f;
+        }
+
+        return $t;
     }
 
     public function getAll() {
@@ -221,8 +271,12 @@ abstract class Entity {
         } catch (Exception $e) { //interception de l'erreur
             die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
         }
-        while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
-            $t[] = $res;
+        while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
+            $newTab = [];
+            foreach ($res as $key => $value) {
+                $newTab[str_replace('_' . $this->table, '', $key)] = $value;
+            }
+            $t[] = $newTab;
         }
 
         return $t;
@@ -238,7 +292,7 @@ abstract class Entity {
     }
 
     public function __toString() {
-        $s = '<div class="row"><h4>Classe ' . get_class($this) . ' :</h4>';
+        $s = '<div><h4>Classe ' . get_class($this) . ' :</h4>';
         $s .= '<h5>Référencée par la table ' . $this->table . '.</h5>';
         foreach ($this as $key => $value) {
             if (!is_a($value, "PDO")) {
@@ -247,10 +301,6 @@ abstract class Entity {
                     $s .= '<table class="table">';
 
                     foreach ($value as $k => $v) {
-                        if ($key == "linkedClasses") {
-                            $s .= '<tr><td></td><td>' . $k . '</td><td> ==> </td><td>' . get_class($v) . '::' . $v->getTable() . '()</td></tr>';
-                        }
-                        else
                             $s .= '<tr><td></td><td>' . $k . '</td><td> ==> </td><td>' . $v . '</td></tr>';
                     }
                     if (count($value) == 0)
@@ -307,9 +357,10 @@ abstract class Entity {
             $this->linkedClasses[] = $linkedClasses;
     }
 
-    protected function addLinkedClass($class, $name) {
-
-        $this->linkedClasses[$name] = $class;
+    protected function addLinkedClass($field, $class, $name) {
+        //echo "( $field => $name )<br>";
+        $this->linkedClasses[$field] = new MoonLink($field, $name, $class);
+        //var_dump($this->linkedClasses[$field]);
     }
 
     protected function checkExternalRelation($query) {
@@ -322,23 +373,44 @@ abstract class Entity {
     }
 
     public function addRelation($field, $target, $display = null) {
-        if ($display == null)
-            $display = $field;
-        $t       = explode(".", $target);
+        $t = explode(".", $target);
         if (count($t) < 2)
             throw new Exception('cible invalide pour le bind  ' . $target);
+
+        if ($display == null)
+            $display = $t[0];
+
         else {
-            $this->linkedClasses[$display] = $this->getRelationClassInstance($field, $target);
+            $this->linkedClasses[$display] =
+                    new MoonLink(
+                    $field, $target, $this->getRelationClassInstance($field, $target)
+            );
         }
     }
 
-    public function getAccess() {
-        return $this->access;
+    /**
+     * Va voir si l'objet courant a une relation avec la table spécifiée.
+     * Si oui, va renvoyer l'instance de l'objet référencé.
+     * @param type $table la table ciblée
+     * @return mixed l'instance de la classe distante, false sinon
+     */
+    public function getExternalInstance($table) {
+        foreach ($this->linkedClasses as $key => $value) {
+            if (strcasecmp($value->destinationTable, $table) == 0) {
+                if (!isNull($value->instance))
+                    return $value->instance;
+            }
+        }
+        return false;
     }
 
-    public function setAccess($access) {
-        $this->access = $access;
-    }
+    /* public function getAccess() {
+      return $this->access;
+      }
+
+      public function setAccess($access) {
+      $this->access = $access;
+      } */
 
     public function clearLinkedClasses() {
         $this->linkedClasses = array();
@@ -360,7 +432,7 @@ abstract class Entity {
     }
 
     public function getNameWithoutId($field) {
-        return $this->getForeignLink($f);
+        return $this->getForeignLink($field);
     }
 
     public function getRelationClassName($field) {
@@ -410,7 +482,7 @@ abstract class Entity {
 
     public static function getProperName($name, $upper = false, $singularize = false) {
         $reducClassName = $name;
-        if (strstr($reducClassName, Core::getInstance()->getDbPrefix()) != FALSE) {
+        if (Core::getInstance()->getDbPrefix() != '' && strstr($reducClassName, Core::getInstance()->getDbPrefix()) != FALSE) {
             $reducClassName = substr_replace($reducClassName, '', -(strlen(Core::getInstance()->getDbPrefix())), strlen(Core::getInstance()->getDbPrefix()));
         }
         if ($upper) {
@@ -421,14 +493,12 @@ abstract class Entity {
         }
         $reducClassName = str_replace('_', ' ', $reducClassName);
 
-        if ($singularize) {
-            $reducClassName = singularize($reducClassName);
-        }
+        /* if ($singularize) {
+          $reducClassName = singularize($reducClassName);
+          } */
         return $reducClassName;
     }
 
 }
-
-
 
 ?>
