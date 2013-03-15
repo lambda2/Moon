@@ -1,5 +1,4 @@
 {% extends webdata.template_extend %}
-{% import "moon.twig" as moon %}
 
 {% block nav_title %}
 <a class="brand" href="#">Moon</a>
@@ -33,9 +32,7 @@
                 <div class="row">
                     <div class="span12">
                         <h2>Index</h2>
-                        base = {{ _context.webdata.base }}   
-                        {% set url = 'Home.compterLesMamies' %}
-                        <p>voulez vous aller {{ link('Home.compterLesMamies','compter les mamies ?') }} pour aller vers : {{ href('Home.compterLesMamies') }}</p>
+                        <p>voulez vous aller {{ link('Home.compterLesAstres','compter les astres ?') }} pour aller vers : {{ href('Home.compterLesAstres') }}</p>
                         
                     </div>
                 </div>

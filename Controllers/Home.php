@@ -18,25 +18,23 @@ class Home extends Controller {
     
     public function index(){
         $this->render();
-    }
-    
-    public function compterLesAstres(){
-        $time = array();
+        
+        /*$time = array();
         $time['startOne'] = microtime(true);
         $astres = Moon::getAll('astre');
         $time['stopOne'] = microtime(true);
         $time['countOne'] = $time['stopOne'] - $time['startOne'];
         
         $time['startTwo'] = microtime(true);
-        $astresHeavy = Moon::getAllHeavy('astre');
+        
         $time['stopTwo'] = microtime(true);
         $time['countTwo'] = $time['stopTwo'] - $time['startTwo'];
-        $time['mult'] = round($time['countTwo'] - $time['countOne'], 4);
-        
-        //var_dump($astresHeavy);
+        $time['mult'] = round($time['countTwo'] - $time['countOne'], 4);*/
+    }
+    
+    public function compterLesAstres(){
+        $astres = Moon::getAllHeavy('astre');
         $this->addData('astres', $astres);
-        $this->addData('astresH', $astresHeavy);
-        $this->addData('time', $time);
         $this->render();
     }
     

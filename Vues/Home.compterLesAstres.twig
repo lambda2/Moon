@@ -15,20 +15,11 @@
 <div class="row">
     <div class="span12">
         <h2>Quels astres avons nous aujourd'hui ?</h2>
-        <p>dump : {# dump(astresH) #}</p>
         {% for astre in astres %}
-        <p>Nous avons {{ astre.nom }}, qui est un(e) {{ astre.type }} !</p>
+        <p>Nous avons l'astre {{ astre.nom }}, qui est un(e) {{ astre.type }} !</p>
+        <p>Nous savons d'ailleurs que cet astre est dans le système {{ astre.systeme.nom }} !</p>
         {% endfor %}
-        <span>Cette opération légère a pris {{time.countOne}} ms </span>
         
-        <h2>Quels astres avons nous aujourd'hui ?</h2>
-        {% for astre in astresH %}
-        <p>Nous avons {{ astre.nom }}, qui est un(e) {{ astre.systeme.nom }} !</p>
-        {% endfor %}
-        <span>Cette opération lourde a pris {{time.countTwo}} ms </span>
-        
-        
-        <span>Le fonction legere est donc <b>{{time.mult}}</b> fois plus rapide que la fonction lente... </span>
     </div>
 </div>
 {% endblock %}
