@@ -1,8 +1,8 @@
 <?php
 
-include_once '/var/www/moon/System/Classes/Entity/Entity.php';
+include_once 'includeAll.php';
 
-class EntityMock extends Entity {
+class Astre extends Entity {
     
 }
 
@@ -18,7 +18,8 @@ class EntityTest extends PHPUnit_Framework_TestCase {
      * This method is called before a test is executed.
      */
     protected function setUp() {
-        $this->object = new EntityMock();
+        $core = Core::startEngine();
+        $this->object = new Astre();
     }
 
     /**
@@ -34,10 +35,7 @@ class EntityTest extends PHPUnit_Framework_TestCase {
      * @todo   Implement testAutoLoadLinkedClasses().
      */
     public function testAutoLoadLinkedClasses() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        
     }
 
     /**

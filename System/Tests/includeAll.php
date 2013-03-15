@@ -21,7 +21,12 @@ include_once '/var/www/moon/System/Helpers/mail.php';
 include_once '/var/www/moon/System/Helpers/user.php';
 include_once '/var/www/moon/System/Classes/Debug/Debug.php';
 include_once '/var/www/moon/System/Classes/Router/Router.php';
+include_once '/var/www/moon/System/Classes/Forms/Editable.php';
 include_once '/var/www/moon/System/Classes/Exceptions/AlertException.php';
+include_once '/var/www/moon/System/Classes/Exceptions/CoreException.php';
+include_once '/var/www/moon/System/Classes/Exceptions/CriticalException.php';
+include_once '/var/www/moon/System/Classes/Exceptions/MemberAccessException.php';
+include_once '/var/www/moon/System/Classes/Entity/Entity.php';
 
 
 
