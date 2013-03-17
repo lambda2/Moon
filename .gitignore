@@ -5,5 +5,6 @@
 /nbproject/project.properties
 /nbproject/*
 /Config/configuration.yml
+System/Tests/Config/configuration.yml
 /Config/configuration.php
 changeuser.sh
