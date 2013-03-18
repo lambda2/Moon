@@ -205,6 +205,19 @@ class Router {
                     include_once('WebRoot/404.php'); //TODO : faire une page 404 respectable
                 }
             }
+            else if (isset($params['sandbox'])) {
+                // Et que cette page existe
+                if (Core::opts()->system->mode == 'DEBUG' && 
+                        file_exists(
+                                'System/SandBox/' . $params['sandbox'] . '.php'))
+                {
+                    include_once 'System/SandBox/' . $params['sandbox'] . '.php';
+                }
+                else {
+                    // Sinon, page introuvable
+                    include_once('WebRoot/404.php'); //TODO : faire une page 404 respectable
+                }
+            }
             else {
                 if (isset($params['handle'])) {
                     $ctrl = $this->getGoodControler();

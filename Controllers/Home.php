@@ -33,8 +33,8 @@ class Home extends Controller {
     }
     
     public function compterLesAstres(){
-        $astres = Moon::getAllHeavy('astre');
-        $this->addData('astres', $astres);
+        $distances = Moon::getAllHeavy('distance');
+        $this->addData('distances', $distances);
         $this->render();
     }
     

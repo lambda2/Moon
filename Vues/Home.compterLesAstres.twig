@@ -15,9 +15,8 @@
 <div class="row">
     <div class="span12">
         <h2>Quels astres avons nous aujourd'hui ?</h2>
-        {% for astre in astres %}
-        <p>Nous avons l'astre {{ astre.nom }}, qui est un(e) {{ astre.type }} !</p>
-        <p>Nous savons d'ailleurs que cet astre est dans le système {{ astre.systeme.nom }} !</p>
+        {% for distance in distances %}
+        <p>Nous avons une distance de {{ distance.distance }}, entre {{ distance.astre_depart }} et {{ distance.astre_fin }}!</p>
         {% endfor %}
         
     </div>

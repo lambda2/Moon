@@ -25,8 +25,8 @@ class Core {
     private static $user;
     private static $host_tables = array();
 
-    private function __construct($driver, $host, $dbname, $login, $pass, $dev_mode = "DEBUG", $dbPrefix = '') {
-        $this->initialize($driver, $host, $dbname, $login, $pass, $dev_mode, $dbPrefix);
+    private function __construct($dev_mode = "DEBUG", $dbPrefix = '') {
+        $this->initialize($dev_mode, $dbPrefix);
     }
     
     
@@ -64,11 +64,6 @@ class Core {
         self::loadRoutes();
         
         self::$instance = new Core(
-                self::$options->database->driver, 
-                self::$options->database->host, 
-                self::$options->database->dbname, 
-                self::$options->database->login, 
-                self::$options->database->pass, 
                 self::$options->system->mode, 
                 self::$options->database->db_prefix);
         
@@ -77,7 +72,7 @@ class Core {
         
         if(isConnecte()){
             $membre = new Membre();
-            $membre->loadBy('id_membre', getId($_SESSION['login'], $this->database));
+            //$membre->loadBy('id_membre', getId($_SESSION['login'], $this->database));
         }
         
         /*
@@ -96,7 +91,7 @@ class Core {
         return self::$user;
     }
 
-    private function initialize($driver, $host, $dbname, $login, $pass, $dev_mode, $dbPrefix) {
+    private function initialize($dev_mode, $dbPrefix) {
         $this->dev_mode = $dev_mode;
         $this->db_prefix = $dbPrefix;
         if($dev_mode == 'DEBUG')
@@ -104,32 +99,17 @@ class Core {
         else
             $this->debug = null;
         
-        $this->databaseConnect($driver, $host, $dbname, $login, $pass);
+        $this->databaseConnect();
         $this->generateHostTables();
     }
 
-    private function databaseConnect($driver, $host, $dbname, $login, $pass) {
-        try {
-            $this->database = new PDO("$driver:host=$host;dbname=$dbname", $login, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
-            $this->database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-        } catch (PDOException $e) {
-            print "Erreur lors de l\'initialisation de la base de données : " . $e->getMessage() . "<br/>";
-            die();
-        }
+    private function databaseConnect() {
+        Orm::launch(self::$options->database->childs());
+        $this->database = OrmFactory::getOrm();
     }
 
     private function generateHostTables() {
-        $t = array();
-        try {
-            $Req = $this->database->prepare("SHOW TABLES");
-            $Req->execute(array());
-        } catch (Exception $e) { //interception de l'erreur
-            die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
-        }
-        while ($res = $Req->fetch(PDO::FETCH_NUM)) {
-            $t[] = $res[0];
-        }
-        self::$host_tables = $t;
+        self::$host_tables = $this->database->getAllTables();
     }
 
     public static function getInstance() {

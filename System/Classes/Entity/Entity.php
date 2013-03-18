@@ -33,7 +33,7 @@ abstract class Entity {
 
         $this->table    = strtolower(get_class($this)) . Core::getInstance()->getDbPrefix();
         $this->editable = new Editable($this, $this->table);
-        $this->bdd      = Core::getInstance()->bdd();
+        $this->bdd      = Core::getInstance()->bdd()->getDb();
         //$this->access   = new Access();
         //$this->access->loadFromTable(strtolower(get_class($this)));
         $this->clearLinkedClasses();
@@ -47,7 +47,7 @@ abstract class Entity {
     protected function reload($table) {
         $this->table    = strtolower($table) . Core::getInstance()->getDbPrefix();
         $this->editable = new Editable($this, $this->table);
-        $this->bdd      = Core::getInstance()->bdd();
+        $this->bdd      = Core::getInstance()->bdd()->getDb();
         /* $this->access   = new Access();
           $this->access->loadFromTable(strtolower(get_class($this))); */
 
@@ -62,20 +62,29 @@ abstract class Entity {
      */
     public function autoLoadLinkedClasses() {
         $this->clearLinkedClasses();
-        foreach ($this->fields as $key => $value) {
+        /* foreach ($this->fields as $key => $value) {
 
-            // Si le champ n'a pas de valeur, il ne peux y avoir de classe associée...
-            if ($value != null) {
-                $s         = $this->getRelationClassInstance($key);
-                $className = split('\.', $this->getNameWithoutId($key))[0];
-                if ($s != null && strcmp($className . Core::getInstance()->getDbPrefix(), $this->table) != 0) {
-                    $this->addLinkedClass($key, $s, $this->getForeignLink($key));
-                }
-            }
+          // Si le champ n'a pas de valeur, il ne peux y avoir de classe associée...
+          if ($value != null) {
+          $s         = $this->getRelationClassInstance($key);
+          $className = split('\.', $this->getNameWithoutId($key))[0];
+          if ($s != null && strcmp($className . Core::getInstance()->getDbPrefix(), $this->table) != 0) {
+          $this->addLinkedClass($key, $s, $this->getForeignLink($key));
+          }
+          }
+          } */
+
+
+        $this->linkedClasses = Core::getBdd()->getMoonLinksFrom($this->table);
+
+        foreach ($this->linkedClasses as $linked) {
+            echo "trying to link " . $linked->attribute . " ... [value inside : " . $this->fields[$linked->attribute] . "]<br>";
+            if (!isNull($this->fields[$linked->attribute]))
+                $linked->loadLinkedInstance(
+                        $this->fields[$linked->attribute]);
         }
     }
 
-    
     public function __get($name) {
         $i = $this->getExternalInstance($name);
         if ($i != false)
@@ -85,22 +94,20 @@ abstract class Entity {
             return $this->$meth();
         }
     }
-    
+
     /**
      * Implémentation nécessaire pour que twig accepte d'apeller __get()
      * @param type $name
      * @return boolean
      */
-    public function __isset($name)
-    {
+    public function __isset($name) {
         try {
             $e = $this->$name;
         } catch (Exception $exc) {
-            dbg($exc->getMessage(),20);
+            dbg($exc->getMessage(), 20);
             return false;
         }
         return true;
-
     }
 
     public function __call($methodName, $args) {
@@ -153,8 +160,24 @@ abstract class Entity {
     }
 
     public function loadBy($field, $value) {
+        
+        $request = "SELECT * FROM {$this->table} WHERE {$field} = '{$value}'";
+        
+        if(is_array($field) 
+                && is_array($value) 
+                && count($field) == count($value)){
+            $request = "SELECT * FROM {$this->table} WHERE ";
+            $args = array();
+            foreach ($field as $key=>$cle) {
+                $args[] = $cle." = ".$value[$key];
+            }
+            $request .= implode(' AND ', $args);
+        }
+        
+        echo "REQUEST = <b>[".$request.']</b> <br>';
+        
         try {
-            $Req = $this->bdd->prepare("SELECT * FROM {$this->table} WHERE {$field} = '{$value}'");
+            $Req = $this->bdd->prepare($request);
             $Req->execute(array());
         } catch (Exception $e) { //interception de l'erreur
             die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
@@ -247,17 +270,27 @@ abstract class Entity {
         $c = EntityLoader::getClass($classe);
         $t = array();
         try {
-            $Req = Core::getBdd()->prepare("SELECT * FROM {$c->getTable()}");
+            $Req = Core::getBdd()->getDb()->prepare("SELECT * FROM {$c->getTable()}");
             $Req->execute(array());
         } catch (Exception $e) { //interception de l'erreur
             die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
         }
         while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
-            $f   = EntityLoader::getClass($classe);
-            $tb  = 'id_' . $f->getTable();
-            $f->loadBy($tb, $res->$tb);
-            $f->autoLoadLinkedClasses();
-            $t[] = $f;
+            $f        = EntityLoader::getClass($classe);
+            $priField = array();
+            $priValues = array();
+            foreach (Core::getBdd()->getAllColumnsFrom($c->getTable()) as $col) {
+                if ($col->Key == 'PRI'){
+                    $primaryKeyField = $col->Field;
+                    $priField[] = $primaryKeyField;
+                    $priValues[] = $res->$primaryKeyField;
+                }
+            }
+            if (!isNull($priField)) {
+                $f->loadBy($priField, $priValues);
+                $f->autoLoadLinkedClasses();
+                $t[] = $f;
+            }
         }
 
         return $t;
@@ -301,7 +334,7 @@ abstract class Entity {
                     $s .= '<table class="table">';
 
                     foreach ($value as $k => $v) {
-                            $s .= '<tr><td></td><td>' . $k . '</td><td> ==> </td><td>' . $v . '</td></tr>';
+                        $s .= '<tr><td></td><td>' . $k . '</td><td> ==> </td><td>' . $v . '</td></tr>';
                     }
                     if (count($value) == 0)
                         $s .= '<tr><td></td><td>Aucune valeur enregistrée</td><td></td><td></td></tr>';
@@ -373,19 +406,19 @@ abstract class Entity {
     }
 
     public function addRelation($field, $target, $display = null) {
-        $t = explode(".", $target);
-        if (count($t) < 2)
-            throw new Exception('cible invalide pour le bind  ' . $target);
+        /* $t = explode(".", $target);
+          if (count($t) < 2)
+          throw new Exception('cible invalide pour le bind  ' . $target);
 
-        if ($display == null)
-            $display = $t[0];
+          if ($display == null)
+          $display = $t[0];
 
-        else {
-            $this->linkedClasses[$display] =
-                    new MoonLink(
-                    $field, $target, $this->getRelationClassInstance($field, $target)
-            );
-        }
+          else {
+          $this->linkedClasses[$display] =
+          new MoonLink(
+          $field, $target, $this->getRelationClassInstance($field, $target)
+          );
+          } */
     }
 
     /**

@@ -34,6 +34,14 @@ class MoonLink {
                 $this->destinationTable.'.'.$this->destinationColumn, $value);
     }
     
+    public function loadLinkedInstance($value){
+        $this->instance = $this->getLinkedInstance($value);
+    }
+    
+    public function getTargetAdress(){
+        return $this->destinationTable.'.'.$this->destinationColumn;
+    }
+    
     public function get(){
         return $this->instance;
     }
