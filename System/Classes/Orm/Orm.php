@@ -85,7 +85,7 @@ abstract class Orm {
         $t = array();
         try {
             $Req = self::$db->prepare($request);
-            $Req->execute(array($args));
+            $Req->execute($args);
         } catch (Exception $e) { //interception de l'erreur
             throw new OrmException(
             "Unable to execute the request '$request' : ["
@@ -101,9 +101,11 @@ abstract class Orm {
 
     public abstract function getAllColumnsFrom($tableName);
     
-    public abstract function getMoonLinksFrom($tableName);
+    public abstract function getMoonLinksFrom($tableName, $external=false);
 
     public abstract function getAllRelationsFrom($tableName);
+
+    public abstract function getAllRelationsWith($tableName);
     
     public abstract function getAllRelations();
 }

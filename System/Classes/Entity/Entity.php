@@ -94,16 +94,46 @@ abstract class Entity {
      */
     public function __get($name) {
         
-        if($this->linkedClassesLoaded == false){
+        if($this->linkedClassesLoaded == false)
+        {
             $this->autoLoadLinkedClasses();
         }
 
         $i = $this->getExternalInstance($name);
+
         if ($i != false)
+        {
             return $i;
-        else {
+        }
+        else 
+        {
             $meth = 'get' . ucfirst($name);
-            return $this->$meth();
+            $methodResult = $this->$meth();
+
+            if($methodResult != false)
+            {
+                return $methodResult;
+            }
+            else
+            {
+                $externals = Core::getBdd()->getMoonLinksFrom($this->table,true);
+                foreach ($externals as $moonLinkKey => $moonLinkValue) 
+                {
+                    if($moonLinkValue->table == $name)
+                    {
+                        $res = Core::getBdd()->query(
+                        "SELECT * FROM {$moonLinkValue->table} WHERE ? = ?",
+                        array(
+                            $moonLinkValue->attribute,
+                            $this->fields[$moonLinkValue->destinationColumn]
+                            ));
+                        return $res;
+                    }
+                }
+
+                return 1;
+                //return 'external relation ?';
+            }
         }
     }
 
@@ -123,8 +153,8 @@ abstract class Entity {
     }
 
     /**
-     * Véritable nid à bugs de l'application.
-     * Nécessite un vrai débug puis refactoring
+     * Véritable nid à bugs de l'application. 
+     * Nécessite un vrai debug puis refactoring
      * @TODO: Voir ci-dessus.
      */
     public function __call($methodName, $args) {
@@ -137,7 +167,8 @@ abstract class Entity {
                             return $this->linkedClasses[$property];
                         }
                         else {
-                            throw new MemberAccessException('Property ' . $property . ' not exists');
+                            return false;
+                            //throw new MemberAccessException('Property ' . $property . ' not exists');
                         }
                     }
                     else {
@@ -157,7 +188,8 @@ abstract class Entity {
                 $this->checkArguments($args, 0, 0, $methodName);
                 return $this->get($property);
                 case 'default':
-                throw new MemberAccessException('Method ' . $methodName . ' not exists');
+                return false;
+                //throw new MemberAccessException('Method ' . $methodName . ' not exists');
             }
         }
     }
@@ -214,7 +246,7 @@ abstract class Entity {
      */
     public function loadBy($field, $value) {
         
-        $request = "SELECT * FROM {$this->table} WHERE {$field} = '{$value}'";
+        $request = "";
         
         /**
          * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
@@ -222,20 +254,26 @@ abstract class Entity {
          */
         if(is_array($field) 
             && is_array($value) 
-            && count($field) == count($value)){
+            && count($field) == count($value))
+        {
             $request = "SELECT * FROM {$this->table} WHERE ";
-        $args = array();
-        foreach ($field as $key=>$cle) {
-            $args[] = $cle." = ".$value[$key];
+            $args = array();
+            foreach ($field as $key=>$cle) 
+            {
+                $args[] = $cle." = ".$value[$key];
+            }
+            $request .= implode(' AND ', $args);
         }
-        $request .= implode(' AND ', $args);
-    }
-    
-    try 
-    {
-        $Req = $this->bdd->prepare($request);
-        $Req->execute(array());
-    } 
+        else
+        {
+            $request = "SELECT * FROM {$this->table} WHERE {$field} = '{$value}'";
+        }
+        
+        try 
+        {
+            $Req = $this->bdd->prepare($request);
+            $Req->execute(array());
+        } 
         catch (Exception $e) //interception de l'erreur
         {
             throw new OrmException("Error Processing Request");

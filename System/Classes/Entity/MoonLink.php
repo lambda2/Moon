@@ -16,14 +16,30 @@
  * @author lambda2
  */
 class MoonLink {
+    public $table;
     public $attribute;
     public $destinationTable;
     public $destinationColumn;
     public $instance = null;
     
     public function __construct($source, $destination, $instance = null){
+
+
+
         $s = explode('.', $destination);
-        $this->attribute = $source;
+        $org = explode('.', $source);
+
+        if(count($org) == 1)
+        {
+            $this->attribute = $source;
+            $this->table = null;
+        }
+        else 
+        {
+            $this->table = $org[0];
+            $this->attribute = $org[1];
+        }
+
         $this->destinationTable = $s[0];
         $this->destinationColumn = $s[1];
         $this->instance = $instance;
