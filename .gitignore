@@ -9,3 +9,5 @@ System/Tests/Config/configuration.yml
 /Config/configuration.php
 changeuser.sh
 /System/Tests/Config/configuration.yml
+moon.sublime-project
+moon.sublime-workspace
