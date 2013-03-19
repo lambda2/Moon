@@ -26,12 +26,12 @@ abstract class OrmFactory {
         
         switch ($driver) {
             case 'mysql':
-                echo 'Nouveau ORM MySql !';
                 $instance = new OrmMysql('mysql');
                 break;
 
             default:
-                echo 'Nouveau ORM #ONNESAITPAS !';
+                throw new OrmException("Unable to recognize your sql driver");
+                
                 break;
         }
         

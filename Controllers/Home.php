@@ -16,29 +16,18 @@
  */
 class Home extends Controller {
     
-    public function index(){
-        $this->render();
-        
-        /*$time = array();
-        $time['startOne'] = microtime(true);
-        $astres = Moon::getAll('astre');
-        $time['stopOne'] = microtime(true);
-        $time['countOne'] = $time['stopOne'] - $time['startOne'];
-        
-        $time['startTwo'] = microtime(true);
-        
-        $time['stopTwo'] = microtime(true);
-        $time['countTwo'] = $time['stopTwo'] - $time['startTwo'];
-        $time['mult'] = round($time['countTwo'] - $time['countOne'], 4);*/
-    }
-    
-    public function compterLesAstres(){
-        $distances = Moon::getAllHeavy('distance');
-        $this->addData('distances', $distances);
+    public function index()
+    {
         $this->render();
     }
     
-    
+    public function compterLesAstres()
+    {
+        $astres = Moon::getAllHeavy('astre');
+        //var_dump($distances[0]->astre_depart);
+        $this->addData('astres', $astres);
+        $this->render();
+    }
 }
 
 ?>
