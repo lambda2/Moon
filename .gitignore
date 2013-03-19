@@ -4,6 +4,8 @@
 /nbproject/
 /nbproject/project.properties
 /nbproject/*
+/Config/*
+Config/*
 /Config/configuration.yml
 System/Tests/Config/configuration.yml
 /Config/configuration.php
