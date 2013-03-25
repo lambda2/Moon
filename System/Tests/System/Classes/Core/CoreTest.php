@@ -99,7 +99,7 @@ class CoreTest extends PHPUnit_Framework_TestCase
      */
     public function testBdd()
     {
-        $i = $this->object->bdd();
+        $i = $this->object->bdd()->getDb();
         $this->assertTrue(is_a($i, 'PDO'));
     }
 

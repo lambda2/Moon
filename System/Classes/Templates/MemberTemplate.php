@@ -9,7 +9,7 @@ class MemberTemplate extends Entity {
 
         $this->table = $table;
         $this->editable = new Editable($this, $this->table);
-        $this->bdd = Core::getInstance()->bdd();
+        $this->bdd = Core::getInstance()->bdd()->getDb();
         $this->access = new Access();
 
         if (get_class($this) != 'TableEntity') {

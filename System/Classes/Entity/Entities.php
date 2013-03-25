@@ -9,7 +9,7 @@ class Entities {
     
     public function __construct($table) {
         $this->table = $table;
-        $this->bdd = $GLOBALS['System']->bdd();
+        $this->bdd = Core::getBdd()->getDb();
     }
     
     public function getValuesList($columnName){

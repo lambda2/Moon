@@ -4,9 +4,11 @@
 /nbproject/
 /nbproject/project.properties
 /nbproject/*
-/Config/configuration.yml
+/Config/*
+QuickStart/Config/*
+QuickStart/Config/configuration.yml
 System/Tests/Config/configuration.yml
-/Config/configuration.php
+QuickStart//Config/configuration.php
 changeuser.sh
 /System/Tests/Config/configuration.yml
 moon.sublime-project
