@@ -27,71 +27,70 @@ info :
 
 # all the database informations
 database :
-  
+
   # the database driver
   driver : "mysql"
-  
+
   # the database hostname
   host : ""
-  
+
   # the database login
   login : ""
-  
+
   # the database password
   pass : ""
-  
+
   # the database name
   dbname : ""
-  
+
   # the prefix for database tables
   db_prefix : ""
- 
- 
+
+
 system:
-  
+
   default_controller: 'Home'
-  
+
   # developpement mode : [DEBUG | RELEASE]
   mode:	"DEBUG" 
-  
+
   # racine du site
   siteroot: "/"
-  
+
   # Le chemin du ou des fichiers de routage de l'utilisateur
   routes_files: ["Config/routes"]
-  
+
 templates:
-  
+
   # Le template qui sera utilisé par défaut
   default_template: "base_fix.twig"
-  
+
   # Définit si le cache des templates est activé ou non
   cache_enabled: false
-  
+
   # Le chemin du dossier contenant les templates de l'utilisateur
   user_path: "Vues/"
-  
+
   # Le chemin des templates systeme predefinies
-  system_path: "System/Templates/"
-  
+  system_path: "../System/Templates/"
+
   # Le chemin du cache des templates
-  cache_path: "System/Cache/"
-  
+  cache_path: "../System/Cache/"
+
   # Le chemin du repertoire contenant les feuilles de style
   stylesheets_path: "Assets/css/"
-  
+
   # Le chemin du repertoire contenant les images
   img_path: "Assets/img/"
-  
+
   # Le chemin du repertoire contenant les scripts
   js_path: "Assets/js/"
-    
+
   # Le chemin du repertoire contenant les feuilles de style du systeme
   system_stylesheets_path: "Assets/css/"
-  
+
   # Le chemin du repertoire contenant les images du systeme
   system_img_path: "Assets/img/"
-  
+
   # Le chemin du repertoire contenant les scripts du systeme
   system_js_path: "Assets/js/"
-  

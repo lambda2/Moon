@@ -334,6 +334,10 @@ FileETag None
 # Options +SymLinksIfOwnerMatch
   RewriteEngine On
 # RewriteBase /
+
+# Rewrite rule for the Moon engine
+# TODO !
+
 </IfModule>
 
 
@@ -428,7 +432,7 @@ Options -MultiViews
 # You can add custom pages to handle 500 or 403 pretty easily, if you like.
 # If you are hosting your site in subdirectory, adjust this accordingly
 #    e.g. ErrorDocument 404 /subdir/404.html
-ErrorDocument 404 /moon/index.php?handle=true
+ErrorDocument 404 /moon/QuickStart/index.php?handle=true
 
 
 # ----------------------------------------------------------------------
@@ -470,7 +474,7 @@ AddCharset utf-8 .atom .css .js .json .rss .vtt .xml
 # Block access to backup and source files. These files may be left by some
 # text/html editors and pose a great security danger, when anyone can access
 # them.
-<FilesMatch "(\.(bak|config|sql|fla|psd|ini|log|sh|inc|swp|dist)|~)$">
+<FilesMatch "(\.(bak|config|yml|sql|fla|psd|ini|log|sh|inc|swp|dist)|~)$">
   Order allow,deny
   Deny from all
   Satisfy All

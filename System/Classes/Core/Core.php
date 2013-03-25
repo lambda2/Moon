@@ -12,7 +12,7 @@
 class Core {
 
     const userConfigFile = 'Config/configuration.yml';
-    const defaultConfigFile = 'System/Configuration/configuration.yml';
+    const defaultConfigFile = '../System/Configuration/configuration.yml';
     
     private $database;
     private $dev_mode;

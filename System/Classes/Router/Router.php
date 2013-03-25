@@ -46,11 +46,21 @@ class Router {
             if ($foundInRoutes != false){
                 return $this->getRequestedTarget($foundInRoutes, $request);
             }
+            /*
+            else {
+                dbg($_SERVER['REDIRECT_URL']." not found in routes...",0);
+            }
+            */
 
             // On cherche dans les controleurs
             $foundInCtrls = $this->findControllerInFiles($request);
             if ($foundInCtrls != false)
                 return $this->getRequestedTarget($foundInCtrls, $request);
+            /*
+            else {
+                dbg($_SERVER['REDIRECT_URL']." not found in controllers...",0);
+            }
+            */
         }
         else {
             echo ("aucune url de redirection...");
@@ -150,10 +160,13 @@ class Router {
         $splitted = split('/', $url);
         if ($withoutRoot && Core::isStarted()) {
             $root = Core::opts()->system->siteroot;
-            $root = str_replace('/', '', $root);
-            if (in_array($root, $splitted)) {
-                $splitted = array_remove_value($splitted, $root);
+            $rootElems = explode('/', $root);
+            foreach ($rootElems as $key => $rootElem) {
+                if (in_array($rootElem, $splitted)) {
+                $splitted = array_remove_value($splitted, $rootElem);
+                }
             }
+            
         }
         return array_index_clean($splitted);
     }
@@ -209,12 +222,13 @@ class Router {
                 // Et que cette page existe
                 if (Core::opts()->system->mode == 'DEBUG' && 
                         file_exists(
-                                'System/SandBox/' . $params['sandbox'] . '.php'))
+                                '../System/SandBox/' . $params['sandbox'] . '.php'))
                 {
-                    include_once 'System/SandBox/' . $params['sandbox'] . '.php';
+                    include_once '../System/SandBox/' . $params['sandbox'] . '.php';
                 }
                 else {
                     // Sinon, page introuvable
+                    echo '4o4 :S';
                     include_once('WebRoot/404.php'); //TODO : faire une page 404 respectable
                 }
             }
