@@ -12,7 +12,7 @@
 $INDEX = true;
 
 // on ajoute l'autoload des classes et on crée la connexion
-require_once('../System/loader.php');
+require_once(__DIR__.'/../System/loader.php');
 
 /**
  * Enfin, on démarre notre moteur

@@ -5,6 +5,8 @@
  */
 const sep = DIRECTORY_SEPARATOR;
 
+$rpath = __DIR__.'/../';
+
 /**
  * La configuration (c'est à dire les logins de la base de données, un éventuel
  * préfixe de table et les modes de développement).
@@ -13,7 +15,7 @@ const sep = DIRECTORY_SEPARATOR;
 /**
  * Le pathFinder, qui va nous permettre d'avoir un autoloader intelligent.
  */
-require_once('System' . sep . 'pathfinder.php');
+require_once(__DIR__.'/../'.'System' . sep . 'pathfinder.php');
 
 /**
  * L'autoloader, qui se sert du pathfinder
@@ -32,7 +34,7 @@ function __autoload($nomClasse) {
     /**
      * Et on laisse la main à notre PathFinder
      */
-    $foundClasses = PathFinder::getClasses('System');
+    $foundClasses = PathFinder::getClasses(__DIR__.'/../'.'System');
     $foundControllers = PathFinder::getControllers('.');
     //var_dump($foundControllers);
     $pos          = strrpos($nomClasse, '\\');
@@ -54,7 +56,7 @@ function __autoload($nomClasse) {
  * fonctions utilitaires utilisables à n'importe quel endroit.
  * 
  */
-$helpers = PathFinder::getHelpers('System');
+$helpers = PathFinder::getHelpers(__DIR__.'/../'.'System');
 foreach ($helpers as $class => $url) {
     require_once($url);
 }
