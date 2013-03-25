@@ -85,7 +85,7 @@ abstract class Orm {
         $t = array();
         try {
             $Req = self::$db->prepare($request);
-            $Req->execute($args);
+            $Req->execute(array_values($args));
         } catch (Exception $e) { //interception de l'erreur
             throw new OrmException(
             "Unable to execute the request '$request' : ["

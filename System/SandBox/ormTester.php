@@ -11,8 +11,8 @@
 try 
 {
 
-	echo '<h3>Debug outputs for <i>Orm</i> class</h3>';
 	$orm = OrmFactory::getOrm();
+	/*echo '<h3>Debug outputs for <i>Orm</i> class</h3>';
 
 	var_dump($orm);
 
@@ -25,7 +25,6 @@ try
 	testResults('getAllRelationsFrom', array('astre'), $orm);
 	testResults('getAllRelationsFrom', array('distance'), $orm);
 	testResults('getMoonLinksFrom', array('distance'), $orm);
-	testResults('query', array("select * from astre", array()), $orm);
 
 	echo '<h3>Debug outputs for <i>Orm</i> class</h3>';
 	echo '<h5>→ External relations detection</h5>';
@@ -34,12 +33,14 @@ try
 	testResults('getMoonLinksFrom', array('astre'), $orm);
 	testResults('getMoonLinksFrom', array('astre',true), $orm);
 
-
+*/
 
 	echo '<h3>Debug outputs for <i>Entity</i> class</h3>';
 	$astres = Moon::getAllHeavy('astre');
 
 	testResults('__get', array('distance'), $astres[0]);
+	testResults('query', array("select * from astre where ? = 1"
+		, array('id_astre')), $orm);
 
 	testResults('getNom', array(), $astres[0]);
 	testResults('getNom_astre', array(), $astres[0]);

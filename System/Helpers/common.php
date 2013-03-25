@@ -368,6 +368,14 @@ function isNull($object) {
         $nul = true;
     else if (is_array($object) && count($object) == 0)
         $nul = true;
+    else if (is_array($object)){
+        $nul = true;
+        foreach ($object as $key => $value) {
+            if(!isNull($value)){
+                $nul = false;
+            }
+        }
+    }
     return $nul;
 }
 

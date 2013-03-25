@@ -94,18 +94,20 @@ abstract class Entity {
      */
     public function __get($name) {
         
+        // On charge les classes liées
         if($this->linkedClassesLoaded == false)
         {
             $this->autoLoadLinkedClasses();
         }
 
+        // On regarde si on demande une instance liée
         $i = $this->getExternalInstance($name);
 
         if ($i != false)
         {
             return $i;
         }
-        else 
+        else // Sinon on regarde si c'est un attribut de la classe
         {
             $meth = 'get' . ucfirst($name);
             $methodResult = $this->$meth();
@@ -114,25 +116,37 @@ abstract class Entity {
             {
                 return $methodResult;
             }
-            else
+            else // Et enfin, on regarde si quelque chose référence cet attribut
             {
                 $externals = Core::getBdd()->getMoonLinksFrom($this->table,true);
-                foreach ($externals as $moonLinkKey => $moonLinkValue) 
-                {
-                    if($moonLinkValue->table == $name)
+                $t = array();
+                //echo 'on a '.count($externals).' external(s)... <br>';
+                if(!isNull($externals)){
+                    foreach ($externals as $moonLinkKey => $moonLinkValue) 
                     {
-                        $res = Core::getBdd()->query(
-                        "SELECT * FROM {$moonLinkValue->table} WHERE ? = ?",
-                        array(
-                            $moonLinkValue->attribute,
-                            $this->fields[$moonLinkValue->destinationColumn]
-                            ));
-                        return $res;
+                        if($moonLinkValue->table == $name)
+                        {
+
+                            $res = EntityLoader::getClass($moonLinkValue->table);
+                            $res->loadBy(
+                                $moonLinkValue->attribute, 
+                                $this->fields[$moonLinkValue->destinationColumn]);
+                            $res->reloadLinkedClasses();
+                            //var_dump($res->getFields());
+                            //if(!isNull($res->getFields()))
+                                $t[] = $res;
+                            /*else {
+                                echo "<br>[REFUSE] champ = <br>";
+                                var_dump($res->getFields());
+                            }*/
+                        }
+                    }
+                    if(count($t) > 0){
+                        return $t;
                     }
                 }
-
-                return 1;
-                //return 'external relation ?';
+                else
+                    return false;
             }
         }
     }
@@ -288,10 +302,11 @@ abstract class Entity {
                 else {
                     throw new OrmException('Les champs récupérés ne correspondent pas !');
                 }
+            //var_dump($res);
             }
             return true;
         } // Sinon on relance la méthode avec d'autres arguments :
-        else if (strripos($field, '_' . $this->table) == false) 
+        /*else if (strripos($field, '_' . $this->table) == false) 
         {
             if (!$this->loadBy($field . '_' . $this->table, $value)) 
             {
@@ -314,7 +329,7 @@ abstract class Entity {
             {
                 return true;
             }
-        }
+        }*/
         else 
         {
             //throw new ErrorException("L'objet {$this->table} dont le champ $field est égal à $value n'a pas été trouvé...");
