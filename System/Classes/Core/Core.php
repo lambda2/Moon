@@ -46,6 +46,12 @@ class Core {
         $routeFiles = Core::opts()->system->routes_files;
         $r = array();
         foreach ($routeFiles as $route) {
+            if(!file_exists($route)){
+                throw new CriticalException(
+                    "Unable to find the routes config file in [$route]..."
+                    ."Please review your routing files url by editing "
+                        .self::userConfigFile);
+            }
             $a = Spyc::YAMLLoad($route);
             $r = array_merge($r,$a);
         }
@@ -60,31 +66,36 @@ class Core {
     
     public static function startEngine() {
         
-        self::loadOptions();
-        self::loadRoutes();
-        
-        self::$instance = new Core(
-                self::$options->system->mode, 
-                self::$options->database->db_prefix);
-        
-        self::$user = null;
-        self::$router = new Router();
-        
-        if(isConnecte()){
-            $membre = new Membre();
-            //$membre->loadBy('id_membre', getId($_SESSION['login'], $this->database));
+        try {
+            self::loadOptions();
+            self::loadRoutes();
+            
+            self::$instance = new Core(
+                    self::$options->system->mode, 
+                    self::$options->database->db_prefix);
+            
+            self::$user = null;
+            self::$router = new Router();
+            
+            if(isConnecte()){
+                $membre = new Membre();
+                //$membre->loadBy('id_membre', getId($_SESSION['login'], $this->database));
+            }
+            
+            /*
+             * Pour les gens un peu old school, dégueux, ou les deux, on stocke un pointeur
+             * sur l'instance de notre moteur dans une superglobale accessible partout.
+             * On notera que la configuration est un singleton. Ainsi, ces deux expressions
+             * sont équivalentes à n'importe quel endroit :
+             * > $GLOBALS['System'] === Configuration::getInstance()
+             * 
+             * @TODO : Virer cette superglobale. elle est quand meme crasseuse.
+             */
+            $GLOBALS['System'] = self::$instance;
+
+        } catch (Exception $e) {
+            displayMoonException($e);
         }
-        
-        /*
-         * Pour les gens un peu old school, dégueux, ou les deux, on stocke un pointeur
-         * sur l'instance de notre moteur dans une superglobale accessible partout.
-         * On notera que la configuration est un singleton. Ainsi, ces deux expressions
-         * sont équivalentes à n'importe quel endroit :
-         * > $GLOBALS['System'] === Configuration::getInstance()
-         * 
-         * @TODO : Virer cette superglobale. elle est quand meme crasseuse.
-         */
-        $GLOBALS['System'] = self::$instance;
     }
     
     public static function getUser(){

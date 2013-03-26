@@ -58,7 +58,7 @@ system:
   siteroot: "/"
 
   # Le chemin du ou des fichiers de routage de l'utilisateur
-  routes_files: ["Config/routes"]
+  routes_files: ["Config/routes.yml"]
 
 templates:
 
