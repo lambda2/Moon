@@ -54,6 +54,21 @@ abstract class Orm {
         }
     }
 
+    public static function checkConnexion($p) {
+        try {
+            $i = new PDO(
+                    "{$p['driver']}:host={$p['host']};dbname={$p['dbname']}", 
+                            $p['login'], $p['pass'], 
+                            array(PDO::MYSQL_ATTR_INIT_COMMAND
+                => 'SET NAMES \'UTF8\'')
+            );
+            self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        } catch (PDOException $e) {
+            return false;
+        }
+        return true;
+    }
+
     public static function getInstance() {
         if (!(self::$instance instanceof Orm)) {
             self::$instance = OrmFactory::getOrm();

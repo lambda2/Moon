@@ -12,7 +12,7 @@
 class CoreException extends Exception {
     public function __construct($message, $code=0, $previous=null) {
         parent::__construct($message, $code, $previous);
-        die('Erreur : Le système n\'a pas été correctement initialisé ('.$message.')');
+        
     }
 }
 

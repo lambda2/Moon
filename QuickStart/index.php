@@ -17,6 +17,8 @@ require_once(__DIR__.'/../System/loader.php');
 /**
  * Enfin, on démarre notre moteur
  */
+
+
 Core::startEngine();
 
 Core::route($_GET);

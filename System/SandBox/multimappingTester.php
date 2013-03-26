@@ -11,6 +11,8 @@
 try 
 {
 
+	echo MoonChecker::analyze();
+
 	$orm = OrmFactory::getOrm();
 	echo '<h3>Debug outputs for <i>Multi mapping</i> between instances</h3>';
 

@@ -14,23 +14,25 @@ class Core {
     const userConfigFile = 'Config/configuration.yml';
     const defaultConfigFile = '../System/Configuration/configuration.yml';
     
-    private $database;
-    private $dev_mode;
-    private $db_prefix;
-    private $debug;
-    private static $router;
-    private static $user_routes;
-    private static $options = null;
-    private static $instance;
-    private static $user;
-    private static $host_tables = array();
+    protected $database;
+    protected $dev_mode;
+    protected $db_prefix;
+    protected $debug;
+    protected static $router;
+    protected static $user_routes;
+    protected static $options = null;
+    protected static $instance;
+    protected static $user;
+    protected static $host_tables = array();
 
-    private function __construct($dev_mode = "DEBUG", $dbPrefix = '') {
+    protected function __construct($dev_mode = "DEBUG", $dbPrefix = '') {
         $this->initialize($dev_mode, $dbPrefix);
     }
+
+
     
     
-    private static function loadOptions(){
+    protected static function loadOptions(){
         $userConfigFile = Spyc::YAMLLoad(self::userConfigFile);
         $defaultConfigFile = Spyc::YAMLLoad(self::defaultConfigFile);
         self::$options = new ArrayBrowser(extendArray($defaultConfigFile, $userConfigFile));
@@ -42,7 +44,7 @@ class Core {
         return self::$options;
     }
     
-    private static function loadRoutes(){
+    protected static function loadRoutes(){
         $routeFiles = Core::opts()->system->routes_files;
         $r = array();
         foreach ($routeFiles as $route) {
@@ -65,8 +67,9 @@ class Core {
     }
     
     public static function startEngine() {
-        
+
         try {
+            MoonChecker::checkSystem();
             self::loadOptions();
             self::loadRoutes();
             
@@ -94,7 +97,7 @@ class Core {
             $GLOBALS['System'] = self::$instance;
 
         } catch (Exception $e) {
-            displayMoonException($e);
+            MoonChecker::generateHtmlReport($e);
         }
     }
     
@@ -102,7 +105,7 @@ class Core {
         return self::$user;
     }
 
-    private function initialize($dev_mode, $dbPrefix) {
+    protected function initialize($dev_mode, $dbPrefix) {
         $this->dev_mode = $dev_mode;
         $this->db_prefix = $dbPrefix;
         if($dev_mode == 'DEBUG')
@@ -114,12 +117,12 @@ class Core {
         $this->generateHostTables();
     }
 
-    private function databaseConnect() {
+    protected function databaseConnect() {
         Orm::launch(self::$options->database->childs());
         $this->database = OrmFactory::getOrm();
     }
 
-    private function generateHostTables() {
+    protected function generateHostTables() {
         self::$host_tables = $this->database->getAllTables();
     }
 
