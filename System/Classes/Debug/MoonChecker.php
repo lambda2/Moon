@@ -18,48 +18,10 @@
 
 class MoonChecker extends Core {
 	
-	public static function analyze()
-	{
-		$results = self::getReportArray();
-		$output = '<table>';
-		foreach ($results as $meth => $res) {
-			$output .= '<tr>';
-			if($res == false){
-				$output .= '<td style="color: red;">✖</td>';
-			}
-			else if($res === true){
-				$output .= '<td style="color: green;">✔</td>';
-			}
-			else {
-				$output .= '<td style="color: gray;">❓</td>';
-			}
-			$output .= '<td style="color: lightgray;"> ----- </td>';
-			$output .= '<td>'.$meth.'</td>';
-			$output .= '</tr>';
-		}
-		$output .= '</table>';
-		return $output;
-	}
+	use CheckTemplate;
 
-	public static function getReportArray()
-	{
-		$interrupted = false;
-		$results = array();
-		foreach ( get_class_methods('MoonChecker') as $key => $method) {
-			if(stristr($method, 'check_') != false){
-				$m = explode('_', $method);
-				array_shift($m);
-				if(!$interrupted)
-					$r = call_user_func('MoonChecker::'.$method);
-				else
-					$r = 'o';
-				$results[implode(' ', $m)] = $r;
-				if(!$r)
-					$interrupted = true;
-			}
-		}
-		return $results;
-	}
+	public static $lastException = null;
+
 
 	/**
 	 * Verifie que tous les aspects du systeme sont corrects.
@@ -85,31 +47,25 @@ class MoonChecker extends Core {
 		return true;
 	}
 
-	public static function rtimeAnalyse() 
-	{
-		$results = array();
-		foreach ( get_class_methods('MoonChecker') as $key => $method) {
-			if(stristr($method, 'check_') != false){
-				$m = explode('_', $method);
-				array_shift($m);
-				$results[implode(' ', $m)] = 
-					call_user_func('MoonChecker::'.$method);
-			}
-		}
-		var_dump($results);
-		echo '<table>';
-		foreach ($results as $meth => $res) {
-			echo  '<tr>';
-			echo  '<td>'.$meth.'</td>';
-			if($res == false){
-				echo  '<td style="color: red;">x</td>';
-			}
-			else
-				echo  '<td style="color: green;">✔</td>';
-			echo  '</tr>';
-		}
-		echo  '</table>';
-	}
+	public static function showHtmlReport($e) 
+    {
+    	self::$lastException = $e;
+    	
+    	$mode = 'DEBUG';
+    	if(MoonChecker::check_Generate_Config_Vars()){
+    		$mode = self::$options->system->mode;
+    	}
+
+    	if($mode === 'DEBUG'){
+    		include_once(__DIR__.'/HtmlPages/moonanalyze.php');
+    	}
+    	else
+    	{
+    		include_once(__DIR__.'/HtmlPages/unavailable.php');
+    	}
+
+    	die();
+    }
 
     private static function check_User_Config_File() {
         if(file_exists(self::userConfigFile))
@@ -126,16 +82,23 @@ class MoonChecker extends Core {
     }
 
     private static function check_Generate_Config_Vars() {
-    	try 
-    	{
-    		self::loadOptions();
-            self::loadRoutes();
-    	} 
-    	catch (Exception $e) 
-    	{
-    		return false;
-    	}
-    	return true;
+    	if(
+    		MoonChecker::check_User_Config_File()
+    		&& MoonChecker::check_Default_Config_File()
+    		){
+	    	try 
+	    	{
+	    		self::loadOptions();
+	            self::loadRoutes();
+	    	} 
+	    	catch (Exception $e) 
+	    	{
+	    		return false;
+	    	}
+	    	return true;
+	    }
+	    else
+	    	return false;
     }
 
     private static function check_Database_Connexion() {
@@ -171,23 +134,7 @@ class MoonChecker extends Core {
 		return true;
     }
 
-    public static function generateHtmlReport($e) 
-    {
-    	$mode = 'DEBUG';
-    	if(MoonChecker::check_Generate_Config_Vars()){
-    		$mode = self::$options->system->mode;
-    	}
-
-    	if($mode === 'DEBUG'){
-
-    	}
-    	else 
-    	{
-    		include_once(__DIR__.'/htmlPages/unavailable.html');
-    	}
-
-    	die();
-    }
+    
 
 
 

@@ -32,7 +32,7 @@ class Core {
 
     
     
-    protected static function loadOptions(){
+    public static function loadOptions(){
         $userConfigFile = Spyc::YAMLLoad(self::userConfigFile);
         $defaultConfigFile = Spyc::YAMLLoad(self::defaultConfigFile);
         self::$options = new ArrayBrowser(extendArray($defaultConfigFile, $userConfigFile));
@@ -44,7 +44,7 @@ class Core {
         return self::$options;
     }
     
-    protected static function loadRoutes(){
+    public static function loadRoutes(){
         $routeFiles = Core::opts()->system->routes_files;
         $r = array();
         foreach ($routeFiles as $route) {
@@ -69,7 +69,7 @@ class Core {
     public static function startEngine() {
 
         try {
-            MoonChecker::checkSystem();
+            MoonChecker::run();
             self::loadOptions();
             self::loadRoutes();
             
@@ -97,7 +97,7 @@ class Core {
             $GLOBALS['System'] = self::$instance;
 
         } catch (Exception $e) {
-            MoonChecker::generateHtmlReport($e);
+            MoonChecker::showHtmlReport($e);
         }
     }
     
