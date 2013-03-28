@@ -22,7 +22,10 @@
 abstract class Entity {
 
     protected $table;
+
+    // TODO : A supprimer
     protected $editable;
+
     protected $bdd;
     protected $fields;
     protected $linkedClasses;
@@ -93,7 +96,7 @@ abstract class Entity {
      * On délegue ensuite a la méthode __call()
      */
     public function __get($name) {
-        
+
         // On charge les classes liées
         if($this->linkedClassesLoaded == false)
         {
@@ -134,7 +137,7 @@ abstract class Entity {
                             $res->reloadLinkedClasses();
                             //var_dump($res->getFields());
                             //if(!isNull($res->getFields()))
-                                $t[] = $res;
+                            $t[] = $res;
                             /*else {
                                 echo "<br>[REFUSE] champ = <br>";
                                 var_dump($res->getFields());
@@ -219,12 +222,12 @@ abstract class Entity {
             $Req = $this->bdd->prepare("SHOW COLUMNS FROM {$this->table}");
             $Req->execute(array());
         } catch (Exception $e) { //interception de l'erreur
-        die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
-    }
-    while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
-        $t[$res->Field] = null;
-    }
-    $this->fields = $t;
+        MoonChecker::showHtmlReport($e);
+        }
+        while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
+            $t[$res->Field] = null;
+        }
+        $this->fields = $t;
 }
 
     /**
@@ -236,7 +239,7 @@ abstract class Entity {
     public function getExternalInstance($table) {
 
         foreach ($this->linkedClasses as $key => $value) {
-            
+
             // Ancienne version avec la table de detination comme argument de 
             // recherche. Ne marche donc pas si deux champs pointent sur la meme
             // Colonne distante...
@@ -259,7 +262,7 @@ abstract class Entity {
      * Charge un objet en fonction d'un ou plusieurs parametres.
      */
     public function loadBy($field, $value) {
-        
+
         $request = "";
         
         /**
@@ -339,30 +342,34 @@ abstract class Entity {
 
     /**
      * Génère les champs de formulaire 
-     * depuis le shema de la base de données.
+     * depuis le schema de la base de données.
      */
     protected function generateFields() {
         $this->editable = new Editable($this, $this->table);
-        try {
+        try 
+        {
             $Req = $this->bdd->prepare("SHOW COLUMNS FROM {$this->table}");
             $Req->execute(array());
-        } catch (Exception $e) { //interception de l'erreur
-        die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
-    }
-    while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
-        $type = "text";
-        if ($res->Key == "MUL") {
-            $type   = "select";
-            $target = $this->getForeignLink($res->Field);
-            $this->editable->add(new Champ($res->Field, $res->Field, ucfirst(str_replace('id_', '', $res->Field)), $type, $target, ''));
+        } 
+        catch (Exception $e) 
+        { 
+            //interception de l'erreur
+            die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
         }
-        elseif ($res->Key == "") {
-            $t = explode('_', $res->Field);
-            $t = $t[0];
-            $this->editable->add(new Champ($res->Field, $res->Field, ucfirst($t)));
+        while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
+            $type = "text";
+            if ($res->Key == "MUL") {
+                $type   = "select";
+                $target = $this->getForeignLink($res->Field);
+                $this->editable->add(new Champ($res->Field, $res->Field, ucfirst(str_replace('id_', '', $res->Field)), $type, $target, ''));
+            }
+            elseif ($res->Key == "") {
+                $t = explode('_', $res->Field);
+                $t = $t[0];
+                $this->editable->add(new Champ($res->Field, $res->Field, ucfirst($t)));
+            }
         }
     }
-}
 
     /**
      * Essaie de retourner le champ visé par la relation étrangère fournie en paramètre
@@ -388,254 +395,275 @@ abstract class Entity {
     public static function getAllObjects($classe) {
         $c = EntityLoader::getClass($classe);
         $t = array();
+
         try {
             $Req = Core::getBdd()->getDb()->prepare("SELECT * FROM {$c->getTable()}");
             $Req->execute(array());
         } catch (Exception $e) { //interception de l'erreur
-        die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
-    }
-    while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
-        $f        = EntityLoader::getClass($classe);
-        $priField = array();
-        $priValues = array();
-        foreach (Core::getBdd()->getAllColumnsFrom($c->getTable()) as $col) {
-            if ($col->Key == 'PRI'){
-                $primaryKeyField = $col->Field;
-                $priField[] = $primaryKeyField;
-                $priValues[] = $res->$primaryKeyField;
-            }
+            MoonChecker::showHtmlReport($e);
         }
-        if (!isNull($priField)) {
-            $f->loadBy($priField, $priValues);
-            $f->autoLoadLinkedClasses();
-            $t[] = $f;
-        }
-    }
-
-    return $t;
-}
-
-public function getAll() {
-    $t = array();
-    try {
-        $Req = $this->bdd->prepare("SELECT * FROM {$this->table}");
-        $Req->execute(array());
-        } catch (Exception $e) { //interception de l'erreur
-        die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
-    }
-    while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
-        $newTab = [];
-        foreach ($res as $key => $value) {
-            $newTab[str_replace('_' . $this->table, '', $key)] = $value;
-        }
-        $t[] = $newTab;
-    }
-
-    return $t;
-}
-
-public function get($property) {
-    return $this->fields[$property];
-}
-
-public function set($property, $value) {
-    $this->fields[$property] = $value;
-    return $this;
-}
-
-public function __toString() {
-    $s = '<div><h4>Classe ' . get_class($this) . ' :</h4>';
-    $s .= '<h5>Référencée par la table ' . $this->table . '.</h5>';
-    foreach ($this as $key => $value) {
-        if (!is_a($value, "PDO")) {
-            if (is_array($value)) {
-                $s .= "<h5>$key : </h5>";
-                $s .= '<table class="table">';
-
-                foreach ($value as $k => $v) {
-                    $s .= '<tr><td></td><td>' . $k . '</td><td> ==> </td><td>' . $v . '</td></tr>';
+        while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
+            $f        = EntityLoader::getClass($classe);
+            $priField = array();
+            $priValues = array();
+            foreach (Core::getBdd()->getAllColumnsFrom($c->getTable()) as $col) {
+                if ($col->Key == 'PRI'){
+                    $primaryKeyField = $col->Field;
+                    $priField[] = $primaryKeyField;
+                    $priValues[] = $res->$primaryKeyField;
                 }
-                if (count($value) == 0)
-                    $s .= '<tr><td></td><td>Aucune valeur enregistrée</td><td></td><td></td></tr>';
-                $s .= "</table>";
             }
-            else
-                $s .= "<h5>$key : </h5><pre>$value </pre>";
+            if (!isNull($priField)) {
+                $f->loadBy($priField, $priValues);
+                $f->autoLoadLinkedClasses();
+                $t[] = $f;
+            }
+        }
+
+    return $t;
+    }
+
+    public function getAll() {
+        $t = array();
+        try {
+            $Req = $this->bdd->prepare("SELECT * FROM {$this->table}");
+            $Req->execute(array());
+            } catch (Exception $e) { //interception de l'erreur
+                MoonChecker::showHtmlReport($e);
+        }
+        while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
+            $newTab = [];
+            foreach ($res as $key => $value) {
+                $newTab[str_replace('_' . $this->table, '', $key)] = $value;
+            }
+            $t[] = $newTab;
+        }
+
+        return $t;
+    }
+
+    public function get($property) {
+        return $this->fields[$property];
+    }
+
+    public function set($property, $value) {
+        $this->fields[$property] = $value;
+        return $this;
+    }
+
+    /**
+     * Va retourner une longue description de la classe.
+     * @return string
+     */
+    public function toLongString() {
+        $s = '<div><h4>Classe ' . get_class($this) . ' :</h4>';
+        $s .= '<h5>Référencée par la table ' . $this->table . '.</h5>';
+        foreach ($this as $key => $value) {
+            if (!is_a($value, "PDO")) {
+                if (is_array($value)) {
+                    $s .= "<h5>$key : </h5>";
+                    $s .= '<table class="table">';
+
+                    foreach ($value as $k => $v) {
+                        $s .= '<tr><td></td><td>' . $k . '</td><td> ==> </td><td>' . $v . '</td></tr>';
+                    }
+                    if (count($value) == 0)
+                        $s .= '<tr><td></td><td>Aucune valeur enregistrée</td><td></td><td></td></tr>';
+                    $s .= "</table>";
+                }
+                else
+                    $s .= "<h5>$key : </h5><pre>$value </pre>";
+            }
+        }
+        $s .= '</div>';
+        return $s;
+    }
+
+    /**
+     * Va retourner une courte et breve description de la classe.
+     * @param boolean true pour afficher les relations (directes) exterieures.
+     * @return string
+     */
+    public function toShortString($showExternalRelations = true) {
+        $r = get_class($this)
+            .'@'.$this->table.' ('
+            .($this->linkedClassesLoaded ? 'loaded' : 'not loaded').')';
+        if($showExternalRelations and !isNull($this->linkedClasses))
+        {
+            $r .= '<ul>';
+            foreach ($this->linkedClasses as $key => $value) {
+                $r .= '<li>'.$value->attribute;
+                if(!isNull($value->instance))
+                    $r .= ' -> '.$value->getTargetAdress().' ['.$value->instance.']';
+                $r .= '</li>';
+
+            }
+            $r .= '</ul>';
+        }
+        return $r;
+    }
+
+    public function __toString() {
+        return $this->toShortString();
+    }
+
+    protected function checkArguments(array $args, $min, $max, $methodName) {
+        $argc = count($args);
+        if ($argc < $min || $argc > $max) {
+            throw new MemberAccessException('Method ' . $methodName . ' needs minimaly ' . $min . ' and maximaly ' . $max . ' arguments. ' . $argc . ' arguments given.');
         }
     }
-    $s .= '</div>';
-    return $s;
-}
 
-protected function checkArguments(array $args, $min, $max, $methodName) {
-    $argc = count($args);
-    if ($argc < $min || $argc > $max) {
-        throw new MemberAccessException('Method ' . $methodName . ' needs minimaly ' . $min . ' and maximaly ' . $max . ' arguments. ' . $argc . ' arguments given.');
+    public function getTable() {
+        return $this->table;
     }
-}
 
-public function getTable() {
-    return $this->table;
-}
-
-public function setTable($table) {
-    $this->table = $table;
-}
-
-public function getEditable() {
-    return $this->editable;
-}
-
-public function setEditable($editable) {
-    $this->editable = $editable;
-}
-
-public function getBdd() {
-    return $this->bdd;
-}
-
-public function setBdd($bdd) {
-    $this->bdd = $bdd;
-}
-
-public function getLinkedClasses() {
-    return $this->linkedClasses;
-}
-
-protected function setLinkedClasses($linkedClasses) {
-    if (is_array($linkedClasses))
-        $this->linkedClasses   = $linkedClasses;
-    else
-        $this->linkedClasses[] = $linkedClasses;
-}
-
-protected function addLinkedClass($field, $class, $name) {
-        //echo "( $field => $name )<br>";
-    $this->linkedClasses[$field] = new MoonLink($field, $name, $class);
-        //var_dump($this->linkedClasses[$field]);
-}
-
-protected function checkExternalRelation($query) {
-    $f = false;
-    if (array_key_exists($query, $this->linkedClasses)) {
-        if ($this->linkedClasses[$query] != null)
-            $f = true;
+    public function setTable($table) {
+        $this->table = $table;
     }
-    return $f;
-}
 
-public function addRelation($field, $target, $display = null) {
-        /* $t = explode(".", $target);
-          if (count($t) < 2)
-          throw new Exception('cible invalide pour le bind  ' . $target);
-
-          if ($display == null)
-          $display = $t[0];
-
-          else {
-          $this->linkedClasses[$display] =
-          new MoonLink(
-          $field, $target, $this->getRelationClassInstance($field, $target)
-          );
-} */
-}
-
-
-    /* public function getAccess() {
-      return $this->access;
-      }
-
-      public function setAccess($access) {
-      $this->access = $access;
-  } */
-
-  public function clearLinkedClasses() {
-    $this->linkedClasses = array();
-}
-
-public function getFields() {
-    return $this->fields;
-}
-
-public function setFields($fields) {
-    $this->fields = $fields;
-}
-
-public function hasAnId($field) {
-    if (strcmp(strtolower(substr($field, 0, 2)), 'id') == 0)
-        return true;
-    else
-        return false;
-}
-
-public function getNameWithoutId($field) {
-    return $this->getForeignLink($field);
-}
-
-public function getRelationClassName($field) {
-        //var_dump(split('\.',$this->getForeignLink($field)));
-    $cl = split('\.', $this->getForeignLink($field));
-    $cl = $cl[0];
-    if (!Core::isValidClass($cl)) {
-        $cl = null;
+    public function getEditable() {
+        return $this->editable;
     }
-    return $cl;
-}
 
-public function getRelationClassInstance($field, $target = null) {
+    public function setEditable($editable) {
+        $this->editable = $editable;
+    }
+
+    public function getBdd() {
+        return $this->bdd;
+    }
+
+    public function setBdd($bdd) {
+        $this->bdd = $bdd;
+    }
+
+    public function getLinkedClasses() {
+        return $this->linkedClasses;
+    }
+
+    protected function setLinkedClasses($linkedClasses) {
+        if (is_array($linkedClasses))
+            $this->linkedClasses   = $linkedClasses;
+        else
+            $this->linkedClasses[] = $linkedClasses;
+    }
+
+    protected function addLinkedClass($field, $class, $name) {
+            //echo "( $field => $name )<br>";
+        $this->linkedClasses[$field] = new MoonLink($field, $name, $class);
+            //var_dump($this->linkedClasses[$field]);
+    }
+
+    /**
+     * Renvoie TRUE si la chaine donnée en parametre correspond à une référence 
+     * d'une table exterieure et que cette dernière n'est pas nulle.
+     * Renvoie FALSE sinon.
+     */
+    protected function checkExternalRelation($query) {
+        $f = false;
+        if (array_key_exists($query, $this->linkedClasses)) {
+            if ($this->linkedClasses[$query] != null)
+                $f = true;
+        }
+        return $f;
+    }
+
+    public function clearLinkedClasses() {
+        $this->linkedClasses = array();
+    }
+
+    public function getFields() {
+        return $this->fields;
+    }
+
+    public function setFields($fields) {
+        $this->fields = $fields;
+    }
+
+    /**
+     * @deprecated on ne cherche plus a savoir si un champ
+     * possède un id.
+     */
+    public function hasAnId($field) {
+        if (strcmp(strtolower(substr($field, 0, 2)), 'id') == 0)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * @deprecated pour les memes raisons que hasAnId()
+     * @see Entity::hasAnId($field)
+     */
+    public function getNameWithoutId($field) {
+        return $this->getForeignLink($field);
+    }
+
+    public function getRelationClassName($field) {
+            //var_dump(split('\.',$this->getForeignLink($field)));
+        $cl = split('\.', $this->getForeignLink($field));
+        $cl = $cl[0];
+        if (!Core::isValidClass($cl)) {
+            $cl = null;
+        }
+        return $cl;
+    }
+
+    public function getRelationClassInstance($field, $target = null) {
 
         // Si on n'a pas spécifié de relation, on la cherche a la main
-    if ($target == null) {
-        $className = $this->getRelationClassName($field);
-        if ($className == null || $className == $this->table) {
-            return null;
+        if ($target == null) {
+            $className = $this->getRelationClassName($field);
+            if ($className == null || $className == $this->table) {
+                return null;
+            }
+            else {
+                try {
+                    $inst = EntityLoader::loadInstance($this->getForeignLink($field), $this->fields[$field]);
+                    if (strcmp($inst->getTable(), $this->getTable()) == 0) {
+                        return null;
+                    }
+                    return $inst;
+                } catch (Exception $e) {
+                    MoonChecker::showHtmlReport($e);
+                }
+            }
+
+        // Sinon on la charge directement
         }
         else {
             try {
-                $inst = EntityLoader::loadInstance($this->getForeignLink($field), $this->fields[$field]);
+                $inst = EntityLoader::loadInstance($target, $this->fields[$field]);
                 if (strcmp($inst->getTable(), $this->getTable()) == 0) {
                     return null;
                 }
                 return $inst;
             } catch (Exception $e) {
-                echo $e;
+                MoonChecker::showHtmlReport($e);
             }
         }
-
-            // Sinon on la charge directement
     }
-    else {
-        try {
-            $inst = EntityLoader::loadInstance($target, $this->fields[$field]);
-            if (strcmp($inst->getTable(), $this->getTable()) == 0) {
-                return null;
-            }
-            return $inst;
-        } catch (Exception $e) {
-            echo $e;
+
+    public static function getProperName($name, $upper = false, $singularize = false) {
+        $reducClassName = $name;
+        if (Core::getInstance()->getDbPrefix() != '' && strstr($reducClassName, Core::getInstance()->getDbPrefix()) != FALSE) {
+            $reducClassName = substr_replace($reducClassName, '', -(strlen(Core::getInstance()->getDbPrefix())), strlen(Core::getInstance()->getDbPrefix()));
         }
-    }
-}
+        if ($upper) {
+            $reducClassName = ucfirst($reducClassName);
+        }
+        else {
+            $reducClassName = strtolower($reducClassName);
+        }
+        $reducClassName = str_replace('_', ' ', $reducClassName);
 
-public static function getProperName($name, $upper = false, $singularize = false) {
-    $reducClassName = $name;
-    if (Core::getInstance()->getDbPrefix() != '' && strstr($reducClassName, Core::getInstance()->getDbPrefix()) != FALSE) {
-        $reducClassName = substr_replace($reducClassName, '', -(strlen(Core::getInstance()->getDbPrefix())), strlen(Core::getInstance()->getDbPrefix()));
-    }
-    if ($upper) {
-        $reducClassName = ucfirst($reducClassName);
-    }
-    else {
-        $reducClassName = strtolower($reducClassName);
-    }
-    $reducClassName = str_replace('_', ' ', $reducClassName);
+            /* if ($singularize) {
+              $reducClassName = singularize($reducClassName);
+          } */
+          return $reducClassName;
+      }
 
-        /* if ($singularize) {
-          $reducClassName = singularize($reducClassName);
-      } */
-      return $reducClassName;
-  }
-
-}
+    }
 
 ?>

@@ -18,7 +18,7 @@ class Entities {
             $Req = $this->bdd->prepare("SELECT {$columnName} FROM {$this->table}");
             $Req->execute(array());
         } catch (Exception $e) { //interception de l'erreur
-            die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
+            MoonChecker::showHtmlReport($e);
         }
         while ($res = $Req->fetch(PDO::FETCH_NUM)) {
             $list[] = $res[0];

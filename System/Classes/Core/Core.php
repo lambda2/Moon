@@ -69,7 +69,8 @@ class Core {
     public static function startEngine() {
 
         try {
-            MoonChecker::run();
+            
+            MoonChecker::runTests();
             self::loadOptions();
             self::loadRoutes();
             
@@ -192,7 +193,7 @@ class Core {
                 $tpl = self::$router->route($url);
             }
         } catch (Exception $exc) {
-            displayMoonException($exc);
+            MoonChecker::showHtmlReport($exc);
         }
 
         

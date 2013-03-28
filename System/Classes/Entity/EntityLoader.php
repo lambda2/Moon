@@ -9,47 +9,66 @@
  * file that was distributed with this source code.
  */
 
-
+/**
+ * Cette classe va nous permettre de charger dynamiquement une classe à partir du néant.
+ * C'est la grande force du framework, et doit, de ce fait, rester PROPRE
+ *                                                                 ------
+ * Beaucoup d'echo sont en commentaire, il vaut mieux les laisser parce que les bugs sont
+ * quotidiens dans cette classe. Autorisation de les enlever après une batterie de tests 
+ * unitaires plus tordus les uns que les autres.
+ */
 class EntityLoader {
 
+
+    /**
+     * Va créer une entité vide, c'est à dire un objet, représentant une classe / Table issue
+     * de la base de donnée.
+     * Note : Si la classe est définie en dur dans l'application, c'est celle çi que l'on va
+     * charger <b>si elle hérite de la classe [Entity]</b>.
+     * @param string le nom de la classe / table a charger.
+     * @throws CriticalException si la méthode ne parvient pas a instancier la classe.
+     */
     public static function getClass($className) {
         $return = null;
-        try {
-            if (class_exists($className) && in_array('Entity', class_parents($className))) {
-                $return = new $className();
+        if (class_exists($className) && in_array('Entity', class_parents($className))) {
+            $return = new $className();
+        }
+        else 
+        {
+            //echo("classe inexistante... scan de la base de données...");
+            $reducClassName = $className;
+            $withPrefix = $reducClassName;
+            if(Core::getInstance()->getDbPrefix() != '')
+                $withPrefix = strstr($reducClassName, Core::getInstance()->getDbPrefix());
+            //echo("contient le prefixe ? ");
+            //echo $withPrefix ? 'true' : 'false';
+
+            if ($withPrefix != FALSE) {
+                //echo "before : $reducClassName";
+                $reducClassName = substr_replace(
+                    $className, 
+                    '', 
+                    -(strlen(Core::getInstance()->getDbPrefix())), 
+                    strlen(Core::getInstance()->getDbPrefix())
+                    );
+                
+                //echo "after : $reducClassName";
+                
+            }
+            //echo('isValidClass ?  ('.$reducClassName.Core::getInstance()->getDbPrefix().')');
+            if (Core::isValidClass($reducClassName . Core::getInstance()->getDbPrefix())) {
+                //echo('isValidClass !  ('.$reducClassName.Core::getInstance()->getDbPrefix().')');
+                $return = new TableEntity($reducClassName);
+            }
+            else if (Core::isValidClass($reducClassName)) {
+                $return = new TableEntity($reducClassName);
             }
             else {
-                //echo("classe inexistante... scan de la base de données...");
-                $reducClassName = $className;
-                $withPrefix = $reducClassName;
-                if(Core::getInstance()->getDbPrefix() != '')
-                    $withPrefix = strstr($reducClassName, Core::getInstance()->getDbPrefix());
-                //echo("contient le prefixe ? ");
-                //echo $withPrefix ? 'true' : 'false';
-
-                if ($withPrefix != FALSE) {
-                    //echo "before : $reducClassName";
-                    $reducClassName = substr_replace($className, '', -(strlen(Core::getInstance()->getDbPrefix())), strlen(Core::getInstance()->getDbPrefix()));
-                    
-                    //echo "after : $reducClassName";
-                    
-                }
-                //echo('isValidClass ?  ('.$reducClassName.Core::getInstance()->getDbPrefix().')');
-                if (Core::isValidClass($reducClassName . Core::getInstance()->getDbPrefix())) {
-                    //echo('isValidClass !  ('.$reducClassName.Core::getInstance()->getDbPrefix().')');
-                    
-                    $return = new TableEntity($reducClassName);
-                }
-                else if (Core::isValidClass($reducClassName)) {
-                    $return = new TableEntity($reducClassName);
-                }
-                else {
-                    throw new CriticalException('Impossible d\'instancier la classe ' . $reducClassName);
-                }
+                // Big Badabim Boum ! Badabada Boum !
+                throw new CriticalException('Impossible d\'instancier la classe ' . $reducClassName);
             }
-        } catch (Exception $e) {
-            var_dump($e);
         }
+        
         return $return;
     }
 
