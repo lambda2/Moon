@@ -14,12 +14,12 @@ class Input extends Field{
      * valides au 5/3/13 par le W3C.
      */
     protected $allowed_types = array(
-        'button', 'checkbox', 'color',
-        'date', 'datetime', 'datetime-local', 
-        'email ', 'file', 'hidden', 'image', 'month',
-        'number ', 'password', 'radio', 'range',
-        'reset', 'search', 'submit', 'tel', 'text',
-        'time ', 'url', 'week');
+       'button','checkbox','color',
+       'date','datetime','datetime-local', 
+       'email','file','hidden','image','month',
+       'number','password','radio','range',
+       'reset','search','submit','tel','text',
+       'time','url','week');
     
     /**
      * Construit un champ de formulaire.
