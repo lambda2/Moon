@@ -19,9 +19,14 @@
 class MoonChecker extends Core {
 	
 	use CheckTemplate;
+	private static $checkInst;
 
 	public static $lastException = null;
 
+
+	protected function __construct() {
+        $this->run();
+    }
 
 	/**
 	 * Verifie que tous les aspects du systeme sont corrects.
@@ -47,10 +52,16 @@ class MoonChecker extends Core {
 		return true;
 	}
 
+	public static function runTests(){
+		self::$checkInst = new MoonChecker();
+	}
+
+
+
 	public static function showHtmlReport($e) 
     {
     	self::$lastException = $e;
-    	
+
     	$mode = 'DEBUG';
     	if(MoonChecker::check_Generate_Config_Vars()){
     		$mode = self::$options->system->mode;

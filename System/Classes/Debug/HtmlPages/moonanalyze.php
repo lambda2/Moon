@@ -20,9 +20,6 @@ $e = MoonChecker::$lastException;
 
 		<style>
 
-		.gree {color: rgba(102, 170, 63, 1);}
-		.red {color: rgba(206, 99, 65, 1);}
-		.small { font-size: 0.8 em; }
 
 		body {
 			font-family: 'Oxygen', sans-serif;
@@ -84,27 +81,27 @@ $e = MoonChecker::$lastException;
 		}
 
 		article.small > section {
-			width : 33%;
-			padding: 0px;
+			padding: 20px 0px;
 			border: none;
 			display: inline-block;
-			min-height: 400px;
 			vertical-align: top;
 		}
 
-		section > h3 { font-weight: normal;}
+		section > h3 { font-weight: normal; padding-top: 10px;}
 
-		section > h3:before { content: '✪ '; font-size: 1.0em;}
+		section > h3:before,
+		section > h3:after { 
+			content: ' ❖ '; 
+			font-size: 1.0em; 
+			color: rgba(0,0,0,0.2)
+		}
 
-		section > h3 + h4:before {padding: 0px 10px 0px 20px; font-size: 1.2em;}
-
-		section > h3 + h4.gree:before { content: '✔';}
-
-		section > h3 + h4.red:before { content: '✘';}
+		section > h3 + h4:before,
+		section > h3 + h4:after {padding-right: 10px; font-size: 1.2em;}
 
 		h3 + table tr { padding-left: 20px; display: block;}
 
-		td + td { padding: 2px 0px 2px 10px; }
+		td + td { padding: 2px 0px 2px 20px; }
 
 		article header h1 {	font-size: 2em;	}
 
@@ -122,6 +119,20 @@ $e = MoonChecker::$lastException;
 
 		article > ol > li {list-style-type: asterisks;}
 		article > ol[start="0"] > li:first-child {list-style-type: none;}
+
+		.gree {color: rgba(102, 170, 63, 1);}
+		.red {color: rgba(206, 99, 65, 1);}
+		.small { font-size: 0.8 em; }
+		.half {	width : 398px;}
+		.full {	width : 798px;}
+		.left,
+		.left > * { text-align : left;}
+		.degaged { padding: 10px;}
+		.centered,
+		.centered > * {	text-align: center;}
+
+		.gree:before { padding-right: 10px; content: '✔';}
+		.red:before { padding-right: 10px; content: '✘';}
 
 
 		</style>
@@ -169,26 +180,8 @@ $e = MoonChecker::$lastException;
 			<header>
 				<h2>Analyse de l'application</h2>
 			</header>
-			<section>
-				<h3>Amorçage du Core : </h3>
-				<table class="small">
-					<?php 
-					foreach ($statusReport as $key => $value) {
-						$res = $value === true
-						? '<b class="gree">Passé</b>' 
-						: (
-							$value === false
-							? '<b class="red">Echec</b>' 
-							: '<b>Non effectué</b>'
-						);
-						echo ("<tr><td>$key</td><td>$res</td></tr>");
-					} 
-					?>
-				</table>
-			</section>
-
-			<section>
-				<h3>Etat du Core : 
+			<section class="half centered">
+				<h3>Etat du Core
 					<?php 
 					echo($coreStarted 
 						? '<h4 class="gree">Démarré</h4>' 
@@ -196,8 +189,8 @@ $e = MoonChecker::$lastException;
 					?>
 				</h3>
 			</section>
-			<section>
-				<h3>Chargement des fichiers de configuration : </h3>
+			<section class="half centered">
+				<h3>Chargement des fichiers de configuration</h3>
 				<?php 
 					echo ($config_var_loaded === true
 						? '<h4 class="gree">Les fichiers sont correctement chargés</h4>' 
@@ -217,6 +210,24 @@ $e = MoonChecker::$lastException;
 
 				?>
 			</section>
+			<section class="full centered">
+				<h2>Amorçage du Core</h2>
+				<table class="left degaged">
+					<?php 
+					foreach ($statusReport as $key => $value) {
+						$res = $value === true
+						? '<b class="gree">Passé</b>' 
+						: (
+							$value === false
+							? '<b class="red">Echec</b>' 
+							: '<b>Non effectué</b>'
+						);
+						echo ("<tr><td>$key</td><td>$res</td></tr>");
+					} 
+					?>
+				</table>
+			</section>
+
 		</article>
 		<footer>
 			<p><span>Made with love with</span> <b>Moon</b> framework.</p>
