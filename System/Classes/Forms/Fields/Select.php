@@ -91,9 +91,9 @@ class Select extends Field {
      * Si le texte est vide, alors le texte sera le meme que la value.
      * @param string $value la valeur de l'attribut "value" de l'option
      * @param string $text le texte de l'option
-     * @return boolean true si tout c'est ien passé, false sinon
+     * @return boolean true si tout c'est bien passé, false sinon
      */
-    public function addOption($value, $text) {
+    public function addOption($value, $text='') {
         $o = new Option($value, $text);
         return $this->addOptionObject($o);
     }

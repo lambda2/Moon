@@ -32,7 +32,11 @@ class FieldFactory {
                 break;
 
             case 'enum':
-                $field = new Input($name,'number');
+                $field = new Select($name);
+                $options = self::parseInnerParenthValue($type);
+                foreach (explode(',', $options) as $opt) {
+                    $field->addOption($opt);
+                }
                 break;
 
             default:
@@ -72,7 +76,7 @@ class FieldFactory {
     {
         $result = array();
         preg_match('#\(+(.*)\)+#', $value, $result); 
-        return $result[1];
+        return implode('', explode('\'',$result[1]));
     }
 
 

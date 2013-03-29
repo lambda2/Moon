@@ -8,8 +8,10 @@ $orm = OrmFactory::getOrm();
 $astre = $orm->getAllColumnsFrom('astre');
 var_dump($astre);
 
-$e = FieldFactory::createField($astre['nom_astre']->Type,$astre['nom_astre']->Field);
+foreach ($astre as $key => $value) {
+	$e = FieldFactory::createField($value->Type,$value->Field);
+	echo($e);
+}
 
-echo($e);
 
 ?>
