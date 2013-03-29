@@ -43,6 +43,17 @@ class FieldFactory {
         
     }
 
+    public static function loadFromStdObject($object){
+
+        return self::createField(
+            $object->Type,
+            $object->Field,
+            $object->Null,
+            $object->Default,
+            $object->Key,
+            $object->Extra);
+    }
+
     protected static function parseNullValue($nullValue)
     {
         if($null === 'YES')

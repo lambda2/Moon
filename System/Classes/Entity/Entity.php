@@ -23,9 +23,6 @@ abstract class Entity {
 
     protected $table;
 
-    // TODO : A supprimer
-    protected $editable;
-
     protected $bdd;
     protected $fields;
     protected $linkedClasses;
@@ -36,7 +33,6 @@ abstract class Entity {
 
 
         $this->table    = strtolower(get_class($this)) . Core::getInstance()->getDbPrefix();
-        $this->editable = new Editable($this, $this->table);
         $this->bdd      = Core::getInstance()->bdd()->getDb();
         //$this->access   = new Access();
         //$this->access->loadFromTable(strtolower(get_class($this)));
@@ -50,7 +46,6 @@ abstract class Entity {
 
     protected function reload($table) {
         $this->table    = strtolower($table) . Core::getInstance()->getDbPrefix();
-        $this->editable = new Editable($this, $this->table);
         $this->bdd      = Core::getInstance()->bdd()->getDb();
         /* $this->access   = new Access();
         $this->access->loadFromTable(strtolower(get_class($this))); */
@@ -135,13 +130,8 @@ abstract class Entity {
                                 $moonLinkValue->attribute, 
                                 $this->fields[$moonLinkValue->destinationColumn]);
                             $res->reloadLinkedClasses();
-                            //var_dump($res->getFields());
-                            //if(!isNull($res->getFields()))
                             $t[] = $res;
-                            /*else {
-                                echo "<br>[REFUSE] champ = <br>";
-                                var_dump($res->getFields());
-                            }*/
+
                         }
                     }
                     if(count($t) > 0){
@@ -345,30 +335,7 @@ abstract class Entity {
      * depuis le schema de la base de données.
      */
     protected function generateFields() {
-        $this->editable = new Editable($this, $this->table);
-        try 
-        {
-            $Req = $this->bdd->prepare("SHOW COLUMNS FROM {$this->table}");
-            $Req->execute(array());
-        } 
-        catch (Exception $e) 
-        { 
-            //interception de l'erreur
-            die('<div style="font-weight:bold; color:red">Erreur : ' . $e->getMessage() . '</div>');
-        }
-        while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
-            $type = "text";
-            if ($res->Key == "MUL") {
-                $type   = "select";
-                $target = $this->getForeignLink($res->Field);
-                $this->editable->add(new Champ($res->Field, $res->Field, ucfirst(str_replace('id_', '', $res->Field)), $type, $target, ''));
-            }
-            elseif ($res->Key == "") {
-                $t = explode('_', $res->Field);
-                $t = $t[0];
-                $this->editable->add(new Champ($res->Field, $res->Field, ucfirst($t)));
-            }
-        }
+        /* ## TODO ## */
     }
 
     /**
@@ -520,14 +487,6 @@ abstract class Entity {
 
     public function setTable($table) {
         $this->table = $table;
-    }
-
-    public function getEditable() {
-        return $this->editable;
-    }
-
-    public function setEditable($editable) {
-        $this->editable = $editable;
     }
 
     public function getBdd() {
