@@ -46,6 +46,10 @@ class Button extends Field{
      * Va retourner le code Html du bouton
      */
     public function getHtml() {
+
+        if(!$this->isVisible()) 
+            return '';
+        
         $s = '<button '.$this->getHtmlAttributesList();
         if(!$this->enabled)
             $s .= 'disabled';

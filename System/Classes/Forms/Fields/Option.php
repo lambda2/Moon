@@ -26,7 +26,11 @@ class Option extends Field {
     /**
      * Va retourner le code Html de l'option
      */
-    public function getHtml() {
+    public function getHtml() { 
+        
+        if(!$this->isVisible()) 
+            return '';
+
         $s = '<option '.$this->getHtmlAttributesList();
         if(!$this->enabled)
             $s .= 'disabled';

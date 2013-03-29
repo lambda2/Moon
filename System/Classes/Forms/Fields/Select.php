@@ -126,6 +126,10 @@ class Select extends Field {
      * Va retourner le code Html du bouton
      */
     public function getHtml() {
+
+        if(!$this->isVisible()) 
+            return '';
+        
         $s = '<select ' . $this->getHtmlAttributesList();
         if ($this->required)
             $s .= 'required';

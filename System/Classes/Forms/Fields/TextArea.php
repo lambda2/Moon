@@ -51,6 +51,10 @@ class TextArea extends Field{
      * Va retourner le code Html du champ de texte 
      */
     public function getHtml() {
+
+        if(!$this->isVisible()) 
+            return '';
+        
         $s = '<textarea '.$this->getHtmlAttributesList()
                 .'rows='.dbQuote($this->rows).' ';
         if($this->required)

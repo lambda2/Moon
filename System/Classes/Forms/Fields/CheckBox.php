@@ -38,6 +38,10 @@ class CheckBox extends Field {
      * Va retourner le code Html du champ CheckBox
      */
     public function getHtml() {
+
+        if(!$this->isVisible()) 
+            return '';
+        
         $s = '<input '.$this->getHtmlAttributesList();
         if($this->checked)
             $s .= 'checked='.dbQuote("checked");

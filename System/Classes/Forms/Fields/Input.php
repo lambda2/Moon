@@ -38,7 +38,7 @@ class Input extends Field{
     /**
      * Va retourner le code Html de l'input
      */
-    public function getHtml() {
+    public function getHtml() { if(!$this->isVisible()) return '';
         $s = '<input '.$this->getHtmlAttributesList();
         if($this->required)
             $s .= 'required';
