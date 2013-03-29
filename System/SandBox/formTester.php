@@ -8,10 +8,12 @@ $orm = OrmFactory::getOrm();
 $astre = $orm->getAllColumnsFrom('astre');
 var_dump($astre);
 
+$form = new Form('test');
 foreach ($astre as $key => $value) {
-	$e = FieldFactory::createField($value->Type,$value->Field);
-	echo($e);
+	$e = FieldFactory::loadFromStdObject($value);
+	$form->addField($e);
 }
+echo($form);
 
 
 ?>

@@ -43,6 +43,16 @@ class FieldFactory {
                 break;
         }
 
+        if(!self::parseNullValue($null))
+            $field->setRequired(true);
+
+        if($default ==! null)
+            $field->setPlaceholder($default);
+
+        if($extra == 'auto_increment')
+            $field->setVisible(false);
+
+
         return $field;
         
     }
@@ -60,7 +70,7 @@ class FieldFactory {
 
     protected static function parseNullValue($nullValue)
     {
-        if($null === 'YES')
+        if($nullValue === 'YES')
             return true;
         else
             return false;

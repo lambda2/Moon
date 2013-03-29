@@ -58,6 +58,7 @@ class Form {
             $s .= $field->getHtml();
         }
         $s .= '</form>';
+        return $s;
     }
 
     public function getFields() {
@@ -102,6 +103,10 @@ class Form {
     public function setAction($action) {
         $this->action = $action;
         return $this;
+    }
+
+    public function __toString() {
+        return $this->getHtml();
     }
 
 }
