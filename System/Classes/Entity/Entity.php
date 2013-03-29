@@ -30,12 +30,8 @@ abstract class Entity {
     protected $linkedClassesLoaded = false;
 
     public function __construct() {
-
-
         $this->table    = strtolower(get_class($this)) . Core::getInstance()->getDbPrefix();
         $this->bdd      = Core::getInstance()->bdd()->getDb();
-        //$this->access   = new Access();
-        //$this->access->loadFromTable(strtolower(get_class($this)));
         $this->clearLinkedClasses();
 
         if (get_class($this) != 'TableEntity') {
@@ -47,13 +43,8 @@ abstract class Entity {
     protected function reload($table) {
         $this->table    = strtolower($table) . Core::getInstance()->getDbPrefix();
         $this->bdd      = Core::getInstance()->bdd()->getDb();
-        /* $this->access   = new Access();
-        $this->access->loadFromTable(strtolower(get_class($this))); */
-
         $this->generateProperties();
         $this->generateFields();
-        //$this->clearLinkedClasses();
-        //$this->autoLoadLinkedClasses();
     }
 
     /**
@@ -66,7 +57,6 @@ abstract class Entity {
             $this->linkedClasses = Core::getBdd()->getMoonLinksFrom($this->table);
             
             foreach ($this->linkedClasses as $linked) {
-                    // echo "trying to link " . $linked->attribute . " ... [value inside : " . $this->fields[$linked->attribute] . "]<br>";
                 if (!isNull($this->fields[$linked->attribute]))
                 {
                     $linked->loadLinkedInstance(
@@ -175,7 +165,6 @@ abstract class Entity {
                         }
                         else {
                             return false;
-                            //throw new MemberAccessException('Property ' . $property . ' not exists');
                         }
                     }
                     else {
@@ -196,7 +185,6 @@ abstract class Entity {
                 return $this->get($property);
                 case 'default':
                 return false;
-                //throw new MemberAccessException('Method ' . $methodName . ' not exists');
             }
         }
     }
@@ -229,15 +217,6 @@ abstract class Entity {
     public function getExternalInstance($table) {
 
         foreach ($this->linkedClasses as $key => $value) {
-
-            // Ancienne version avec la table de detination comme argument de 
-            // recherche. Ne marche donc pas si deux champs pointent sur la meme
-            // Colonne distante...
-
-            // if (strcasecmp($value->destinationTable, $table) == 0) {
-            //     if (!isNull($value->instance))
-            //         return $value->instance;
-            // }
 
             // Nouvelle version, basée sur le nom du champ local.
             if (strcasecmp($key, $table) == 0) {
@@ -295,37 +274,11 @@ abstract class Entity {
                 else {
                     throw new OrmException('Les champs récupérés ne correspondent pas !');
                 }
-            //var_dump($res);
             }
             return true;
-        } // Sinon on relance la méthode avec d'autres arguments :
-        /*else if (strripos($field, '_' . $this->table) == false) 
-        {
-            if (!$this->loadBy($field . '_' . $this->table, $value)) 
-            {
-                $prefix = Core::getInstance()->getDbPrefix();
-                
-                if (strripos($field . '_' . $this->table, $prefix) != FALSE) 
-                {
-                    echo "la table finit par le préfixe ! Beurk !";
-                    $field = $field . substr_replace(
-                        '_' . $this->table, '', -(strlen($prefix)), strlen($prefix));
-                    return $this->loadBy($field, $value);
-                }
-                else 
-                {
-                    //echo "la table ne finit pas par le préfixe ! Ouf !";
-                    return false;
-                }
-            }
-            else 
-            {
-                return true;
-            }
-        }*/
+        } 
         else 
         {
-            //throw new ErrorException("L'objet {$this->table} dont le champ $field est égal à $value n'a pas été trouvé...");
             return false;
         }
     }
@@ -509,9 +462,7 @@ abstract class Entity {
     }
 
     protected function addLinkedClass($field, $class, $name) {
-            //echo "( $field => $name )<br>";
         $this->linkedClasses[$field] = new MoonLink($field, $name, $class);
-            //var_dump($this->linkedClasses[$field]);
     }
 
     /**
@@ -560,7 +511,6 @@ abstract class Entity {
     }
 
     public function getRelationClassName($field) {
-            //var_dump(split('\.',$this->getForeignLink($field)));
         $cl = split('\.', $this->getForeignLink($field));
         $cl = $cl[0];
         if (!Core::isValidClass($cl)) {
@@ -616,10 +566,6 @@ abstract class Entity {
             $reducClassName = strtolower($reducClassName);
         }
         $reducClassName = str_replace('_', ' ', $reducClassName);
-
-            /* if ($singularize) {
-              $reducClassName = singularize($reducClassName);
-          } */
           return $reducClassName;
       }
 
