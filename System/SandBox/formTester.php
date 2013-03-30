@@ -5,15 +5,13 @@
  */
 
 $orm = OrmFactory::getOrm();
-$astre = $orm->getAllColumnsFrom('astre');
-var_dump($astre);
+$fields = $orm->getAllEntityFields('astre');
+var_dump($fields);
 
-$form = new Form('test');
-foreach ($astre as $key => $value) {
-	$e = FieldFactory::loadFromStdObject($value);
-	$form->addField($e);
+foreach ($fields as $key => $value) {
+	$formField = $value->getHtmlField();
+	echo $formField;
 }
-echo($form);
 
 
 ?>

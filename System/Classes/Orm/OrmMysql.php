@@ -151,6 +151,94 @@ class OrmMysql extends Orm {
         return $links;
     }
 
+
+    /**
+     * Va construire et retourner un tableau d'objets EntityField
+     * correspondant aux champs de la table donnée en paramètre.
+     */
+    public function getAllEntityFields($tableName)
+    {
+        $fields = array();
+        $sqlFields = $this->getAllColumnsFrom($tableName);
+
+        foreach ($sqlFields as $table => $field) {
+
+            $name = $field->Field;
+            $type = self::parseTypeValue($field->Type);
+
+            $f = new EntityField($type,$name);
+
+
+            $f->setIsNull(self::parseNullValue($field->Null));
+
+            if($field->Key == 'PRI'){
+                $f->setIsPrimary(true);
+            }
+            else if ($field->Key == 'MUL'){
+                $f->setIsForeign(true);
+            }
+
+            $f->setDefaultValue($field->Default);
+
+            if($field->Extra == 'auto_increment')
+                $f->setIsAuto(true);
+
+            if($type == 'enum'){
+                // Récupère les valeurs de l'énum séparées par des virgules
+                $options = self::parseInnerParenthValue($field->Type);
+                // Et crée un tableau composé de ces éléments.
+                $f->setOptionsValues(explode(',', $options));
+            }
+
+            $fields[$table] = $f;
+
+        }
+
+        return $fields;
+
+    }
+
+
+    /**
+     * Retourne true si la valeur equivaut a vrai (YES).
+     * Sinon, retourne false (NO).
+     * @return boolean true if param == 'YES', false otherwise
+     */
+    protected static function parseNullValue($nullValue)
+    {
+        if($nullValue === 'YES')
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * Retourne le type sans les parenthèses conternant
+     * la taille de la donnée dans mysql.
+     * par exemple : 'int(255)'' retournera 'int'.
+     * @param string typeValue le type mysql
+     * @return string le type (php) de la donnée
+     */
+    protected static function parseTypeValue($typeValue)
+    {
+        $properTypeArray = explode('(', $typeValue);
+        return $properTypeArray[0];
+    }
+
+    /**
+     * Retourne le contenu entre parenthèses.
+     * par exemple : 'int(255)'' retournera '255'.
+     * utilse pour parser des series d'ENUM mysql.
+     * @param string value le type mysql
+     * @return string le contenu entre parenthèses
+     */
+    protected static function parseInnerParenthValue($value)
+    {
+        $result = array();
+        preg_match('#\(+(.*)\)+#', $value, $result); 
+        return implode('', explode('\'',$result[1]));
+    }
+
 }
 
 ?>

@@ -128,6 +128,8 @@ abstract class Orm {
     public abstract function getAllRelationsWith($tableName);
     
     public abstract function getAllRelations();
+
+    public abstract function getAllEntityFields($tableName);
 }
 
 ?>

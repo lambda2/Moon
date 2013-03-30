@@ -10,9 +10,7 @@ class FieldFactory {
         
     }
     
-    /**
-     * 
-     */
+    /*
     public static function createField(
         $type, $name, $null='NO',
         $default=null, $key='',$extra='')
@@ -52,6 +50,33 @@ class FieldFactory {
         if($extra == 'auto_increment')
             $field->setVisible(false);
 
+
+        return $field;
+        
+    }
+    */
+
+    public static function createField($type, $name)
+    {
+        $field = null;
+        
+        switch ($type) {
+
+            case 'varchar':
+                $field = new Input($name,'text');
+                break;
+
+            case 'int':
+                $field = new Input($name,'number');
+                break;
+
+            case 'enum':
+                $field = new Select($name);
+                break;
+
+            default:
+                break;
+        }
 
         return $field;
         
