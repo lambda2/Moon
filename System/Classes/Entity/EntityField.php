@@ -39,6 +39,11 @@ class EntityField {
         $this->value = $value;
     }
 
+    public function __toString(){
+        return ' - '.$this->name.'('.$this->type.')'
+        .$this->value;
+    }
+
     public function getHtmlField()
     {
         $field = FieldFactory::createField(

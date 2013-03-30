@@ -57,10 +57,10 @@ abstract class Entity {
             $this->linkedClasses = Core::getBdd()->getMoonLinksFrom($this->table);
             
             foreach ($this->linkedClasses as $linked) {
-                if (!isNull($this->fields[$linked->attribute]))
+                if (!isNull($this->fields[$linked->attribute]->getValue()))
                 {
                     $linked->loadLinkedInstance(
-                        $this->fields[$linked->attribute]);
+                        $this->fields[$linked->attribute]->getValue());
                 }
             }
             
@@ -81,6 +81,7 @@ abstract class Entity {
      * On délegue ensuite a la méthode __call()
      */
     public function __get($name) {
+
 
         // On charge les classes liées
         if($this->linkedClassesLoaded == false)
@@ -106,10 +107,12 @@ abstract class Entity {
             }
             else // Et enfin, on regarde si quelque chose référence cet attribut
             {
+                //echo 'not methode !<br>';
                 $externals = Core::getBdd()->getMoonLinksFrom($this->table,true);
                 $t = array();
                 //echo 'on a '.count($externals).' external(s)... <br>';
                 if(!isNull($externals)){
+                    var_dump($externals);
                     foreach ($externals as $moonLinkKey => $moonLinkValue) 
                     {
                         if($moonLinkValue->table == $name)
@@ -118,7 +121,7 @@ abstract class Entity {
                             $res = EntityLoader::getClass($moonLinkValue->table);
                             $res->loadBy(
                                 $moonLinkValue->attribute, 
-                                $this->fields[$moonLinkValue->destinationColumn]);
+                                $this->fields[$moonLinkValue->destinationColumn]->getValue());
                             $res->reloadLinkedClasses();
                             $t[] = $res;
 
@@ -128,8 +131,10 @@ abstract class Entity {
                         return $t;
                     }
                 }
-                else
+                else {
+                    //echo '<b>FAILED SEARCH FOR '.$name.' !<br>';
                     return false;
+                }
             }
         }
     }
@@ -192,21 +197,15 @@ abstract class Entity {
     /**
      * @author lambda2 
      * @return null no return value
+     * 
+     * @since v0.0.3 Les propriétés deviennent des classes.
+     * -> source potentielle de bugs... be awake !
      */
     protected function generateProperties()
     {
-        $t = array();
-        try {
-            $Req = $this->bdd->prepare("SHOW COLUMNS FROM {$this->table}");
-            $Req->execute(array());
-        } catch (Exception $e) { //interception de l'erreur
-        MoonChecker::showHtmlReport($e);
-        }
-        while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
-            $t[$res->Field] = null;
-        }
-        $this->fields = $t;
-}
+        $prop = Core::getBdd()->getAllEntityFields($this->table);
+        $this->fields = $prop;
+    }
 
     /**
      * Va voir si l'objet courant a une relation avec la table spécifiée.
@@ -229,6 +228,8 @@ abstract class Entity {
 
     /**
      * Charge un objet en fonction d'un ou plusieurs parametres.
+     * @since 0.0.3, c'est la merde. L'introduction de EntityField
+     * dans le système a un peu perturbé. 
      */
     public function loadBy($field, $value) {
 
@@ -244,7 +245,7 @@ abstract class Entity {
         {
             $request = "SELECT * FROM {$this->table} WHERE ";
             $args = array();
-            foreach ($field as $key=>$cle) 
+            foreach ($field as $key=>$cle)  
             {
                 $args[] = $cle." = ".$value[$key];
             }
@@ -254,6 +255,9 @@ abstract class Entity {
         {
             $request = "SELECT * FROM {$this->table} WHERE {$field} = '{$value}'";
         }
+
+        //echo 'REQUEST = '.$request.'<br>';
+
         
         try 
         {
@@ -269,7 +273,11 @@ abstract class Entity {
         if ($Req->rowCount() != 0) {
             while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
                 if (count($this->fields) >= count($res)) {
-                    $this->fields = $res;
+                    foreach ($res as $champ => $valeur) {
+                        // Pour chaque champ, on met à jour sa valeur
+                        // avec celle qu'on vient de récupérer dans la bdd.
+                        $this->fields[$champ]->setValue($valeur);
+                    }
                 }
                 else {
                     throw new OrmException('Les champs récupérés ne correspondent pas !');
@@ -334,6 +342,7 @@ abstract class Entity {
                 }
             }
             if (!isNull($priField)) {
+                //echo 'on va charger avec '.arr2str($priField).' = '.arr2str($priValues).'!<br>';
                 $f->loadBy($priField, $priValues);
                 $f->autoLoadLinkedClasses();
                 $t[] = $f;
@@ -363,11 +372,11 @@ abstract class Entity {
     }
 
     public function get($property) {
-        return $this->fields[$property];
+        return $this->fields[$property]->getValue();
     }
 
     public function set($property, $value) {
-        $this->fields[$property] = $value;
+        $this->fields[$property]->setValue($value);
         return $this;
     }
 
@@ -521,6 +530,8 @@ abstract class Entity {
 
     public function getRelationClassInstance($field, $target = null) {
 
+        if(is_a($target, 'EntityField'))
+            $target = $target->getValue();
         // Si on n'a pas spécifié de relation, on la cherche a la main
         if ($target == null) {
             $className = $this->getRelationClassName($field);
