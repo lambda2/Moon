@@ -47,6 +47,11 @@ abstract class Entity {
         $this->generateFields();
     }
 
+    protected function setupFields()
+    {
+        // Reimplement for define custom properties in fields.
+    }
+
     /**
      * Va tenter d'instancier les classes liées a l'instance courante.
      */
@@ -283,14 +288,6 @@ abstract class Entity {
     }
 
     /**
-     * Génère les champs de formulaire 
-     * depuis le schema de la base de données.
-     */
-    protected function generateFields() {
-        /* ## TODO ## */
-    }
-
-    /**
      * Essaie de retourner le champ visé par la relation étrangère fournie en paramètre
      * @param String $rowName le nom du champ (ex : 'id_client_contrat' )
      * @return String la table et le nom de la colonne ciblée (ex : 'client.id_client')
@@ -461,16 +458,6 @@ abstract class Entity {
             $this->linkedClasses[] = $linkedClasses;
     }
 
-    // protected function refreshFieldsWithLinkedClasses(){
-    //     foreach ($this->linkedClasses as $key => $value) {
-    //         if(!isNull($value->instance) 
-    //             and !isNull($this->fields[$value->attribute]))
-    //         {
-    //             $this->fields[$value->attribute]->setValue($value->instance);
-    //         }
-    //     }
-    // }
-
     protected function addLinkedClass($field, $class, $name) {
         $this->linkedClasses[$field] = new MoonLink($field, $name, $class);
     }
@@ -591,6 +578,7 @@ abstract class Entity {
 
 
     public function generateInsertForm(){
+        $this->setupFields();
         $formName = 'insert'.get_class($this);
         $form = new Form($formName);
 
@@ -599,11 +587,6 @@ abstract class Entity {
         }
         return $form;
     }
-
-
-
-
-
 
     // End of Entity class //
 

@@ -7,19 +7,25 @@ class PathFinder {
     public static function getClasses($dir) {
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Classes');
-            return self::$res;
+        return self::$res;
     }
 
     public static function getHelpers($dir) {
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Helpers');
-            return self::$res;
+        return self::$res;
     }
-    
+
     public static function getControllers($dir) {
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Controllers');
-            return self::$res;
+        return self::$res;
+    }
+
+    public static function getModeles($dir) {
+        self::$res = array();
+        self::listDir($dir. DIRECTORY_SEPARATOR .'Modeles');
+        return self::$res;
     }
 
     private static function removeExt($string, $ext = '.php') {

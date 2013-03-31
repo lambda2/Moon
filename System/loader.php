@@ -36,6 +36,7 @@ function __autoload($nomClasse) {
      */
     $foundClasses = PathFinder::getClasses(__DIR__.'/../'.'System');
     $foundControllers = PathFinder::getControllers('.');
+    $foundModels = PathFinder::getModeles('.');
     //var_dump($foundControllers);
     $pos          = strrpos($nomClasse, '\\');
     if ($pos > 0) {
@@ -46,6 +47,9 @@ function __autoload($nomClasse) {
     }
     else if (array_key_exists($nomClasse, $foundControllers)) {
         require_once($foundControllers[$nomClasse]);
+    }
+    else if (array_key_exists($nomClasse, $foundModels)) {
+        require_once($foundModels[$nomClasse]);
     }
 }
 

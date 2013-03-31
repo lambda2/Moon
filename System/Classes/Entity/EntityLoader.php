@@ -30,11 +30,20 @@ class EntityLoader {
      */
     public static function getClass($className) {
         $return = null;
-        if (class_exists($className) && in_array('Entity', class_parents($className))) {
+        if (class_exists($className) 
+            && in_array('Entity', class_parents($className))) 
+        {
+            $return = new $className();
+        }
+        else if (class_exists(ucfirst($className)) 
+            && in_array('Entity', class_parents(ucfirst($className)))) 
+        {
+            $className  = ucfirst($className);
             $return = new $className();
         }
         else 
         {
+            //echo 'class '.$className.' do not exists...';
             //echo("classe inexistante... scan de la base de données...");
             $reducClassName = $className;
             $withPrefix = $reducClassName;
