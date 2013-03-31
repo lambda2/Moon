@@ -117,6 +117,23 @@ abstract class Orm {
         return $t;
     }
 
+    public function getAttributeFrom($attr, $table)
+    {
+        $t = array();
+        try {
+            $Req = self::$db->prepare("select $attr from $table");
+            $Req->execute();
+        } catch (Exception $e) { //interception de l'erreur
+            throw new OrmException(
+            "Unable to execute the request '$request' : ["
+            . $e->getMessage() . ']');
+        }
+        while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
+            $t[] = $res[$attr];
+        }
+        return $t;
+    }
+
     public abstract function getAllTables();
 
     public abstract function getAllColumnsFrom($tableName);

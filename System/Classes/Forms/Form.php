@@ -47,7 +47,7 @@ class Form {
         $this->fields = array();
     }
 
-    public function getHtml() {
+    public function getHtml($submitButton=true) {
         $s = '<form action=' . dbQuote($this->action)
                 . ' method=' . dbQuote($this->method) . ' ';
         if (!isNull($this->name)) {
@@ -56,6 +56,14 @@ class Form {
         $s .= '>';
         foreach ($this->fields as $field) {
             $s .= $field->getHtml();
+        }
+        if($submitButton){
+            $submit = new Button(
+                'submit-'.$this->name, 
+                $type="submit", 
+                $value="", 
+                $text="Valider");
+            $s .= $submit->getHtml();
         }
         $s .= '</form>';
         return $s;

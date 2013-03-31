@@ -22,6 +22,8 @@ class EntityField {
     protected $isNull = false;
     protected $isPrimary = false;
     protected $isForeign = false;
+    protected $foreignTarget = null;
+    protected $foreignDisplayTarget = null;
     protected $defaultValue = null;
     protected $optionsValues = array();
     protected $isAuto = false;
@@ -40,31 +42,88 @@ class EntityField {
     }
 
     public function __toString(){
-        return ' - '.$this->name.'('.$this->type.')'
-        .$this->value;
+        return $this->value;
     }
 
     public function getHtmlField()
     {
-        $field = FieldFactory::createField(
-            $this->type,$this->name);
-        $field->setRequired(!$this->isNull);
-        $field->setPlaceholder($this->defaultValue);
-        $field->setVisible(!$this->isAuto);
-        $field->setValue($this->value);
-
-        if($this->type == 'enum'){
-            foreach ($this->optionsValues as $key => $value) {
-                $text = $value;
-                if(!is_int($key)){
-                    $text = $key;
-                }
-                $field->addOption($value, $text);
+        $field = null;
+        
+        if ($this->isForeign and !isNull($this->foreignTarget))
+        {
+            $target = explode('.',$this->foreignTarget);
+            $table = $target[0];
+            $attr = $target[1];
+            $values = Core::getBdd()->getAttributeFrom($attr, $table);
+            if(isNull($this->foreignDisplayTarget))
+            {
+                $displayValues = $values;
             }
-            
+            else
+            {
+                $displayTarget = explode('.',$this->foreignDisplayTarget);
+                $displayTable = $table;
+                $displayAttr = $displayTarget[0];
+
+                if(count($displayTarget) > 1)
+                {
+                    $displayTable = $displayTarget[0];
+                    $displayAttr = $displayTarget[1];
+                }
+
+                $displayValues = Core::getBdd()->getAttributeFrom(
+                    $displayAttr, $displayTable);
+            }
+
+            if(count($displayValues) != count($values))
+            {
+                echo "incohérence select généré pour la table distante...";
+            }
+
+            $field = FieldFactory::createField(
+            'enum',$this->name);
+            $field->setRequired(!$this->isNull);
+            $field->setPlaceholder($this->defaultValue);
+            $field->setVisible(!$this->isAuto);
+            $field->setValue($this->value);
+
+            $options = array();
+            for ($i=0; $i < count($values); $i++) { 
+                $field->addOption($values[$i], $displayValues[$i]);
+            }
+
+        }
+        else 
+        {
+            $field = FieldFactory::createField(
+            $this->type,$this->name);
+            $field->setRequired(!$this->isNull);
+            $field->setPlaceholder($this->defaultValue);
+            $field->setVisible(!$this->isAuto);
+            $field->setValue($this->value);
+
+            if($this->type == 'enum'){
+                foreach ($this->optionsValues as $key => $value) {
+                    $text = $value;
+                    if(!is_int($key)){
+                        $text = $key;
+                    }
+                    $field->addOption($value, $text);
+                }
+                
+            }
         }
 
         return $field;
+    }
+
+    protected function autoloadForeignValues()
+    {
+        // Si ce champ référence le champ d'une autre table...
+        if($this->isForeign)
+        {
+
+        }
     }
 
     /**
@@ -211,6 +270,33 @@ class EntityField {
         return $this;
     }
 
+    public function setForeignTarget($target)
+    {
+        $this->foreignTarget = $target;
+        return $this;
+    }
+
+    public function getForeignTarget()
+    {
+        return $this->foreignTarget;
+    }
+
+    public function setForeignDisplayTarget($target)
+    {
+        $this->foreignDisplayTarget = $target;
+        return $this;
+    }
+
+    public function setLabelColumn($label)
+    {
+        return $this->setForeignDisplayTarget($label);
+    }
+
+    public function getForeignDisplayTarget()
+    {
+        return $this->foreignDisplayTarget;
+    }
+
     /**
      * Gets the value of defaultValue.
      *
@@ -305,6 +391,15 @@ class EntityField {
         $this->microformat = $microformat;
 
         return $this;
+    }
+
+
+    /**
+     * Synonymes des getters et des setters ci dessus :
+     */
+
+    public function setRequired($required){
+        $this->isNull = !$required;
     }
 }
 

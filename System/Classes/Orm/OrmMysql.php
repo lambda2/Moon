@@ -160,6 +160,7 @@ class OrmMysql extends Orm {
     {
         $fields = array();
         $sqlFields = $this->getAllColumnsFrom($tableName);
+        $moonLinks = $this->getMoonLinksFrom($tableName);
 
         foreach ($sqlFields as $table => $field) {
 
@@ -176,6 +177,13 @@ class OrmMysql extends Orm {
             }
             else if ($field->Key == 'MUL'){
                 $f->setIsForeign(true);
+                $f->setForeignTarget(
+                    $moonLinks[$name]->destinationTable
+                    .'.'.$moonLinks[$name]->destinationColumn);
+
+                $f->setForeignDisplayTarget(
+                    $moonLinks[$name]->destinationTable
+                    .'.'.$moonLinks[$name]->destinationColumn);
             }
 
             $f->setDefaultValue($field->Default);

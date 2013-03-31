@@ -26,6 +26,13 @@ class Home extends Controller {
         $astres = Moon::getAllHeavy('astre');
         //var_dump($distances[0]->astre_depart);
         $this->addData('astres', $astres);
+        $astre = Moon::create('astre');
+        $astre->editField('type')->setRequired(true);
+        $astre->editField('systeme')->setRequired(true);
+        $astre->getSysteme()->setLabelColumn('nom');
+        $astreForm = $astre->generateInsertForm();
+        $this->addData('astresForm', $astreForm->getHtml());
+
         $this->render();
     }
 }

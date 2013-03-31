@@ -51,7 +51,7 @@ abstract class Entity {
      * Va tenter d'instancier les classes liées a l'instance courante.
      */
     public function autoLoadLinkedClasses($force = false) {
-        if($this->linkedClassesLoaded == false || $force == true)
+        if($this->linkedClassesLoaded == false or $force == true)
         {       
             $this->clearLinkedClasses();
             $this->linkedClasses = Core::getBdd()->getMoonLinksFrom($this->table);
@@ -112,7 +112,7 @@ abstract class Entity {
                 $t = array();
                 //echo 'on a '.count($externals).' external(s)... <br>';
                 if(!isNull($externals)){
-                    var_dump($externals);
+                    //var_dump($externals);
                     foreach ($externals as $moonLinkKey => $moonLinkValue) 
                     {
                         if($moonLinkValue->table == $name)
@@ -131,12 +131,12 @@ abstract class Entity {
                         return $t;
                     }
                 }
-                else {
-                    //echo '<b>FAILED SEARCH FOR '.$name.' !<br>';
-                    return false;
-                }
             }
         }
+        if (Core::getInstance()->debug()) {
+            return '<b>[?]</b>';
+        }
+        return false;
     }
 
     /**
@@ -163,35 +163,26 @@ abstract class Entity {
         if (preg_match('~^(set|get)([A-Z])(.*)$~', $methodName, $matches)) {
             $property = strtolower($matches[2]) . $matches[3];
             if (!isset($this->fields[$property])) {
-                if (!isset($this->fields[$property . '_' . $this->getProperName($this->table)])) {
-                    if (!isset($this->fields[$property . '_' . $this->getProperName($this->table, false, true)])) {
-                        if ($this->checkExternalRelation($property)) {
-                            return $this->linkedClasses[$property];
-                        }
-                        else {
-                            return false;
-                        }
-                    }
-                    else {
-                        $property = $property . '_' . $this->getProperName($this->table, false, true);
-                    }
+                if ($this->checkExternalRelation($property)) {
+                    return $this->linkedClasses[$property];
                 }
                 else {
-                    $property = $property . '_' . $this->getProperName($this->table);
+                    return false;
                 }
             }
-
-            switch ($matches[1]) {
-                case 'set':
-                $this->checkArguments($args, 1, 1, $methodName);
-                return $this->set($property, $args[0]);
-                case 'get':
-                $this->checkArguments($args, 0, 0, $methodName);
-                return $this->get($property);
-                case 'default':
-                return false;
-            }
         }
+
+        switch ($matches[1]) {
+            case 'set':
+            $this->checkArguments($args, 1, 1, $methodName);
+            return $this->set($property, $args[0]);
+            case 'get':
+            $this->checkArguments($args, 0, 0, $methodName);
+            return $this->get($property);
+            case 'default':
+            return false;
+        }
+        
     }
 
     /**
@@ -240,8 +231,8 @@ abstract class Entity {
          * par exemple...) on ajoute les contraintes dans la requete.
          */
         if(is_array($field) 
-            && is_array($value) 
-            && count($field) == count($value))
+            and is_array($value) 
+            and count($field) == count($value))
         {
             $request = "SELECT * FROM {$this->table} WHERE ";
             $args = array();
@@ -372,11 +363,11 @@ abstract class Entity {
     }
 
     public function get($property) {
-        return $this->fields[$property]->getValue();
+        return $this->fields[$property];
     }
 
     public function set($property, $value) {
-        $this->fields[$property]->setValue($value);
+        $this->fields[$property];
         return $this;
     }
 
@@ -438,7 +429,7 @@ abstract class Entity {
 
     protected function checkArguments(array $args, $min, $max, $methodName) {
         $argc = count($args);
-        if ($argc < $min || $argc > $max) {
+        if ($argc < $min or $argc > $max) {
             throw new MemberAccessException('Method ' . $methodName . ' needs minimaly ' . $min . ' and maximaly ' . $max . ' arguments. ' . $argc . ' arguments given.');
         }
     }
@@ -470,6 +461,16 @@ abstract class Entity {
             $this->linkedClasses[] = $linkedClasses;
     }
 
+    // protected function refreshFieldsWithLinkedClasses(){
+    //     foreach ($this->linkedClasses as $key => $value) {
+    //         if(!isNull($value->instance) 
+    //             and !isNull($this->fields[$value->attribute]))
+    //         {
+    //             $this->fields[$value->attribute]->setValue($value->instance);
+    //         }
+    //     }
+    // }
+
     protected function addLinkedClass($field, $class, $name) {
         $this->linkedClasses[$field] = new MoonLink($field, $name, $class);
     }
@@ -498,6 +499,14 @@ abstract class Entity {
 
     public function setFields($fields) {
         $this->fields = $fields;
+    }
+
+    public function editField($fieldName){
+        if(array_key_exists($fieldName, $this->fields))
+            return $this->fields[$fieldName];
+        else
+            throw new AlertException(
+                "The field $fieldName didn't exists in ".$this->table, 1);
     }
 
     /**
@@ -535,7 +544,7 @@ abstract class Entity {
         // Si on n'a pas spécifié de relation, on la cherche a la main
         if ($target == null) {
             $className = $this->getRelationClassName($field);
-            if ($className == null || $className == $this->table) {
+            if ($className == null or $className == $this->table) {
                 return null;
             }
             else {
@@ -567,7 +576,7 @@ abstract class Entity {
 
     public static function getProperName($name, $upper = false, $singularize = false) {
         $reducClassName = $name;
-        if (Core::getInstance()->getDbPrefix() != '' && strstr($reducClassName, Core::getInstance()->getDbPrefix()) != FALSE) {
+        if (Core::getInstance()->getDbPrefix() != '' and strstr($reducClassName, Core::getInstance()->getDbPrefix()) != FALSE) {
             $reducClassName = substr_replace($reducClassName, '', -(strlen(Core::getInstance()->getDbPrefix())), strlen(Core::getInstance()->getDbPrefix()));
         }
         if ($upper) {
@@ -578,8 +587,25 @@ abstract class Entity {
         }
         $reducClassName = str_replace('_', ' ', $reducClassName);
           return $reducClassName;
-      }
-
     }
 
+
+    public function generateInsertForm(){
+        $formName = 'insert'.get_class($this);
+        $form = new Form($formName);
+
+        foreach ($this->fields as $champ => $valeur) {
+            $form->addField($valeur->getHtmlField());
+        }
+        return $form;
+    }
+
+
+
+
+
+
+    // End of Entity class //
+
+    }
 ?>
