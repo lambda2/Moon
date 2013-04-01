@@ -314,6 +314,15 @@ class Router {
                 $sucess = $class->processUpdateForm($_POST);
 
                 break;
+
+            case 'delete':
+
+                $identifiers = $_POST['ids'];
+                $values = param2arr($identifiers);
+                $class->loadByArray($values);
+                $sucess = $class->processDeleteForm($values);
+
+                break;
             
             default:
                 throw new MemberAccessException

@@ -176,6 +176,33 @@ abstract class Orm {
     }
 
     /**
+     * Va supprimer dans la table spécifiée par $table 
+     * les entrées corespondant aux ids spécifiés par $ids.
+     */
+    public function delete($table, $ids)
+    {
+        if(!is_array($ids))
+            throw new OrmException("Arguments invalides pour l'insertion.", 1);
+
+        $where = $this->generateDefinedInterrArray($ids,' AND ');
+        $request = 
+            'DELETE FROM '.$table
+            .' WHERE '.$where.';';
+        try {
+            $Req = self::$db->prepare($request);
+            $Req->execute($this->getPreparedParams($ids));
+        } catch (Exception $e) { //interception de l'erreur
+
+            // Peut etre faudra il enlever cette exception.
+            throw new OrmException(
+            "Unable to execute the request '$request' : ["
+            . $e->getMessage() . ']');
+        }
+        echo 'request send :' .$request. '<br>';
+        return true;
+    }
+
+    /**
      * Genere la liste des valeurs a envoyer a [execute()] à partir
      * des champs a mettre a jour et des ids de la clause WHERE.
      */
@@ -186,6 +213,18 @@ abstract class Orm {
             $ret[] = $value;
         }
         foreach ($ids as $key => $value) {
+            $ret[] = $value;
+        }
+        return $ret;
+    }
+
+    /**
+     * Genere la liste des valeurs a envoyer a [execute()]
+     */
+    protected function getPreparedParams($data)
+    {
+        $ret = array();
+        foreach ($data as $key => $value) {
             $ret[] = $value;
         }
         return $ret;

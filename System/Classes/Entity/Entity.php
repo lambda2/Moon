@@ -824,6 +824,24 @@ abstract class Entity {
             return false;
     }
 
+    /**
+     * Procède à la supression de la data fournie en parametre
+     * dans la base de données.
+     */
+    public function processDeleteForm($data=array())
+    {
+        $fields = $this->parseDataForAction($data);
+        echo 'the fields are : <br>';
+        var_dump($fields);
+        if(Core::getBdd()->delete(
+            $this->table,
+            $fields
+            ))
+            return true;
+        else
+            return false;
+    }
+
     // End of Entity class //
 
     }
