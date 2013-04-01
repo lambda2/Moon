@@ -686,30 +686,42 @@ abstract class Entity {
     }
 
     /**
-     * Génere un champ d'insertion en HTML.
+     * Génere un champ pour l'action ciblée.
      */
-    public function generateInsertForm($name = '', $label='')
+    protected function generateFormFor($action,$name = '', $label='', $empty=false)
     {
         $this->setupFields();
 
         if(isNull($name))
-            $formName = 'insert-'.get_class($this);
+            $formName = $action.'-'.get_class($this);
         else
             $formName = $name;
 
+
         $form = new Form($formName,
             Core::opts()->system->siteroot
-            .'index.php?moon-action=insert&target='
+            .'index.php?moon-action='.$action.'&target='
             .$this->table);
 
         if(!isNull($label))
             $form->setButtonLabel($label);
 
-        foreach ($this->fields as $champ => $valeur) {
-            $form->addField($valeur->getHtmlField());
+        if(!$empty)
+        {
+            foreach ($this->fields as $champ => $valeur) {
+                $form->addField($valeur->getHtmlField());
+            }
         }
 
         return $form;
+    }
+
+    /**
+     * Génere un champ d'insertion en HTML.
+     */
+    public function generateInsertForm($name = '', $label='')
+    {
+        return $this->generateFormFor('insert',$name, $label);
     }
 
     /**
@@ -717,27 +729,9 @@ abstract class Entity {
      */
     public function generateUpdateForm($name = '', $label='')
     {
-        $this->setupFields();
-
-        if(isNull($name))
-            $formName = 'update-'.get_class($this);
-        else
-            $formName = $name;
+        $form = $this->generateFormFor('update',$name, $label);
 
         $keysList = $this->getDefinedPrimaryFields();
-
-        $form = new Form($formName,
-            Core::opts()->system->siteroot
-            .'index.php?moon-action=update&target='
-            .$this->table);
-
-        if(!isNull($label))
-            $form->setButtonLabel($label);
-
-        foreach ($this->fields as $champ => $valeur) {
-            $form->addField($valeur->getHtmlField());
-        }
-
         $destination = new Input('ids','hidden');
         $destination->setValue(arr2param($keysList,','));
         $form->addField($destination);
@@ -750,24 +744,10 @@ abstract class Entity {
      */
     public function generateDeleteForm($name = '', $label='')
     {
-        $this->setupFields();
 
-        if(isNull($name))
-            $formName = 'delete-'.get_class($this);
-        else
-            $formName = $name;
+        $form = $this->generateFormFor('delete',$name, $label,true);
 
         $keysList = $this->getDefinedPrimaryFields();
-
-        $form = new Form($formName,
-            Core::opts()->system->siteroot
-            .'index.php?moon-action=delete&target='
-            .$this->table);
-
-
-        if(!isNull($label))
-            $form->setButtonLabel($label);
-
         $destination = new Input('ids','hidden');
         $destination->setValue(arr2param($keysList,','));
         $form->addField($destination);
