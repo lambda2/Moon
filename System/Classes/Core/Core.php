@@ -187,11 +187,10 @@ class Core {
         return $a;
     }
     
-    public static function route($url){
+    public static function route(){
         try {
-            if(is_array($url)){
-                $tpl = self::$router->route($url);
-            }
+            $tpl = self::$router->route();
+            
         } catch (Exception $exc) {
             MoonChecker::showHtmlReport($exc);
         }

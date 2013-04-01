@@ -24,7 +24,6 @@ class Home extends Controller {
     public function compterLesAstres()
     {
         $astres = Moon::getAllHeavy('astre');
-        //var_dump($distances[0]->astre_depart);
         $this->addData('astres', $astres);
         $astre = Moon::create('astre');
         

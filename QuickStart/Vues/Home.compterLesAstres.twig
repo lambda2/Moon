@@ -17,13 +17,13 @@
         <h2>Quels astres avons nous aujourd'hui ?</h2>
         {% for astre in astres %}
             <p>Nous avons l'astre {{ astre.nom }}, du système {{ astre.systeme.nom }}</p>
+            {{ updateForm(astre) }}
         {% endfor %}
     </div>
 </div>
 <div class="row">
     <div class="span12">
         <h2>Ajoutons un astre !</h2>
-        {{ astresForm }}
     </div>
 </div>
 {% endblock %}

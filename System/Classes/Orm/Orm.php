@@ -101,6 +101,93 @@ abstract class Orm {
         return $this;
     }
 
+    protected function generateInterrArray($count,$sep=',')
+    {
+        $ret = array();
+        foreach ($count as $key => $value) {
+            $ret[] = '?';
+        }
+        return arr2str($ret,$sep);
+    }
+
+    protected function generateDefinedInterrArray($count, $sep=',')
+    {
+        $ret = array();
+        foreach ($count as $key => $value) {
+            $ret[] = $key.' = ?';
+        }
+        return arr2str($ret,$sep);
+    }
+
+    /**
+     * Va inserer la data fournie en parametre dans la table spécifiée.
+     */
+    public function insert($data, $table)
+    {
+        if(!is_array($data))
+            throw new OrmException("Arguments invalides pour l'insertion.", 1);
+
+        $fields = arr2str(array_keys($data),',');
+        $parenthValues = $this->generateInterrArray($data);
+        $request = 
+            'INSERT INTO '
+            .$table.' ('.$fields.')'
+            .' VALUES ('.$parenthValues.');';
+        echo $request;
+
+        try {
+            $Req = self::$db->prepare($request);
+            $Req->execute(array_values($data));
+        } catch (Exception $e) { //interception de l'erreur
+
+            // Peut etre faudra il enlever cette exception.
+            throw new OrmException(
+            "Unable to execute the request '$request' : ["
+            . $e->getMessage() . ']');
+        }
+        return true;
+    }
+
+    /**
+     * Va mettre à jour les champs spécifiés dans data dans la table 
+     * fournie par $table pour les ids spécifiés par $ids.
+     */
+    public function update($data, $table, $ids)
+    {
+        if(!is_array($data))
+            throw new OrmException("Arguments invalides pour l'insertion.", 1);
+
+        $set = $this->generateDefinedInterrArray($data);
+        $where = $this->generateDefinedInterrArray($ids,' AND ');
+        $request = 
+            'UPDATE '
+            .$table.' SET '.$set.''
+            .' WHERE '.$where.';';
+        try {
+            $Req = self::$db->prepare($request);
+            $Req->execute($this->getUpdatePreparedParams($data,$ids));
+        } catch (Exception $e) { //interception de l'erreur
+
+            // Peut etre faudra il enlever cette exception.
+            throw new OrmException(
+            "Unable to execute the request '$request' : ["
+            . $e->getMessage() . ']');
+        }
+        return true;
+    }
+
+    protected function getUpdatePreparedParams($data,$ids)
+    {
+        $ret = array();
+        foreach ($data as $key => $value) {
+            $ret[] = $value;
+        }
+        foreach ($ids as $key => $value) {
+            $ret[] = $value;
+        }
+        return $ret;
+    }
+
     public function query($request, $args = array()) {
         $t = array();
         try {

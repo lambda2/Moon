@@ -81,7 +81,7 @@ function getStatut($codeStat) {
 
 // Affiche le message dans la page spécifiée (accueil par défaut)
 // Des paramètres peuvent être passés a la page (comme une id ou du genre)
-function redirectStatut($codeStat = 0, $page = '') {
+function redirectStatut($page = '',$codeStat = 0) {
     if (!headers_sent()) {
         if ($page != '')
             $page = '&p=' . $page;

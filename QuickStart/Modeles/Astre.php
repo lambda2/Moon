@@ -12,9 +12,9 @@ class Astre extends Entity
 
     protected function setupFields(){
 		
-		/*$this->editField('type')->setRequired(true);
+		$this->editField('type')->setRequired(true);
         $this->editField('systeme')->setRequired(true);
-        $this->getSysteme()->setLabelColumn('nom');*/ 
+        $this->getSysteme()->setLabelColumn('nom'); 
     }
 }
 

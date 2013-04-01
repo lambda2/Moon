@@ -177,6 +177,9 @@ abstract class Entity {
             }
         }
 
+        if(count($matches) < 2)
+            return false;
+
         switch ($matches[1]) {
             case 'set':
             $this->checkArguments($args, 1, 1, $methodName);
@@ -220,6 +223,66 @@ abstract class Entity {
             }
         }
         return false;
+    }
+
+    public function loadByArray($array)
+    {
+        $request = "";
+        
+        /**
+         * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
+         * par exemple...) on ajoute les contraintes dans la requete.
+         */
+        if(is_array($array))
+        {
+            $request = "SELECT * FROM {$this->table} WHERE ";
+            $args = array();
+            foreach ($array as $key=>$val)  
+            {
+                $args[] = $key." = ".$val;
+            }
+            $request .= implode(' AND ', $args);
+        }
+        else
+        {
+            throw new CriticalException(
+                "Invalid parameters to load an object with array !", 1);
+            
+        }
+
+        echo 'REQUEST = '.$request.'<br>';
+
+        
+        try 
+        {
+            $Req = $this->bdd->prepare($request);
+            $Req->execute(array());
+        } 
+        catch (Exception $e) //interception de l'erreur
+        {
+            throw new OrmException("Error Processing Request");
+        }
+
+        // Si on récupère quelque chose :
+        if ($Req->rowCount() != 0) {
+            while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
+                if (count($this->fields) >= count($res)) {
+                    foreach ($res as $champ => $valeur) {
+                        // Pour chaque champ, on met à jour sa valeur
+                        // avec celle qu'on vient de récupérer dans la bdd.
+                        $this->fields[$champ]->setValue($valeur);
+                    }
+                }
+                else {
+                    throw new OrmException('Les champs récupérés ne correspondent pas !');
+                }
+            }
+            return true;
+        } 
+        else 
+        {
+            return false;
+        }
     }
 
     /**
@@ -319,22 +382,14 @@ abstract class Entity {
             MoonChecker::showHtmlReport($e);
         }
         while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
-            $f        = EntityLoader::getClass($classe);
-            $priField = array();
-            $priValues = array();
-            foreach (Core::getBdd()->getAllColumnsFrom($c->getTable()) as $col) {
-                if ($col->Key == 'PRI'){
-                    $primaryKeyField = $col->Field;
-                    $priField[] = $primaryKeyField;
-                    $priValues[] = $res->$primaryKeyField;
-                }
-            }
-            if (!isNull($priField)) {
-                //echo 'on va charger avec '.arr2str($priField).' = '.arr2str($priValues).'!<br>';
-                $f->loadBy($priField, $priValues);
+            $f          = EntityLoader::getClass($classe);
+            $pri        = $f->getValuedPrimaryFields($res);
+            if (!isNull($pri)) {
+                $f->loadByArray($pri);
                 $f->autoLoadLinkedClasses();
                 $t[] = $f;
             }
+            
         }
 
     return $t;
@@ -576,16 +631,161 @@ abstract class Entity {
           return $reducClassName;
     }
 
+    /**
+     * Retourne la liste du nom des champs
+     * de la classe dans un tableau.
+     */
+    public function getFieldsList()
+    {
+        $list = array();
+        foreach ($this->fields as $key => $value) {
+            $list[] = $value->getName();
+        }
+        return $list;
+    }
 
-    public function generateInsertForm(){
+    /**
+     * Retourne un tableau contenant le nom du champ
+     * de la clé primaire et la valeur de cette clé
+     * pour l'instance courante sous la forme clé=valeur.
+     */
+    public function getDefinedPrimaryFields()
+    {
+        $list = array();
+        foreach ($this->fields as $key => $value) {
+            if($value->isPrimary() and !isNull($value->getValue()))
+                $list[$value->getName()] = $value->getValue();
+        }
+        return $list;
+    }
+
+
+    /**
+     * Retourne un tableau contenant le nom du champ
+     * de la clé primaire et la valeur de cette clé
+     * fournie en parametre
+     */
+    public function getValuedPrimaryFields($res)
+    {
+        $list = array();
+        foreach ($this->fields as $key => $value) {
+            $n = $value->getName();
+            if($value->isPrimary() and !isNull($res->$n))
+                $list[$value->getName()] = $res->$n;
+        }
+        return $list;
+    }
+
+    /**
+     * Retourne un tableau contenant la liste des clés primaires.
+     */
+    public function getPrimaryFields()
+    {
+        $list = array();
+        foreach ($this->fields as $key => $value) {
+            if($value->isPrimary())
+                $list[] = $value->getName();
+        }
+        return $list;
+    }
+
+    /**
+     * Génere un champ d'insertion en HTML.
+     */
+    public function generateInsertForm($name = '')
+    {
         $this->setupFields();
-        $formName = 'insert'.get_class($this);
-        $form = new Form($formName);
+
+        if(isNull($name))
+            $formName = 'insert-'.get_class($this);
+        else
+            $formName = $name;
+
+        $form = new Form($formName,
+            Core::opts()->system->siteroot.'index.php?moon-action=insert&target='.$this->table);
 
         foreach ($this->fields as $champ => $valeur) {
             $form->addField($valeur->getHtmlField());
         }
+
         return $form;
+    }
+
+    /**
+     * Génere un champ de mise à jour en HTML.
+     */
+    public function generateUpdateForm($name = '')
+    {
+        $this->setupFields();
+
+        if(isNull($name))
+            $formName = 'update-'.get_class($this);
+        else
+            $formName = $name;
+
+        $keysList = $this->getDefinedPrimaryFields();
+
+        $form = new Form($formName,
+            Core::opts()->system->siteroot.'index.php?moon-action=update&target='.$this->table);
+
+        foreach ($this->fields as $champ => $valeur) {
+            $form->addField($valeur->getHtmlField());
+        }
+
+        $destination = new Input('ids','hidden');
+        $destination->setValue(arr2param($keysList,','));
+        $form->addField($destination);
+
+        return $form;
+    }
+
+    /**
+     * Retire de la data fournie en parametre
+     * tout ce qui n'est pas une donnée de la classe.
+     * Cette méthode renvoie donc un tableau constitué
+     * seuelement des champs appartenant a la classe.
+     */
+    protected function parseDataForAction($data)
+    {
+        $results = array();
+        $fieldsList = $this->getFieldsList();
+        foreach ($data as $key => $value) {
+            if(in_array($key, $fieldsList))
+            {
+                $results[$key] = $value;
+            }
+        }
+        return $results;
+    }
+
+    /**
+     * Procède à l'insertion de la data fournie en parametre
+     * dans la base de données.
+     */
+    public function processInsertForm($data=array())
+    {
+        $fields = $this->parseDataForAction($data);
+        if(Core::getBdd()->insert($fields,$this->table))
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * Procède à la mise à jour de la data fournie en parametre
+     * dans la base de données.
+     */
+    public function processUpdateForm($data=array())
+    {
+        $fields = $this->parseDataForAction($data);
+        if(Core::getBdd()->update(
+            $fields,
+            $this->table,
+            $this->getDefinedPrimaryFields())
+            )
+            return true;
+        else
+            return false;
     }
 
     // End of Entity class //

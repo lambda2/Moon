@@ -89,7 +89,12 @@ class EntityField {
 
             $options = array();
             for ($i=0; $i < count($values); $i++) { 
-                $field->addOption($values[$i], $displayValues[$i]);
+                $o = new Option($values[$i], $displayValues[$i]);
+                if($this->value == $values[$i])
+                {
+                    $o->setSelected(true);
+                }
+                $field->addOptionObject($o);
             }
 
         }
@@ -108,7 +113,14 @@ class EntityField {
                     if(!is_int($key)){
                         $text = $key;
                     }
-                    $field->addOption($value, $text);
+
+                    $o = new Option($value, $text);
+                    if($this->value == $value)
+                    {
+                        $o->setSelected(true);
+                    }
+                    
+                    $field->addOptionObject($o);
                 }
                 
             }

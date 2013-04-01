@@ -443,4 +443,57 @@ function dbQuote($string, $separator = " ") {
     return $r;
 }
 
+/**
+ * Convertit une chaine de caractères de la forme
+ * clé=valeur, clé=valeur...
+ * en tableau contenant {clé:valeur,clé:valeur,...}
+ */
+function param2arr($params)
+{
+    $ret = array();
+    $vals = explode(',', $params);
+    foreach ($vals as $key => $value) {
+        $t = explode('=', $value);
+        $ret[$t[0]] = $t[1];
+    }
+    return $ret;
+}
+
+/**
+ * Convertit un tableau contenant {clé:valeur,clé:valeur,...}
+ * en chaine de caractere de la forme clé=valeur, clé=valeur...
+ */
+function arr2param($array,$separator = ',')
+{
+    $ret = '';
+    $res = array();
+    foreach ($array as $key => $value) {
+        $comp = '';
+        if(!is_int($key))
+            $comp .= $key.'=';
+        $comp .= $value;
+        $res[] = $comp;
+    }
+    $ret = implode($separator, $res);
+    return $ret;
+}
+
+/**
+ * Convertit un tableau contenant {clé:valeur,clé:valeur,...}
+ * en tableau clé=valeur, clé=valeur...
+ */
+function arr2paramArray($array,$separator = ',')
+{
+    $ret = '';
+    $res = array();
+    foreach ($array as $key => $value) {
+        $comp = '';
+        if(!is_int($key))
+            $comp .= $key.'=';
+        $comp .= $value;
+        $res[] = $comp;
+    }
+    return $res;
+}
+
 ?>

@@ -198,20 +198,27 @@ class Router {
         $c->index();
     }
 
-    /**
-     * Méthode principale de la classe, chargée de déterminer le controlleur 
-     * à apeller en fonction des paramètres de la requete.
-     * @param type $params les paramètres de la requete.
-     */
-    public function route($params) {
+    public function routeGet()
+    {
+        $params = $_GET;
+        echo 'GETROUTE<br>';
+        var_dump($_POST);
 
-            if (isset($params['p'])) {
+        if (isset($params['p'])) {
+
+                $request = explode('->',$params['p']);
+                $classe = $request[0];
+                if(count($request) > 1){
+                    $method = explode('?',explode('#',$request[1])[0])[0];
+                }
+                else
+                    $method = 'index';
+
                 // Et que cette page existe
-                if (file_exists('Controllers/' . $params['p'] . '.php')) {
+                if (class_exists($classe)) {
                     // On la charge
-                    $classe = $params['p'];
                     $c      = new $classe($params);
-                    $c->index();
+                    $c->$method();
                 }
                 else {
                     // Sinon, page introuvable
@@ -219,6 +226,19 @@ class Router {
                 }
             }
             else if (isset($params['sandbox'])) {
+                if (Core::opts()->system->mode == 'DEBUG' && 
+                        file_exists(
+                                '../System/SandBox/' . $params['sandbox'] . '.php'))
+                {
+                    include_once '../System/SandBox/' . $params['sandbox'] . '.php';
+                }
+                else {
+                    // Sinon, page introuvable
+                    echo '4o4 :S';
+                    include_once('WebRoot/404.php'); //TODO : faire une page 404 respectable
+                }
+            }
+            else if (isset($params['from-moon'])) {
                 // Et que cette page existe
                 if (Core::opts()->system->mode == 'DEBUG' && 
                         file_exists(
@@ -245,7 +265,110 @@ class Router {
                     $this->callDefaultController($params);
                 }
             }
-        
+    }
+
+    protected function checkAccess($action, $target)
+    {
+        return true;
+    }
+
+    public function routePost()
+    {
+        $sucess = false;
+        $params = $_POST;
+        echo 'POSTROUTE<br>';
+
+        $action = $_GET['moon-action'];
+        $target = $_GET['target'];
+
+        if(isset($_GET['ajax']))
+            $ajax = $_GET['ajax'];
+        $p = $POST['p'];
+
+        $class = EntityLoader::getClass($target);
+
+        // On vérifie que on a bien tous les arguments.
+        if(isNull($action) or isNull($target) or isNull($class))
+        {
+            return false;
+        }
+
+        /**
+         * On vérifie les accès.
+         * @TODO : Faire les accès :)
+         */
+        if(!$this->checkAccess($action, $target))
+        {
+            throw new MemberAccessException
+                ("Accès non autorisé pour faire un $action sur $target");
+            return false;
+        }
+
+        switch ($action) {
+            case 'insert':
+                $sucess = $class->processInsertForm($_POST);
+                break;
+            case 'update':
+
+                $identifiers = $_POST['ids'];
+
+                $values = param2arr($identifiers);
+                $class->loadByArray($values);
+                $sucess = $class->processUpdateForm($_POST);
+
+                break;
+            
+            default:
+                throw new MemberAccessException
+                    ("Action non valide ($action) sur la ressource $target");
+                break;
+        }
+
+        if($sucess)
+        {
+            if(!isNull($p))
+            {
+                redirectStatut($p);
+            }
+            else if($_SERVER['HTTP_REFERER'] != '')
+            {
+                $page = $_SERVER['HTTP_REFERER'];
+                if (!headers_sent()) {
+                    header('Location: '.$page);
+                }
+                else {
+                    echo('<script language="javascript">document.location.href="'. $page .'"</script>');
+                }
+            }
+        }
+
+
+
+
+    }
+
+    /**
+     * Méthode principale de la classe, chargée de déterminer le controlleur 
+     * à apeller en fonction des paramètres de la requete.
+     * @param type $params les paramètres de la requete.
+     */
+    public function route() {
+
+        echo "request method = ".$_SERVER['REQUEST_METHOD'].'<br>';
+        var_dump($_POST);
+        var_dump($_GET);
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'GET':
+                $this->routeGet();
+                break;
+            case 'POST':
+                $this->routePost();
+                break;
+            
+            default:
+                # code...
+                break;
+        }
     }
 
 }

@@ -24,7 +24,9 @@ class MoonTwig extends Twig_Extension
     {
         return array(
             new Twig_SimpleFunction('link','MoonTwig::moonLink',array('is_safe' => array('html'))),
-            new Twig_SimpleFunction('href','MoonTwig::moonHref',array('is_safe' => array('html')))
+            new Twig_SimpleFunction('href','MoonTwig::moonHref',array('is_safe' => array('html'))),
+            new Twig_SimpleFunction('insertForm','MoonTwig::insertForm'),
+            new Twig_SimpleFunction('updateForm','MoonTwig::updateForm')
             );
     }
     
@@ -56,6 +58,43 @@ class MoonTwig extends Twig_Extension
         $pl = explode('.',$str);
         $str = Core::opts()->system->siteroot.implode(DIRECTORY_SEPARATOR, $pl);
         return $str;
+    }
+
+    /**
+     * Permet de générer un formulaire d'insertion
+     * @param Entity $entity la classe pour laquelle créer le formulaire.
+     * @param boolean $ajax activer ou non l'envoi des données en ajax.
+     * @return string le code HTML du formulaire.
+     */
+    public static function insertForm($entity, $ajax=false)
+    {
+        if(is_string($entity))
+        {
+            $entity = Moon::create($entity);
+        }
+        if(!is_a($entity, 'Entity'))
+            throw new AlertException(
+                "Invalid entity supplied for form generation", 1);
+
+        return $entity->generateInsertForm();
+            
+    }
+
+
+    /**
+     * Permet de générer un formulaire de mise à jour
+     * @param Entity $entity la classe pour laquelle créer le formulaire.
+     * @param boolean $ajax activer ou non l'envoi des données en ajax.
+     * @return string le code HTML du formulaire.
+     */
+    public static function updateForm($entity, $ajax=false)
+    {
+        if(!is_a($entity, 'Entity'))
+            throw new AlertException(
+                "Invalid entity supplied for form generation", 1);
+
+        return $entity->generateUpdateForm();
+            
     }
     
     function getName() {

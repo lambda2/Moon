@@ -21,6 +21,6 @@ require_once(__DIR__.'/../System/loader.php');
 
 Core::startEngine();
 
-Core::route($_GET);
+Core::route();
 
 ?>

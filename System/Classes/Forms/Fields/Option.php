@@ -7,6 +7,7 @@
 class Option extends Field {
     
     protected $innerText;
+    protected $selected = false;
     
     /**
      * Construit une option d'un select d'un formulaire.
@@ -34,9 +35,59 @@ class Option extends Field {
         $s = '<option '.$this->getHtmlAttributesList();
         if(!$this->enabled)
             $s .= 'disabled';
+        else if($this->selected)
+            $s .= 'selected';
         $s .= '>'.$this->innerText.'</option>';
         return $s;
     }   
+
+    /**
+     * Gets the value of innerText.
+     *
+     * @return mixed
+     */
+    public function getInnerText()
+    {
+        return $this->innerText;
+    }
+
+    /**
+     * Sets the value of innerText.
+     *
+     * @param mixed $innerText the innerText
+     *
+     * @return self
+     */
+    public function setInnerText($innerText)
+    {
+        $this->innerText = $innerText;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of selected.
+     *
+     * @return mixed
+     */
+    public function getSelected()
+    {
+        return $this->selected;
+    }
+
+    /**
+     * Sets the value of selected.
+     *
+     * @param mixed $selected the selected
+     *
+     * @return self
+     */
+    public function setSelected($selected)
+    {
+        $this->selected = $selected;
+
+        return $this;
+    }
 }
 
 ?>
