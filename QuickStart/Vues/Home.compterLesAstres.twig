@@ -18,6 +18,7 @@
         {% for astre in astres %}
             <p>Nous avons l'astre {{ astre.nom }}, du système {{ astre.systeme.nom }}</p>
             {{ deleteForm(astre,'Supprimer') }}
+
             {{ updateForm(astre) }}
         {% endfor %}
     </div>
@@ -25,6 +26,10 @@
 <div class="row">
     <div class="span12">
         <h2>Ajoutons un astre !</h2>
+            {{ getFormOpenTag("astre",'insert') }}
+            {{ getFormFieldList("astre",'insert') }}
+            <button type="submit">WaohKaaay !</button>
+            {{ getFormCloseTag("astre",'insert') }}
     </div>
 </div>
 {% endblock %}

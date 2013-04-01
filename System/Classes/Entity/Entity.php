@@ -690,7 +690,7 @@ abstract class Entity {
     /**
      * Génere un champ pour l'action ciblée.
      */
-    protected function generateFormFor($action,$name = '', $label='', $empty=false)
+    public function generateFormFor($action,$name = '', $label='', $empty=false)
     {
         $this->setupFields();
 

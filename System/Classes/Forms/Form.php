@@ -65,7 +65,12 @@ class Form {
         return $s;
     }
 
-    protected function getFormOpenTag()
+    /**
+     * Generate the html code for the openning of the 
+     * form tag.
+     * ex : [ <form action="#" method="post"> ]
+     */
+    public function getFormOpenTag()
     {
         $s = '<form action=' . dbQuote($this->action)
                 . ' method=' . dbQuote($this->method) . ' ';
@@ -76,12 +81,21 @@ class Form {
         return $s;
     }
 
-    protected function getFormCloseTag()
+    /**
+     * Generate the html code for the closing of the 
+     * form tag.
+     * ex : [ </form> ]
+     */
+    public function getFormCloseTag()
     {
         return '</form>';
     }
 
-    protected function getFormFieldList()
+    /**
+     * Generate the html code of all the elements
+     * contained in the form.
+     */
+    public function getFormFieldList()
     {
         $s = '';
         foreach ($this->fields as $field) {

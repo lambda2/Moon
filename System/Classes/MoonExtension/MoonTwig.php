@@ -27,7 +27,10 @@ class MoonTwig extends Twig_Extension
             new Twig_SimpleFunction('href','MoonTwig::moonHref',array('is_safe' => array('html'))),
             new Twig_SimpleFunction('insertForm','MoonTwig::insertForm'),
             new Twig_SimpleFunction('deleteForm','MoonTwig::deleteForm'),
-            new Twig_SimpleFunction('updateForm','MoonTwig::updateForm')
+            new Twig_SimpleFunction('updateForm','MoonTwig::updateForm'),
+            new Twig_SimpleFunction('getFormOpenTag','MoonTwig::getFormOpenTag'),
+            new Twig_SimpleFunction('getFormCloseTag','MoonTwig::getFormCloseTag'),
+            new Twig_SimpleFunction('getFormFieldList','MoonTwig::getFormFieldList'),
             );
     }
     
@@ -69,10 +72,7 @@ class MoonTwig extends Twig_Extension
      */
     public static function insertForm($entity, $label='', $ajax=false)
     {
-        if(is_string($entity))
-        {
-            $entity = Moon::create($entity);
-        }
+        $entity = self::convertStringToEntity($entity);
         if(!is_a($entity, 'Entity'))
             throw new AlertException(
                 "Invalid entity supplied for form generation", 1);
@@ -111,6 +111,47 @@ class MoonTwig extends Twig_Extension
                 "Invalid entity supplied for form generation", 1);
 
         return $entity->generateDeleteForm('',$label);
+    }
+
+    /**
+     * Generate the html code for the openning of the 
+     * form tag for the specified action.
+     * ex : [ <form action="#" method="post"> ]
+     */
+    public static function getFormOpenTag($entity,$action='insert')
+    {
+        $entity = self::convertStringToEntity($entity);
+        return $entity->generateFormFor($action)->getFormOpenTag();
+    }
+
+    /**
+     * Generate the html code for the closing of the 
+     * form tag for the specified action.
+     * ex : [ </form> ]
+     */
+    public static function getFormCloseTag($entity,$action='insert')
+    {
+        $entity = self::convertStringToEntity($entity);
+        return $entity->generateFormFor($action)->getFormCloseTag();
+    }
+
+    /**
+     * Generate the html code of all the elements
+     * contained in the form for the specified action.
+     */
+    public static function getFormFieldList($entity,$action='insert')
+    {
+        $entity = self::convertStringToEntity($entity);
+        return $entity->generateFormFor($action)->getFormFieldList();
+    }
+
+    protected static function convertStringToEntity($str)
+    {
+        if(is_string($str))
+        {
+            $str = Moon::create($str);
+        }
+        return $str;
     }
     
     function getName() {
