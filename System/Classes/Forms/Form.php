@@ -145,6 +145,15 @@ class Form {
     }
 
     /**
+     * Définit le tableaux de boutons fournis en parametre
+     * comme étant les boutons de pied du formulaire.
+     */
+    public function setCustomButtonArray($buttons)
+    {
+        $this->customButtons[] = $buttons;
+    }
+
+    /**
      * Supprime tous les boutons personalisés 
      * définis pour ce formulaire.
      */

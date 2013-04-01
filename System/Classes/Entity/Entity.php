@@ -29,6 +29,8 @@ abstract class Entity {
     protected $access;
     protected $linkedClassesLoaded = false;
 
+    protected $customButtons = array();
+
     public function __construct() {
         $this->table    = strtolower(get_class($this)) . Core::getInstance()->getDbPrefix();
         $this->bdd      = Core::getInstance()->bdd()->getDb();
