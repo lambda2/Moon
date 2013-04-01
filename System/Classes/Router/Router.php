@@ -277,10 +277,15 @@ class Router {
 
         $action = $_GET['moon-action'];
         $target = $_GET['target'];
+        $p = '';
 
         if(isset($_GET['ajax']))
             $ajax = $_GET['ajax'];
-        $p = $POST['p'];
+
+
+        if(isset($_GET['p']))
+            $p = $_GET['p'];
+
 
         $class = EntityLoader::getClass($target);
 

@@ -13,6 +13,7 @@ class Form {
     protected $name;
     protected $action;
     protected $buttonLabel;
+    protected $customButtons = array();
 
     /**
      * Construit un nouveau formulaire vide
@@ -50,24 +51,63 @@ class Form {
     }
 
     public function getHtml($submitButton=true) {
+        $s = $this->getFormOpenTag();
+        $s.= $this->getFormFieldList();
+
+        if($submitButton and isNull($this->customButtons)){
+            $s.= $this->getDefaultSubmitButton();
+        }
+        else if (!isNull($this->customButtons)) {
+            $s.= $this->getFormButtonsList();
+        }
+
+        $s .= $this->getFormCloseTag();
+        return $s;
+    }
+
+    protected function getFormOpenTag()
+    {
         $s = '<form action=' . dbQuote($this->action)
                 . ' method=' . dbQuote($this->method) . ' ';
         if (!isNull($this->name)) {
             $s .= 'name=' . dbQuote($this->name).' ';
         }
         $s .= '>';
+        return $s;
+    }
+
+    protected function getFormCloseTag()
+    {
+        return '</form>';
+    }
+
+    protected function getFormFieldList()
+    {
+        $s = '';
         foreach ($this->fields as $field) {
             $s .= $field->getHtml();
         }
-        if($submitButton){
-            $submit = new Button(
-                'submit-'.$this->name, 
-                $type="submit", 
-                $value="", 
-                $text=$this->buttonLabel);
-            $s .= $submit->getHtml();
+        return $s;
+    }
+
+    protected function getFormButtonsList()
+    {
+        $s = '';
+        foreach ($this->customButtons as $button) {
+            $s .= $button->getHtml();
         }
-        $s .= '</form>';
+        return $s;
+    }
+
+    protected function getDefaultSubmitButton()
+    {
+        $s = '';
+        $submit = new Button(
+            'submit-'.$this->name, 
+            $type="submit", 
+            $value="", 
+            $text=$this->buttonLabel);
+        $s .= $submit->getHtml();
         return $s;
     }
 
@@ -80,6 +120,40 @@ class Form {
         $this->fields = $fields;
         return $this;
     }
+
+    /**
+     * Ajoute un bouton de formulaire personnalisé
+     * qui va remplacer le bouton submit par défaut.
+     * Il est possible d'ajouter plusieurs boutons,
+     * par exemple un bouton submit, et un bouton reset.
+     * 
+     * Si un ou plusieurs boutons personalisés sont
+     * définis, le formulaire de génerera pas de bouton
+     * de soumission par défaut.
+     * @param Input|Button $button le bouton a ajouter.
+     */
+    public function addCustomButton($button)
+    {
+        if(!is_a($button, 'Field'))
+        {
+            throw new AlertException(
+                "Invalid button supplied for custom button", 1);
+        }
+
+        $this->customButtons[] = $button;
+
+    }
+
+    /**
+     * Supprime tous les boutons personalisés 
+     * définis pour ce formulaire.
+     */
+    public function clearCustomButtons()
+    {
+        $this->customButtons = array();
+    }
+
+
 
     public function getMethod() {
         return $this->method;
