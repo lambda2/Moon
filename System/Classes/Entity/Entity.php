@@ -704,7 +704,7 @@ abstract class Entity {
 
         if(!isNull($label))
             $form->setButtonLabel($label);
-        
+
         foreach ($this->fields as $champ => $valeur) {
             $form->addField($valeur->getHtmlField());
         }
@@ -763,6 +763,7 @@ abstract class Entity {
             Core::opts()->system->siteroot
             .'index.php?moon-action=delete&target='
             .$this->table);
+
 
         if(!isNull($label))
             $form->setButtonLabel($label);

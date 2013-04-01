@@ -67,7 +67,7 @@ class MoonTwig extends Twig_Extension
      * @param boolean $ajax activer ou non l'envoi des données en ajax.
      * @return string le code HTML du formulaire.
      */
-    public static function insertForm($entity, $ajax=false, $label='')
+    public static function insertForm($entity, $label='', $ajax=false)
     {
         if(is_string($entity))
         {
@@ -87,7 +87,7 @@ class MoonTwig extends Twig_Extension
      * @param boolean $ajax activer ou non l'envoi des données en ajax.
      * @return string le code HTML du formulaire.
      */
-    public static function updateForm($entity, $ajax=false, $label='')
+    public static function updateForm($entity, $label='', $ajax=false)
     {
         if(!is_a($entity, 'Entity'))
             throw new AlertException(
@@ -104,7 +104,7 @@ class MoonTwig extends Twig_Extension
      * @param boolean $ajax activer ou non l'envoi des données en ajax.
      * @return string le code HTML du formulaire.
      */
-    public static function deleteForm($entity, $ajax=false, $label='')
+    public static function deleteForm($entity, $label='', $ajax=false)
     {
         if(!is_a($entity, 'Entity'))
             throw new AlertException(

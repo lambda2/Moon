@@ -64,7 +64,7 @@ class Form {
                 'submit-'.$this->name, 
                 $type="submit", 
                 $value="", 
-                $text="Valider");
+                $text=$this->buttonLabel);
             $s .= $submit->getHtml();
         }
         $s .= '</form>';
