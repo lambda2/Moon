@@ -26,6 +26,7 @@ class MoonTwig extends Twig_Extension
             new Twig_SimpleFunction('link','MoonTwig::moonLink',array('is_safe' => array('html'))),
             new Twig_SimpleFunction('href','MoonTwig::moonHref',array('is_safe' => array('html'))),
             new Twig_SimpleFunction('insertForm','MoonTwig::insertForm'),
+            new Twig_SimpleFunction('deleteForm','MoonTwig::deleteForm'),
             new Twig_SimpleFunction('updateForm','MoonTwig::updateForm')
             );
     }
@@ -66,7 +67,7 @@ class MoonTwig extends Twig_Extension
      * @param boolean $ajax activer ou non l'envoi des données en ajax.
      * @return string le code HTML du formulaire.
      */
-    public static function insertForm($entity, $ajax=false)
+    public static function insertForm($entity, $ajax=false, $label='')
     {
         if(is_string($entity))
         {
@@ -76,10 +77,9 @@ class MoonTwig extends Twig_Extension
             throw new AlertException(
                 "Invalid entity supplied for form generation", 1);
 
-        return $entity->generateInsertForm();
+        return $entity->generateInsertForm('',$label);
             
     }
-
 
     /**
      * Permet de générer un formulaire de mise à jour
@@ -87,14 +87,30 @@ class MoonTwig extends Twig_Extension
      * @param boolean $ajax activer ou non l'envoi des données en ajax.
      * @return string le code HTML du formulaire.
      */
-    public static function updateForm($entity, $ajax=false)
+    public static function updateForm($entity, $ajax=false, $label='')
     {
         if(!is_a($entity, 'Entity'))
             throw new AlertException(
                 "Invalid entity supplied for form generation", 1);
 
-        return $entity->generateUpdateForm();
+        return $entity->generateUpdateForm('',$label);
             
+    }
+
+    /**
+     * Permet de générer un formulaire de supression,
+     * qui ne sera en fait constitué que d'un seul bouton 'supprimer'
+     * @param Entity $entity la classe pour laquelle créer le formulaire.
+     * @param boolean $ajax activer ou non l'envoi des données en ajax.
+     * @return string le code HTML du formulaire.
+     */
+    public static function deleteForm($entity, $ajax=false, $label='')
+    {
+        if(!is_a($entity, 'Entity'))
+            throw new AlertException(
+                "Invalid entity supplied for form generation", 1);
+
+        return $entity->generateDeleteForm('',$label);
     }
     
     function getName() {

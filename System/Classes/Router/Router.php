@@ -201,8 +201,6 @@ class Router {
     public function routeGet()
     {
         $params = $_GET;
-        echo 'GETROUTE<br>';
-        var_dump($_POST);
 
         if (isset($params['p'])) {
 
@@ -276,7 +274,6 @@ class Router {
     {
         $sucess = false;
         $params = $_POST;
-        echo 'POSTROUTE<br>';
 
         $action = $_GET['moon-action'];
         $target = $_GET['target'];
@@ -354,9 +351,6 @@ class Router {
      */
     public function route() {
 
-        echo "request method = ".$_SERVER['REQUEST_METHOD'].'<br>';
-        var_dump($_POST);
-        var_dump($_GET);
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 $this->routeGet();

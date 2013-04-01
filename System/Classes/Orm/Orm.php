@@ -133,7 +133,6 @@ abstract class Orm {
             'INSERT INTO '
             .$table.' ('.$fields.')'
             .' VALUES ('.$parenthValues.');';
-        echo $request;
 
         try {
             $Req = self::$db->prepare($request);
@@ -176,6 +175,10 @@ abstract class Orm {
         return true;
     }
 
+    /**
+     * Genere la liste des valeurs a envoyer a [execute()] à partir
+     * des champs a mettre a jour et des ids de la clause WHERE.
+     */
     protected function getUpdatePreparedParams($data,$ids)
     {
         $ret = array();

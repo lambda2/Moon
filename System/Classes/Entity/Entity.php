@@ -247,11 +247,7 @@ abstract class Entity {
         {
             throw new CriticalException(
                 "Invalid parameters to load an object with array !", 1);
-            
         }
-
-        echo 'REQUEST = '.$request.'<br>';
-
         
         try 
         {
@@ -692,7 +688,7 @@ abstract class Entity {
     /**
      * Génere un champ d'insertion en HTML.
      */
-    public function generateInsertForm($name = '')
+    public function generateInsertForm($name = '', $label='')
     {
         $this->setupFields();
 
@@ -702,8 +698,13 @@ abstract class Entity {
             $formName = $name;
 
         $form = new Form($formName,
-            Core::opts()->system->siteroot.'index.php?moon-action=insert&target='.$this->table);
+            Core::opts()->system->siteroot
+            .'index.php?moon-action=insert&target='
+            .$this->table);
 
+        if(!isNull($label))
+            $form->setButtonLabel($label);
+        
         foreach ($this->fields as $champ => $valeur) {
             $form->addField($valeur->getHtmlField());
         }
@@ -714,7 +715,7 @@ abstract class Entity {
     /**
      * Génere un champ de mise à jour en HTML.
      */
-    public function generateUpdateForm($name = '')
+    public function generateUpdateForm($name = '', $label='')
     {
         $this->setupFields();
 
@@ -726,11 +727,45 @@ abstract class Entity {
         $keysList = $this->getDefinedPrimaryFields();
 
         $form = new Form($formName,
-            Core::opts()->system->siteroot.'index.php?moon-action=update&target='.$this->table);
+            Core::opts()->system->siteroot
+            .'index.php?moon-action=update&target='
+            .$this->table);
+
+        if(!isNull($label))
+            $form->setButtonLabel($label);
 
         foreach ($this->fields as $champ => $valeur) {
             $form->addField($valeur->getHtmlField());
         }
+
+        $destination = new Input('ids','hidden');
+        $destination->setValue(arr2param($keysList,','));
+        $form->addField($destination);
+
+        return $form;
+    }
+
+    /**
+     * Génere un champ de supression en HTML.
+     */
+    public function generateDeleteForm($name = '', $label='')
+    {
+        $this->setupFields();
+
+        if(isNull($name))
+            $formName = 'delete-'.get_class($this);
+        else
+            $formName = $name;
+
+        $keysList = $this->getDefinedPrimaryFields();
+
+        $form = new Form($formName,
+            Core::opts()->system->siteroot
+            .'index.php?moon-action=delete&target='
+            .$this->table);
+
+        if(!isNull($label))
+            $form->setButtonLabel($label);
 
         $destination = new Input('ids','hidden');
         $destination->setValue(arr2param($keysList,','));

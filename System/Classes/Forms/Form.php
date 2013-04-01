@@ -12,6 +12,7 @@ class Form {
     protected $method;
     protected $name;
     protected $action;
+    protected $buttonLabel;
 
     /**
      * Construit un nouveau formulaire vide
@@ -19,10 +20,11 @@ class Form {
      * @param string $action la page ou les données du formulaire seront envoyées.
      */
     public function __construct($name = "", $action = "#") {
-        $this->fields = array();
-        $this->method = "post";
-        $this->name   = $name;
-        $this->action = $action;
+        $this->fields       = array();
+        $this->method       = "post";
+        $this->name         = $name;
+        $this->action       = $action;
+        $this->buttonLabel  = 'valider';
     }
 
     /**
@@ -110,6 +112,15 @@ class Form {
 
     public function setAction($action) {
         $this->action = $action;
+        return $this;
+    }
+
+    public function getButtonLabel() {
+        return $this->buttonLabel;
+    }
+
+    public function setButtonLabel($buttonLabel) {
+        $this->buttonLabel = $buttonLabel;
         return $this;
     }
 
