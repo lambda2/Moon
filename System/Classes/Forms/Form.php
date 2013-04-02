@@ -104,6 +104,10 @@ class Form {
         return $s;
     }
 
+    /**
+     * Returns the HTML code of the form's button
+     * list.
+     */
     protected function getFormButtonsList()
     {
         $s = '';
