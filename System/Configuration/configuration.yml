@@ -71,9 +71,6 @@ templates:
   # Le chemin du dossier contenant les templates de l'utilisateur
   user_path: "Vues/"
 
-  # Le chemin des templates systeme predefinies
-  system_path: "../System/Templates/"
-
   # Le chemin du cache des templates
   cache_path: "../System/Cache/"
 

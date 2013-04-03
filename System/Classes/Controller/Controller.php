@@ -87,9 +87,7 @@ abstract class Controller {
          * C'est à dire le chemin des templates utilisateurs (les vues)
          * et le chemin des templates Système.
          */
-        $tplPaths = array(
-            Core::opts()->templates->user_path,
-            Core::opts()->templates->system_path);
+        $tplPaths = array(Core::opts()->templates->user_path);
 
         return $tplPaths;
     }
@@ -149,8 +147,6 @@ abstract class Controller {
         // On nettoie tout ça...
         $this->webdata = array();
 
-        $this->webdata['template_extend'] =
-                Core::opts()->templates->default_template;
         $this->webdata['info']            = Core::opts()->info->childs();
         $this->webdata['base']            = Core::opts()->system->siteroot;
         $this->webdata['stylesheets']     = array();
