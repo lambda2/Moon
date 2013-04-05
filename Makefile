@@ -1,33 +1,34 @@
-BOOTSTRAP_DIR=./System/Assets/
-
+Moon_tpl_DIR=./Templates/
+DIR = $(shell ls $(Moon_tpl_DIR))
 DATE=$(shell date +%I:%M%p)
 HR=\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
 all: sayhello buildall saygoodbye
 
-buildall: buildbs
+buildall: buildtpls
 
-buildbs: 
-	cd $(BOOTSTRAP_DIR); make bootstrap
+buildtpls:
+	@$(foreach dir,$(DIR),cd ./$(Moon_tpl_DIR)/$(dir); make all; cd ..;)
 	@echo ""
 
 sayhello:
+	@echo " ${HR}"
 	@echo ""
-	@echo "${HR}"
+	@echo " Templates : ${DIR}"
 	@echo ""
-	@echo "Hi people !"
 	@echo "   ------------------------------------"
-	@echo "  |  Building moon framework...  |"
+	@echo "  |  Building moon framework assets... |"
 	@echo "   ------------------------------------"
 	@echo ""
 
 saygoodbye:
-	@echo "   --------------------------------"
-	@echo "‣ Look at your clock ! It's ${DATE}, tea time !."
+	@echo " » Look at your clock ! It's ${DATE}, tea time !."
 	@echo ""
-	@echo "‣ You can now use the moon framework,"
-	@echo "‣ Thanks you !"
+	@echo " » You can now use the moon framework,"
+	@echo " » Thanks you !"
 	@echo ""
-	@echo "(c) lambdaweb - www.lambdaweb.fr"
+	@echo " © lambdaweb - 2Ø13 - www.lambdaweb.fr"
+	@echo ""
+	@echo " ${HR}"
 
-.PHONY: build
+.PHONY: buildall
