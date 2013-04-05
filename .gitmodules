@@ -1,0 +1,3 @@
+[submodule "moon-template"]
+	path = moon-template
+	url = git@github.com:lambda2/moon-template.git
