@@ -25,26 +25,70 @@ class Core {
     protected static $user;
     protected static $host_tables = array();
 
-    protected function __construct($dev_mode = "DEBUG", $dbPrefix = '') {
+    protected function __construct($dev_mode = "DEBUG", $dbPrefix = '')
+    {
         $this->initialize($dev_mode, $dbPrefix);
     }
 
-
-    
-    
-    public static function loadOptions(){
+    public static function loadOptions()
+    {
         $userConfigFile = Spyc::YAMLLoad(self::userConfigFile);
         $defaultConfigFile = Spyc::YAMLLoad(self::defaultConfigFile);
         self::$options = new ArrayBrowser(extendArray($defaultConfigFile, $userConfigFile));
+        self::loadTemplate();
+    }
+
+    protected static function loadTemplate()
+    {
+        $success = true;
+
+        echo '<br>chargement des templates...<br>';
+        // the template to use
+        $selectedTemplate = self::$options->templates->default_template;
+
+        // the path to the templates folder
+        $templatePath = self::$options->templates->path;
+
+        // the selected template config file path
+        $templateConfigPath = $templatePath.'/'.$selectedTemplate.'/template.yml';
+
+        if(file_exists($templateConfigPath))
+        {
+            echo 'fichier trouvé : '.$templateConfigPath.'<br>';
+            $tplOpts = Spyc::YAMLLoad($templateConfigPath);
+            $tplOptsBr = new ArrayBrowser($tplOpts);
+
+            if(is_array($tplOpts) 
+                and self::$options->templates->appendNewBrowser('config',$tplOptsBr))
+            {
+                echo 'fusion réussie !';
+                $success = true;
+            }
+            else
+            {
+                echo 'La fusion a échouée !';
+            }
+        }
+        else
+        {
+            echo 'fichier introuvale : '.$templateConfigPath.'<br>';
+            echo 'La fusion a échouée !';
+        }
+
+        var_dump(self::$options->templates->childs());
+
+        return $success;
     }
     
-    public static function opts(){
+    public static function opts()
+    {
         if(isNull(self::$options))
             self::loadOptions ();
         return self::$options;
     }
     
-    public static function loadRoutes(){
+    public static function loadRoutes()
+    {
         $routeFiles = Core::opts()->system->routes_files;
         $r = array();
         foreach ($routeFiles as $route) {
@@ -70,7 +114,7 @@ class Core {
 
         try {
             
-            MoonChecker::runTests();
+            //MoonChecker::runTests();
             self::loadOptions();
             self::loadRoutes();
             
