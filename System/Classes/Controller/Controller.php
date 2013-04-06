@@ -23,6 +23,11 @@ abstract class Controller {
     protected $template;
 
     /**
+     * @var string the folder for all the templates 
+     */
+    protected $templatesFolder;
+
+    /**
      * @var array webdata le tableau contenant toutes les infos système
      * a passer à la template (comme le debug, ou la template mere...) 
      */
@@ -35,16 +40,28 @@ abstract class Controller {
     protected $data = array();
 
     public function __construct($request = '') {
-        /* $this->webdata = array();
-          $this->loader = new Twig_Loader_Filesystem(array('Vues/','System/Templates/'));
-          $this->twig = new Twig_Environment($this->loader, array(
-          // 'cache' => 'System/Cache/',
-          )); */
+
+        $this->initializeDefaultTemplateFolder();
         $this->initialize();
 
 
         if ($request == '')
             $this->index();
+    }
+
+    protected function initializeDefaultTemplateFolder()
+    {
+        cho '<br>chargement du répertoire des templates...<br>';
+        // the template to use
+        $selectedTemplate = self::$options->templates->default_template;
+
+        // the path to the templates folder
+        $templatePath = self::$options->templates->path;
+
+        // the selected template config file path
+        $templateFolderPath = $templatePath.'/'.$selectedTemplate.'/';
+
+        $this->templatesFolder = $templateFolderPath;
     }
 
     /**
@@ -97,6 +114,7 @@ abstract class Controller {
      * propriétés du controleur à leur valeur par défaut.
      */
     final protected function initialize() {
+
 
         $this->template = strtolower(get_class($this)) . '.twig';
 
