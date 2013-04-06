@@ -25,7 +25,12 @@ abstract class Controller {
     /**
      * @var string the folder for all the templates 
      */
-    protected $templatesFolder;
+    protected $templatesFolder = null;
+
+    /**
+     * @var ArrayBrowser the config for all the templates 
+     */
+    protected $templatesConfig = null;
 
     /**
      * @var array webdata le tableau contenant toutes les infos système
@@ -41,7 +46,7 @@ abstract class Controller {
 
     public function __construct($request = '') {
 
-        $this->initializeDefaultTemplateFolder();
+        $this->setTemplateFolder(Core::opts()->templates->default_template);
         $this->initialize();
 
 
@@ -49,19 +54,63 @@ abstract class Controller {
             $this->index();
     }
 
-    protected function initializeDefaultTemplateFolder()
+    public function useCustomTemplate($template)
     {
-        cho '<br>chargement du répertoire des templates...<br>';
-        // the template to use
-        $selectedTemplate = self::$options->templates->default_template;
+        $this->setTemplateFolder($template);
+        $this->loadTemplateConfiguration();
 
+        // We have to reload the engine to update the search paths.
+        // TODO : Trouver une autre solution que de tout recharger.
+        $this->reloadMainTwigEngine();
+    }
+
+    /**
+     * Set the template folder path without relative path.
+     * This method will search the requested template folder
+     * in the Templates directory [templates->path] set in 
+     * the application configuration file.
+     * @param string $template the name of the template.
+     */
+    protected function setTemplateFolder($template)
+    {
         // the path to the templates folder
-        $templatePath = self::$options->templates->path;
+        $templatePath = Core::opts()->templates->path;
 
         // the selected template config file path
-        $templateFolderPath = $templatePath.'/'.$selectedTemplate.'/';
+        $templateFolderPath = $templatePath.'/'.$template.'/';
 
         $this->templatesFolder = $templateFolderPath;
+
+        $this->loadTemplateConfiguration();
+    }
+
+    /**
+     * Load the template configuration by generating a
+     * ArrayBrowser instance with the template.yml
+     * config file int the template directory.
+     */
+    protected function loadTemplateConfiguration()
+    {
+        if(isNull($this->templatesFolder))
+            throw new AlertException(
+                "No template folder have been specified with setTemplateFolder(folder)", 1);
+
+        // The path to the template folder configuration file
+        $templateConfigPath = $this->templatesFolder.'template.yml';
+
+        if(file_exists($templateConfigPath))
+        {
+            $tplOpts = Spyc::YAMLLoad($templateConfigPath);
+            $this->templatesConfig = new ArrayBrowser($tplOpts);
+        }
+        else
+        {
+            throw new AlertException(
+                "Unable to load the templates configuration file."
+                ."Verify the syntax of your YAML file", 1
+            );
+        }
+
     }
 
     /**
@@ -104,7 +153,10 @@ abstract class Controller {
          * C'est à dire le chemin des templates utilisateurs (les vues)
          * et le chemin des templates Système.
          */
-        $tplPaths = array(Core::opts()->templates->user_path);
+        $tplPaths = array(
+            Core::opts()->templates->user_path,
+            $this->templatesFolder.DIRECTORY_SEPARATOR.$this->templatesConfig->twig_path
+            );
 
         return $tplPaths;
     }
@@ -142,10 +194,30 @@ abstract class Controller {
         if (Core::opts()->system->mode == 'DEBUG') {
             $this->twig->addExtension(new Twig_Extension_Debug());
         }
-        // add custom filter
-        /* $this->twig->addFilter('moonlink', 
-          new Twig_Filter_Function('Controller::moonlink', array('is_safe' => array('html')))
-          ); */
+    }
+
+
+    /**
+     * Reload all the twig engine. 
+     * This operation can be heavy, to use with caution.
+     */
+    final protected function reloadMainTwigEngine() {
+
+        $this->loader = new Twig_Loader_Filesystem(
+                $this->getTemplatePathsArray()
+        );
+
+        $this->twig = new Twig_Environment(
+                $this->loader, $this->getTemplateLoaderOptionsArray()
+        );
+        $escaper    = new Twig_Extension_Escaper(false);
+        $this->twig->addExtension($escaper);
+
+        $this->twig->addExtension(new MoonTwig());
+        
+        if (Core::opts()->system->mode == 'DEBUG') {
+            $this->twig->addExtension(new Twig_Extension_Debug());
+        }
     }
 
     /*
@@ -199,6 +271,26 @@ abstract class Controller {
                     Core::opts()->templates->stylesheets_path
                     . $name . '.css';
         }
+        else if (file_exists(
+            $this->templatesFolder.DIRECTORY_SEPARATOR
+            .$this->templatesConfig->stylesheets_path
+            .$name)) 
+        {
+            $this->webdata['stylesheets'][] = $this->templatesFolder
+                .DIRECTORY_SEPARATOR
+                .$this->templatesConfig->stylesheets_path
+                .$name;
+        }
+        else if (file_exists(
+            $this->templatesFolder.DIRECTORY_SEPARATOR
+            .$this->templatesConfig->stylesheets_path
+            .$name.'.css')) 
+        {
+            $this->webdata['stylesheets'][] = $this->templatesFolder
+                .DIRECTORY_SEPARATOR
+                .$this->templatesConfig->stylesheets_path
+                .$name.'.css';
+        }
         else {
             /** @TODO : Retirer cet echo malfaisant, et gerer une exception. */
             /* echo "il semblerait que " . Core::opts()->system->siteroot
@@ -236,6 +328,26 @@ abstract class Controller {
                     Core::opts()->templates->js_path
                     . $name . '.js';
         }
+        else if (file_exists(
+            $this->templatesFolder.DIRECTORY_SEPARATOR
+            .$this->templatesConfig->js_path
+            .$name)) 
+        {
+            $this->webdata['scripts'][] = $this->templatesFolder
+                .DIRECTORY_SEPARATOR
+                .$this->templatesConfig->js_path
+                .$name;
+        }
+        else if (file_exists(
+            $this->templatesFolder.DIRECTORY_SEPARATOR
+            .$this->templatesConfig->js_path
+            .$name.'.js')) 
+        {
+            $this->webdata['scripts'][] = $this->templatesFolder
+                .DIRECTORY_SEPARATOR
+                .$this->templatesConfig->js_path
+                .$name.'.js';
+        }
         else {
             /** @TODO : Retirer cet echo malfaisant, et gerer une exception. */
             /* echo "il semblerait que " . Core::opts()->system->siteroot
@@ -252,12 +364,17 @@ abstract class Controller {
      * systématiquement les memes fichiers dans vos templates.
      */
     protected function addTemplateBaseIncludes() {
+        $this->addCss('style');
+    }
 
-        $this->addCss('bootstrap.min');
-        $this->addCss('bootstrap-responsive.min');
-
-        $this->addJs('jquery');
-        $this->addJs('bootstrap.min');
+    /**
+     * The css / js includes needed if we are in development mode.
+     */
+    protected function addDebugIncludes()
+    {
+        if (Core::getInstance()->debug()) {
+            $this->addCss('../System/Classes/Debug/debug.css');
+        }
     }
 
     final protected function loadWebData() {
@@ -360,6 +477,7 @@ abstract class Controller {
             $this->template .= '.twig';
         }
         $this->addTemplateBaseIncludes();
+        $this->addDebugIncludes();
         $this->tryToRender();
     }
 
