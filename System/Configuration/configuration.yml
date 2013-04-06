@@ -66,7 +66,7 @@ templates:
   path: "../Templates"
 
   # Le template qui sera utilisé par défaut
-  default_template: "moon-template" ###
+  default_template: "bs-template" ###
 
   # Définit si le cache des templates est activé ou non
   cache_enabled: false
