@@ -35,14 +35,12 @@ class Core {
         $userConfigFile = Spyc::YAMLLoad(self::userConfigFile);
         $defaultConfigFile = Spyc::YAMLLoad(self::defaultConfigFile);
         self::$options = new ArrayBrowser(extendArray($defaultConfigFile, $userConfigFile));
-        self::loadTemplate();
     }
 
     protected static function loadTemplate()
     {
         $success = true;
 
-        echo '<br>chargement des templates...<br>';
         // the template to use
         $selectedTemplate = self::$options->templates->default_template;
 
@@ -54,29 +52,15 @@ class Core {
 
         if(file_exists($templateConfigPath))
         {
-            echo 'fichier trouvé : '.$templateConfigPath.'<br>';
             $tplOpts = Spyc::YAMLLoad($templateConfigPath);
             $tplOptsBr = new ArrayBrowser($tplOpts);
 
             if(is_array($tplOpts) 
                 and self::$options->templates->appendNewBrowser('config',$tplOptsBr))
             {
-                echo 'fusion réussie !';
                 $success = true;
             }
-            else
-            {
-                echo 'La fusion a échouée !';
-            }
         }
-        else
-        {
-            echo 'fichier introuvale : '.$templateConfigPath.'<br>';
-            echo 'La fusion a échouée !';
-        }
-
-        var_dump(self::$options->templates->childs());
-
         return $success;
     }
     
