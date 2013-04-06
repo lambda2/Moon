@@ -62,8 +62,11 @@ system:
 
 templates:
 
+  # The templates folder path
+  path: "../Templates"
+
   # Le template qui sera utilisé par défaut
-  default_template: "base_fix.twig"
+  default_template: "moon-template" ###
 
   # Définit si le cache des templates est activé ou non
   cache_enabled: false
@@ -82,12 +85,3 @@ templates:
 
   # Le chemin du repertoire contenant les scripts
   js_path: "Assets/js/"
-
-  # Le chemin du repertoire contenant les feuilles de style du systeme
-  system_stylesheets_path: "Assets/css/"
-
-  # Le chemin du repertoire contenant les images du systeme
-  system_img_path: "Assets/img/"
-
-  # Le chemin du repertoire contenant les scripts du systeme
-  system_js_path: "Assets/js/"
