@@ -8,7 +8,7 @@ all: sayhello buildall saygoodbye
 buildall: buildtpls
 
 buildtpls:
-	@$(foreach dir,$(DIR),cd ./$(Moon_tpl_DIR)/$(dir); make all; cd ..;)
+	@$(foreach dir,$(DIR),cd ./$(Moon_tpl_DIR)/$(dir); make all; cd ../..;)
 	@echo ""
 
 sayhello:

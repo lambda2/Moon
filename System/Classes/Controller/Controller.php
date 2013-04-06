@@ -358,13 +358,25 @@ abstract class Controller {
     }
 
     /**
-     * Va definir quels sont les fichiers css et js à charger par défaut.
+     * Va definir quels sont les fichiers css et js à charger en plus.
      * --> <b>Surchargez la</b> dans vos controlleurs pour inclure 
      * systématiquement les memes fichiers dans vos templates.
      */
+    protected function addTemplateUserIncludes() {}
+
+    /**
+     * Will load all the css and js dependancies of the selected template.
+     */
     protected function addTemplateBaseIncludes() {
-        $this->addCss('style');
-        $this->addJs('jquery');
+
+        foreach ($this->templatesConfig->css_includes as $key => $value) {
+            $this->addCss($value);
+        }
+
+        foreach ($this->templatesConfig->js_includes as $key => $value) {
+            $this->addJs($value);
+        }
+        
     }
 
     /**
@@ -468,7 +480,9 @@ abstract class Controller {
     }
 
     final public function render() {
+
         $this->template = $this->getTemplateFileName();
+        
         if ($this->template == false) {
             dbg("le template de destination n'a pas pu etre calcule...", 2);
             $this->template = strtolower(get_class($this)) . '.twig';
@@ -476,8 +490,13 @@ abstract class Controller {
         else {
             $this->template .= '.twig';
         }
+
+        // Add the includes
         $this->addTemplateBaseIncludes();
+        $this->addTemplateUserIncludes();
         $this->addDebugIncludes();
+
+        // And try to render
         $this->tryToRender();
     }
 
