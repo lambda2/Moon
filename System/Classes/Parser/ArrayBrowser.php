@@ -42,6 +42,29 @@ class ArrayBrowser {
     }
 
     /**
+     * Associate a browser the current browser at the position specified by the
+     * key parameter.
+     * @param string $key the key where the browser will be appended
+     * @param ArrayBrowser $browser the browser to append
+     * @return boolean True on success, false otherwise.
+     */
+    public function appendNewBrowser($key, $browser)
+    {
+        if (is_a($browser, 'ArrayBrowser')) {
+            $this->arr[$key] = $browser;
+        }
+        else
+        {
+            echo "le parametre est d'un type incorrect pour appendNewBrowser()";
+            throw new CoreException(
+                "Incorrect parameter type. Expected [ArrayBrowser] but got ".gettype($browser), 1);
+            
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Checks if a key is in the Browser values.
      */
     public function contains($key) {
