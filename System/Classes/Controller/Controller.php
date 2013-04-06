@@ -282,12 +282,12 @@ abstract class Controller {
                 .$name;
         }
         else if (file_exists(
-            $this->templatesFolder.DIRECTORY_SEPARATOR
+            $this->templatesFolder
             .$this->templatesConfig->stylesheets_path
-            .$name.'.css')) 
+            .$name.'.css'))
         {
             $this->webdata['stylesheets'][] = $this->templatesFolder
-                .DIRECTORY_SEPARATOR
+                
                 .$this->templatesConfig->stylesheets_path
                 .$name.'.css';
         }
@@ -339,12 +339,11 @@ abstract class Controller {
                 .$name;
         }
         else if (file_exists(
-            $this->templatesFolder.DIRECTORY_SEPARATOR
+            $this->templatesFolder
             .$this->templatesConfig->js_path
             .$name.'.js')) 
         {
             $this->webdata['scripts'][] = $this->templatesFolder
-                .DIRECTORY_SEPARATOR
                 .$this->templatesConfig->js_path
                 .$name.'.js';
         }
@@ -365,6 +364,7 @@ abstract class Controller {
      */
     protected function addTemplateBaseIncludes() {
         $this->addCss('style');
+        $this->addJs('jquery');
     }
 
     /**
