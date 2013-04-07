@@ -1,0 +1,18 @@
+# >>> Fichier de configuration de l'extension [users]
+#
+#	Cette extension permet d'ajouter la gestion des utilisateurs
+#	au framework, et fournit des méthodes de connexion / deconnexion
+#
+#     This file is part of the moon framework.
+#
+#     (c) 2013 Lambdaweb - www.lambdaweb.fr
+#
+#     For the full copyright and license information, please view the LICENSE
+#     file that was distributed with this source code.
+#
+
+users_table: 'user'
+users_pseudo_row: 'pseudo'
+users_password_row: 'pass'
+
+password_encryption: 'sha1'

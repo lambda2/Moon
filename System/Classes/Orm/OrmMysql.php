@@ -158,16 +158,21 @@ class OrmMysql extends Orm {
      */
     public function getAllEntityFields($tableName)
     {
+        //echo '<h2>POUR LA TABLE '.$tableName.'</h2>';
         $fields = array();
         $sqlFields = $this->getAllColumnsFrom($tableName);
         $moonLinks = $this->getMoonLinksFrom($tableName);
 
         foreach ($sqlFields as $table => $field) {
 
+            //var_dump($field);
             $name = $field->Field;
             $type = self::parseTypeValue($field->Type);
 
+            //echo '<br><br>nouvel ENTITYFIELD de '.$name.'('.$type.')<br>';
             $f = new EntityField($type,$name);
+            //echo 'Formualire :<br>';
+            //echo $f->getHtmlField();
 
 
             $f->setIsNull(self::parseNullValue($field->Null));
@@ -175,12 +180,17 @@ class OrmMysql extends Orm {
             if($field->Key == 'PRI'){
                 $f->setIsPrimary(true);
             }
-            else if ($field->Key == 'MUL'){
+            else if ($field->Key == 'MUL' 
+                and array_key_exists($name, $moonLinks) 
+                and !isNull($moonLinks[$name]))
+            {
                 $f->setIsForeign(true);
                 $f->setForeignTarget(
                     $moonLinks[$name]->destinationTable
                     .'.'.$moonLinks[$name]->destinationColumn);
-
+                //echo '<b>'.$moonLinks[$name]->destinationTable
+                //    .'.'.$moonLinks[$name]->destinationColumn.'</b><br>';
+                //echo 'keys = '.arr2str(array_keys($moonLinks)).'<br>';
                 $f->setForeignDisplayTarget(
                     $moonLinks[$name]->destinationTable
                     .'.'.$moonLinks[$name]->destinationColumn);

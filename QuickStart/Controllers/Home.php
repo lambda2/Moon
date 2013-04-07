@@ -23,12 +23,12 @@ class Home extends Controller {
     
     public function compterLesAstres()
     {
-        $astres = Moon::getAllHeavy('astre');
-        $this->addData('astres', $astres);
-        $astre = Moon::create('astre');
+        $membres = Moon::getAllHeavy('membre');
+        $this->addData('membres', $membres);
+        $membre = Moon::create('membre');
         
-        $astreForm = $astre->generateInsertForm();
-        $this->addData('astresForm', $astreForm->getHtml());
+        $membreForm = $membre->generateInsertForm();
+        $this->addData('membreForm', $membreForm->getHtml());
 
         $this->render();
     }

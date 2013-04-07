@@ -170,15 +170,6 @@ class Core {
     }
     
     public static function isValidClass($className) {
-        /*foreach (self::$host_tables as $value) {
-            echo "on regarde si la table $className correspond a $value...";
-            if(strcmp($className, $value) == 0){
-                echo " YES !";
-            }
-            else
-                echo " NON... !";
-            echo '<br>';
-        }*/
         if (in_array($className, self::$host_tables))
             return true;
         else

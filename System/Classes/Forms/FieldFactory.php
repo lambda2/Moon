@@ -9,52 +9,6 @@ class FieldFactory {
     protected function __construct(){
         
     }
-    
-    /*
-    public static function createField(
-        $type, $name, $null='NO',
-        $default=null, $key='',$extra='')
-    {
-        
-        $dataType = self::parseTypeValue($type);
-        $field = null;
-        
-        switch ($dataType) {
-
-            case 'varchar':
-                $field = new Input($name,'text');
-                break;
-
-            case 'int':
-                $field = new Input($name,'number');
-                break;
-
-            case 'enum':
-                $field = new Select($name);
-                $options = self::parseInnerParenthValue($type);
-                foreach (explode(',', $options) as $opt) {
-                    $field->addOption($opt);
-                }
-                break;
-
-            default:
-                break;
-        }
-
-        if(!self::parseNullValue($null))
-            $field->setRequired(true);
-
-        if($default ==! null)
-            $field->setPlaceholder($default);
-
-        if($extra == 'auto_increment')
-            $field->setVisible(false);
-
-
-        return $field;
-        
-    }
-    */
 
     public static function createField($type, $name)
     {
@@ -66,12 +20,24 @@ class FieldFactory {
                 $field = new Input($name,'text');
                 break;
 
+            case 'char':
+                $field = new Input($name,'text');
+                break;
+
             case 'int':
                 $field = new Input($name,'number');
                 break;
 
+            case 'date':
+                $field = new Input($name,'date');
+                break;
+
             case 'enum':
                 $field = new Select($name);
+                break;
+
+            case 'text':
+                $field = new TextArea($name);
                 break;
 
             default:
