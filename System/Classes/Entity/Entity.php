@@ -723,7 +723,9 @@ abstract class Entity {
      */
     public function generateInsertForm($name = '', $label='')
     {
-        return $this->generateFormFor('insert',$name, $label);
+        $form = $this->generateFormFor('insert',$name, $label);
+        $form->clearFieldsValues();
+        return $form;
     }
 
     /**
@@ -813,8 +815,6 @@ abstract class Entity {
     public function processDeleteForm($data=array())
     {
         $fields = $this->parseDataForAction($data);
-        echo 'the fields are : <br>';
-        var_dump($fields);
         if(Core::getBdd()->delete(
             $this->table,
             $fields

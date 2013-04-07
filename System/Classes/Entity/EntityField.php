@@ -87,7 +87,16 @@ class EntityField {
             $field->setVisible(!$this->isAuto);
             $field->setValue($this->value);
 
-            $options = array();
+            if($this->isNull)
+            {
+                $o = new Option('', 'Aucun');
+                if($this->value == '')
+                {
+                    $o->setSelected(true);
+                }
+                $field->addOptionObject($o);
+            }
+
             for ($i=0; $i < count($values); $i++) { 
                 $o = new Option($values[$i], $displayValues[$i]);
                 if($this->value == $values[$i])
@@ -96,6 +105,8 @@ class EntityField {
                 }
                 $field->addOptionObject($o);
             }
+
+            
 
         }
         else 

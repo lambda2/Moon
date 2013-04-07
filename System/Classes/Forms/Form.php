@@ -44,6 +44,16 @@ class Form {
     }
 
     /**
+     * Supprime les valeurs enregistrées dans le fomulaire.
+     */
+    public function clearFieldsValues()
+    {
+        foreach ($this->fields as $key => $field) {
+            $field->setValue('');
+        }
+    }
+
+    /**
      * Supprime tous les champs du formulaire
      */
     public function clearFields() {

@@ -247,7 +247,7 @@ abstract class Field {
                 $s .= 'type=' . dbQuote($this->type) . ' ';
             if (!isNull($this->id))
                 $s .= 'id=' . dbQuote($this->id) . ' ';
-            if (!isNull($this->value))
+            if (!isNull($this->value) or get_class($this) == 'Option')
                 $s .= 'value=' . dbQuote($this->value) . ' ';
             if (!isNull($this->placeholder))
                 $s .= 'placeholder=' . dbQuote($this->placeholder) . ' ';

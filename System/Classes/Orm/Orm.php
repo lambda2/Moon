@@ -114,7 +114,10 @@ abstract class Orm {
     {
         $ret = array();
         foreach ($count as $key => $value) {
-            $ret[] = $key.' = ?';
+            if($value != '')
+                $ret[] = $key.' = ?';
+            else
+                $ret[] = $key.' = NULL';
         }
         return arr2str($ret,$sep);
     }
@@ -162,9 +165,14 @@ abstract class Orm {
             'UPDATE '
             .$table.' SET '.$set.''
             .' WHERE '.$where.';';
+        echo 'Update with the request <code>'.$request.'</code><br>';
+        echo 'the params are : <br>';
+        var_dump($this->getUpdatePreparedParams($data,$ids));
         try {
             $Req = self::$db->prepare($request);
-            $Req->execute($this->getUpdatePreparedParams($data,$ids));
+            var_dump($Req);
+            $r = $Req->execute($this->getUpdatePreparedParams($data,$ids));
+            var_dump($r);
         } catch (Exception $e) { //interception de l'erreur
 
             // Peut etre faudra il enlever cette exception.
@@ -210,7 +218,8 @@ abstract class Orm {
     {
         $ret = array();
         foreach ($data as $key => $value) {
-            $ret[] = $value;
+            if($value != '')
+                $ret[] = $value;
         }
         foreach ($ids as $key => $value) {
             $ret[] = $value;
