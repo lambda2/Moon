@@ -351,7 +351,6 @@ class Router {
                     echo('<script language="javascript">document.location.href="'. $page .'"</script>');
                 }
             }
-            
         }
 
 
