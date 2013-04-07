@@ -337,8 +337,7 @@ class Router {
 
         if($sucess)
         {
-            echo '<a href="'. $page .'">Retour</a>';
-            /*if(!isNull($p))
+            if(!isNull($p))
             {
                 redirectStatut($p);
             }
@@ -351,7 +350,7 @@ class Router {
                 else {
                     echo('<script language="javascript">document.location.href="'. $page .'"</script>');
                 }
-            }*/
+            }
             
         }
 
