@@ -10,14 +10,36 @@
  *
  * @author lambda2
  */
-class Membre extends MemberTemplate{
+class Membre extends MemberTemplate {
     
-        public function __construct() {
+       
+    public function __construct() {
         parent::__construct();
-        
-        $this->loadBy('id_membre', 1);
-        $this->autoLoadLinkedClasses();
     }
+
+    public function setupFields()
+    {
+    	$this->editField('pass')->setDefaultValue('Mot de passe');
+    	$this->editField('pseudo')->setDefaultValue('Pseudo');
+    	$this->editField('email')->setDefaultValue('Adresse e-mail');
+    }
+
+    public function validateUpdateForm($data)
+    {
+    	echo 'oui !';
+    	var_dump($data);
+    	var_dump($data['nom']);
+    	var_dump($data['nom'] == 'Arragon');
+    	if($data['nom'] == 'Arragon')
+    	{
+    		echo 'NON, ARRAGON !';
+    		return false;
+    	}
+    	else
+    		return true;
+    }
+
+
     
 }
 

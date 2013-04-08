@@ -127,6 +127,8 @@ abstract class Orm {
      */
     public function insert($data, $table)
     {
+        $r = false;
+
         if(!is_array($data))
             throw new OrmException("Arguments invalides pour l'insertion.", 1);
 
@@ -139,7 +141,7 @@ abstract class Orm {
 
         try {
             $Req = self::$db->prepare($request);
-            $Req->execute(array_values($data));
+            $r = $Req->execute(array_values($data));
         } catch (Exception $e) { //interception de l'erreur
 
             // Peut etre faudra il enlever cette exception.
@@ -147,7 +149,7 @@ abstract class Orm {
             "Unable to execute the request '$request' : ["
             . $e->getMessage() . ']');
         }
-        return true;
+        return $r;
     }
 
     /**
@@ -156,6 +158,8 @@ abstract class Orm {
      */
     public function update($data, $table, $ids)
     {
+        $r = false;
+
         if(!is_array($data))
             throw new OrmException("Arguments invalides pour l'insertion.", 1);
 
@@ -165,14 +169,9 @@ abstract class Orm {
             'UPDATE '
             .$table.' SET '.$set.''
             .' WHERE '.$where.';';
-        echo 'Update with the request <code>'.$request.'</code><br>';
-        echo 'the params are : <br>';
-        var_dump($this->getUpdatePreparedParams($data,$ids));
         try {
             $Req = self::$db->prepare($request);
-            var_dump($Req);
             $r = $Req->execute($this->getUpdatePreparedParams($data,$ids));
-            var_dump($r);
         } catch (Exception $e) { //interception de l'erreur
 
             // Peut etre faudra il enlever cette exception.
@@ -180,7 +179,7 @@ abstract class Orm {
             "Unable to execute the request '$request' : ["
             . $e->getMessage() . ']');
         }
-        return true;
+        return $r;
     }
 
     /**
@@ -189,6 +188,8 @@ abstract class Orm {
      */
     public function delete($table, $ids)
     {
+        $r = false;
+
         if(!is_array($ids))
             throw new OrmException("Arguments invalides pour l'insertion.", 1);
 
@@ -198,7 +199,7 @@ abstract class Orm {
             .' WHERE '.$where.';';
         try {
             $Req = self::$db->prepare($request);
-            $Req->execute($this->getPreparedParams($ids));
+            $r = $Req->execute($this->getPreparedParams($ids));
         } catch (Exception $e) { //interception de l'erreur
 
             // Peut etre faudra il enlever cette exception.
@@ -207,7 +208,7 @@ abstract class Orm {
             . $e->getMessage() . ']');
         }
         echo 'request send :' .$request. '<br>';
-        return true;
+        return $r;
     }
 
     /**

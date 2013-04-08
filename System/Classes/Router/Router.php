@@ -311,12 +311,14 @@ class Router {
                 $sucess = $class->processInsertForm($_POST);
                 break;
             case 'update':
-
                 $identifiers = $_POST['ids'];
 
                 $values = param2arr($identifiers);
                 $class->loadByArray($values);
+                var_dump($class);
                 $sucess = $class->processUpdateForm($_POST);
+                var_dump($succes);
+                echo 'fin router !';
 
                 break;
 
@@ -335,7 +337,7 @@ class Router {
                 break;
         }
 
-        if($sucess)
+        if(!$sucess)
         {
             if(!isNull($p))
             {

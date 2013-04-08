@@ -805,11 +805,11 @@ abstract class Entity {
      */
     public function processUpdateForm($data=array())
     {
-        $fields = $this->parseDataForAction($data);
-
         // Check if the form is valid
-        if($this->validateInsertForm($data))
+        if($this->validateUpdateForm($data))
         {
+            $fields = $this->parseDataForAction($data);
+
             if(Core::getBdd()->update(
                 $fields,
                 $this->table,
