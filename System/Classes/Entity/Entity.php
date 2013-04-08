@@ -785,9 +785,17 @@ abstract class Entity {
     public function processInsertForm($data=array())
     {
         $fields = $this->parseDataForAction($data);
-        if(Core::getBdd()->insert($fields,$this->table))
-            return true;
-        else
+
+        // Check if the form is valid
+        if($this->validateInsertForm($data))
+        {
+            if(Core::getBdd()->insert($fields,$this->table))
+                return true;
+            else
+                return false;
+                
+        }
+        else /** @TODO : Gestion des messages d'erreur */
             return false;
     }
 
@@ -798,13 +806,20 @@ abstract class Entity {
     public function processUpdateForm($data=array())
     {
         $fields = $this->parseDataForAction($data);
-        if(Core::getBdd()->update(
-            $fields,
-            $this->table,
-            $this->getDefinedPrimaryFields())
-            )
-            return true;
-        else
+
+        // Check if the form is valid
+        if($this->validateInsertForm($data))
+        {
+            if(Core::getBdd()->update(
+                $fields,
+                $this->table,
+                $this->getDefinedPrimaryFields())
+                )
+                return true;
+            else
+                return false;
+        }
+        else /** @TODO : Gestion des messages d'erreur */
             return false;
     }
 
@@ -822,6 +837,44 @@ abstract class Entity {
             return true;
         else
             return false;
+    }
+
+    /*********************************************************
+     * All the user functions that must be redefined :       *
+     *********************************************************/
+
+    /**
+     * This method is called before each insertion
+     * in the database.
+     * It checks if the data supplied is correct.
+     * Innitially, there is no verifications.
+     * The developper have to redefine this method.
+     * @param array data the data to check.
+     * The data is an array like this : 
+     * $data [ field name ]  => field value
+     * 
+     * @return boolean true if success, false otherwise.
+     */
+    public function validateInsertForm($data)
+    {
+        return true;
+    }
+
+    /**
+     * This method is called before each update
+     * in the database.
+     * It checks if the data supplied is correct.
+     * Innitially, there is no verifications.
+     * The developper have to redefine this method.
+     * @param array data the data to check.
+     * The data is an array like this : 
+     * $data [ field name ]  => field value
+     * 
+     * @return boolean true if success, false otherwise.
+     */
+    public function validateUpdateForm($data)
+    {
+        return true;
     }
 
     // End of Entity class //
