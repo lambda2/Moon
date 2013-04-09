@@ -19,9 +19,9 @@ class Membre extends MemberTemplate {
 
     public function setupFields()
     {
-    	$this->editField('pass')->setDefaultValue('Mot de passe');
-    	$this->editField('pseudo')->setDefaultValue('Pseudo');
-    	$this->editField('email')->setDefaultValue('Adresse e-mail');
+    	$this->editField('pass')->setPlaceHolder('Mot de passe');
+    	$this->editField('pseudo')->setPlaceHolder('Pseudo');
+    	$this->editField('email')->setPlaceHolder('Adresse e-mail');
     }
 
     public function validateUpdateForm($data)

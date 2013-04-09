@@ -83,11 +83,6 @@ class EntityLoader {
         return $return;
     }
 
-    public static function loadExistingClass($className)
-    {
-        // todo
-    }
-
     /**
      * Va [faire un essai pour] charger <b>une</b> instance <b>unique</b> de la
      * classe spécifiée.

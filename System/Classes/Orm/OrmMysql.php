@@ -196,7 +196,7 @@ class OrmMysql extends Orm {
                     .'.'.$moonLinks[$name]->destinationColumn);
             }
 
-            $f->setDefaultValue($field->Default);
+            $f->setPlaceHolder($field->Default);
 
             if($field->Extra == 'auto_increment')
                 $f->setIsAuto(true);

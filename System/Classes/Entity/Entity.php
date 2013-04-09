@@ -703,7 +703,7 @@ abstract class Entity {
         $form = new Form($formName,
             Core::opts()->system->siteroot
             .'index.php?moon-action='.$action.'&target='
-            .$this->table);
+            .get_class($this));
 
         if(!isNull($label))
             $form->setButtonLabel($label);

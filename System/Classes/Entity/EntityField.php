@@ -24,7 +24,7 @@ class EntityField {
     protected $isForeign = false;
     protected $foreignTarget = null;
     protected $foreignDisplayTarget = null;
-    protected $defaultValue = null;
+    protected $placeHolder = null;
     protected $optionsValues = array();
     protected $isAuto = false;
 
@@ -83,7 +83,7 @@ class EntityField {
             $field = FieldFactory::createField(
             'enum',$this->name);
             $field->setRequired(!$this->isNull);
-            $field->setPlaceholder($this->defaultValue);
+            $field->setPlaceholder($this->placeHolder);
             $field->setVisible(!$this->isAuto);
             $field->setValue($this->value);
 
@@ -114,7 +114,7 @@ class EntityField {
             $field = FieldFactory::createField(
             $this->type,$this->name);
             $field->setRequired(!$this->isNull);
-            $field->setPlaceholder($this->defaultValue);
+            $field->setPlaceholder($this->placeHolder);
             $field->setVisible(!$this->isAuto);
             $field->setValue($this->value);
 
@@ -321,25 +321,25 @@ class EntityField {
     }
 
     /**
-     * Gets the value of defaultValue.
+     * Gets the value of placeHolder.
      *
      * @return mixed
      */
-    public function defaultValue()
+    public function placeHolder()
     {
-        return $this->defaultValue;
+        return $this->placeHolder;
     }
 
     /**
-     * Sets the value of defaultValue.
+     * Sets the value of placeHolder.
      *
-     * @param mixed $defaultValue the defaultValue
+     * @param mixed $placeHolder the placeHolder
      *
      * @return self
      */
-    public function setDefaultValue($defaultValue)
+    public function setPlaceHolder($placeHolder)
     {
-        $this->defaultValue = $defaultValue;
+        $this->placeHolder = $placeHolder;
 
         return $this;
     }

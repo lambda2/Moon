@@ -338,7 +338,7 @@ class Router {
         }
 
         if(!$sucess)
-        {
+        {/*
             if(!isNull($p))
             {
                 redirectStatut($p);
@@ -352,7 +352,7 @@ class Router {
                 else {
                     echo('<script language="javascript">document.location.href="'. $page .'"</script>');
                 }
-            }
+            }*/
         }
 
 
