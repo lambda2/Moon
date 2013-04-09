@@ -26,13 +26,9 @@ class Membre extends MemberTemplate {
 
     public function validateUpdateForm($data)
     {
-    	echo 'oui !';
-    	var_dump($data);
-    	var_dump($data['nom']);
-    	var_dump($data['nom'] == 'Arragon');
+    	echo 'Hi guys ! Here, we will need a powerful verification system !';
     	if($data['nom'] == 'Arragon')
     	{
-    		echo 'NON, ARRAGON !';
     		return false;
     	}
     	else
