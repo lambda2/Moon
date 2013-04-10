@@ -36,7 +36,6 @@ class Membre extends MemberTemplate {
     }
 
 
-    
 }
 
 ?>
