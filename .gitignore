@@ -13,3 +13,7 @@ changeuser.sh
 /System/Tests/Config/configuration.yml
 moon.sublime-project
 moon.sublime-workspace
+System/Classes/Forms/report/
+System/Classes/Forms/report/*
+configuration.*
+config.*
