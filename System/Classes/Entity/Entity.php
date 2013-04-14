@@ -26,6 +26,7 @@ abstract class Entity {
     protected $bdd;
     protected $fields;
     protected $linkedClasses;
+    protected $happyFields;
     protected $access;
     protected $linkedClassesLoaded = false;
 
@@ -35,6 +36,7 @@ abstract class Entity {
         $this->table    = strtolower(get_class($this)) . Core::getInstance()->getDbPrefix();
         $this->bdd      = Core::getInstance()->bdd()->getDb();
         $this->clearLinkedClasses();
+        $this->happyFields = new Happy\HappyField();
 
         if (get_class($this) != 'TableEntity') {
             $this->generateProperties();
@@ -838,6 +840,31 @@ abstract class Entity {
         else
             return false;
     }
+
+    /**
+     * Will search in the form files for a rules set
+     * corresponding to the given $formName.
+     * If the file exists, it apply the rules.
+     * @return boolean true if found, false otherwise
+     */
+    protected function searchForDefinedRules($formName)
+    {
+        $return = false;
+        $search = Core::opts()->forms->form_files.$formName.'.yml';
+        if(file_exists($search))
+        {
+            $rules = Spyc::YAMLLoad($search);
+            /*foreach ($rules as $field => $rule) {
+
+                // We try to assign label !
+                if(array_key_exists('label', $rule))
+                {
+
+                }
+            }*/
+        }
+    }
+
 
     /*********************************************************
      * All the user functions that must be redefined :       *

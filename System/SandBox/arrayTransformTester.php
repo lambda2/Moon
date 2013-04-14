@@ -12,24 +12,11 @@
 
 //echo MoonChecker::run();
 
-echo '<h3>Debug outputs for <i>Multi mapping</i> between instances</h3>';
+echo '<h3>Testing output of Arrays</h3>';
 
-echo '<li> First, we get One astre </li>';
-$f          = EntityLoader::getClass('astre');
+echo '<li> lets load forms ! </li>';
+$f          = Spyc::YAMLLoad(Core::opts()->forms->form_files.'Forms.yml');
 var_dump($f);
-$pri        = $f->getValuedPrimaryFields();
-var_dump($pri);
-
-$testArray = array(
-	'type'=>'int',
-	'name'=>'systeme',
-	'foreignTarget'=>'systeme.id_systeme'
-	);
-$toParam = arr2paramArray($testArray);
-echo 'vers param : '.$toParam.' <br>';
-
-$toArray = param2arr($toParam);
-echo 'vers array : '.arr2str($toArray,',').' <br>';
 
 
 ?>

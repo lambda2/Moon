@@ -85,3 +85,8 @@ templates:
 
   # Le chemin du repertoire contenant les scripts
   js_path: "Assets/js/"
+
+forms:
+
+  # The path for the form configuration file.
+  form_files: "Forms/"
