@@ -22,17 +22,12 @@ class Membre extends MemberTemplate {
     	$this->editField('pass')->setPlaceHolder('Mot de passe');
     	$this->editField('pseudo')->setPlaceHolder('Pseudo');
     	$this->editField('email')->setPlaceHolder('Adresse e-mail');
+        $this->getDept_membre()->setLabelColumn('nom');
     }
 
     public function validateUpdateForm($data)
     {
-    	echo 'Hi guys ! Here, we will need a powerful verification system !';
-    	if($data['nom'] == 'Arragon')
-    	{
-    		return false;
-    	}
-    	else
-    		return true;
+    	return true;
     }
 
 

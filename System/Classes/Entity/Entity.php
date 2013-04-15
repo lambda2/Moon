@@ -167,9 +167,13 @@ abstract class Entity {
      * Véritable nid à bugs de l'application. 
      * Nécessite un vrai debug puis refactoring
      * @TODO: Voir ci-dessus.
+     *    ^----- @since 0.0.3 c'est quand meme un peu mieux...
+     * @TODO: prendre une décision : peut on apeller getnom()
+     * ou se limite on [strictement] à getNom ?
+     * -> regex ([A-Za-z]) ou ([A-Z]) ? (ci dessous)
      */
     public function __call($methodName, $args) {
-        if (preg_match('~^(set|get)([A-Z])(.*)$~', $methodName, $matches)) {
+        if (preg_match('~^(set|get)([A-Za-z])(.*)$~', $methodName, $matches)) {
             $property = strtolower($matches[2]) . $matches[3];
             if (!isset($this->fields[$property])) {
                 if ($this->checkExternalRelation($property)) {
@@ -705,7 +709,8 @@ abstract class Entity {
         $form = new Form($formName,
             Core::opts()->system->siteroot
             .'index.php?moon-action='.$action.'&target='
-            .get_class($this));
+            .get_class($this).'&formName='
+            .$formName);
 
         if(!isNull($label))
             $form->setButtonLabel($label);
@@ -801,15 +806,23 @@ abstract class Entity {
             return false;
     }
 
+    public function initProcess($data=array())
+    {
+        $this->happyFields->setFields($data);
+        $this->searchForDefinedRules($_GET['formName']);
+    }
+
     /**
      * Procède à la mise à jour de la data fournie en parametre
      * dans la base de données.
      */
     public function processUpdateForm($data=array())
     {
-        // Check if the form is valid
-        if($this->validateUpdateForm($data))
+        
+        if($this->validateUpdateForm($data)
+            and $this->happyFields->check())
         {
+            echo '<span style="color: green">rules validated !</span>';
             $fields = $this->parseDataForAction($data);
 
             if(Core::getBdd()->update(
@@ -822,7 +835,10 @@ abstract class Entity {
                 return false;
         }
         else /** @TODO : Gestion des messages d'erreur */
+        {
+            echo '<span style="color: red">rules NOT validated !</span>';
             return false;
+        }
     }
 
     /**
@@ -851,18 +867,16 @@ abstract class Entity {
     {
         $return = false;
         $search = Core::opts()->forms->form_files.$formName.'.yml';
+
+        echo ' - trying to load rules file : '.$search.'<br>';
         if(file_exists($search))
         {
             $rules = Spyc::YAMLLoad($search);
-            /*foreach ($rules as $field => $rule) {
-
-                // We try to assign label !
-                if(array_key_exists('label', $rule))
-                {
-
-                }
-            }*/
+            $this->happyFields->clearRules()->loadRulesFromArray($rules);
+            $return = true;
         }
+
+        return $return;
     }
 
 

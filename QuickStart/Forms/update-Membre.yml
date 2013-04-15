@@ -6,10 +6,10 @@
 
 pseudo :
 	label : 'pseudo'
-	rules : 'minLenght 10|maxLength 14|alpha'
+	rules : 'minLength 4|maxLength 14|alpha'
 pass :
 	label : 'mot de passe'
-	rules : 'minLenght 10'
+	rules : 'minLength 10'
 nom :
 	rules : 'alpha'
 prenom :

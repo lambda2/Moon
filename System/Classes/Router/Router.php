@@ -306,19 +306,20 @@ class Router {
             return false;
         }
 
+        $class->initProcess($_POST);
+
         switch ($action) {
             case 'insert':
                 $sucess = $class->processInsertForm($_POST);
                 break;
             case 'update':
+                echo '<br>begin of router !<br>';
                 $identifiers = $_POST['ids'];
 
                 $values = param2arr($identifiers);
                 $class->loadByArray($values);
-                var_dump($class);
                 $sucess = $class->processUpdateForm($_POST);
-                var_dump($succes);
-                echo 'fin router !';
+                echo '<br>fin router !<br>';
 
                 break;
 
