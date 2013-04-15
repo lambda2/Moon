@@ -25,6 +25,7 @@ abstract class Field {
     protected $enabled;
     protected $visible;
 
+
     public function __construct() {
         $this->type = "";
         $this->name = "";
@@ -57,11 +58,33 @@ abstract class Field {
      */
     public function addClass($classe) {
         if (isNull($classe))
-            throw new AlertException("Impossible d'ajouter une classe nulle ou vide à l'élément {$this->name}");
+            throw new AlertException(
+                "Impossible d'ajouter une classe nulle ou vide à l'élément {$this->name}");
         if (strcmp($classe[0], '.') == 0)
-            throw new AlertException("La classe [ $classe ] ne doit pas commencer par un point lors de l'ajout à l'élément {$this->name}");
+            throw new AlertException(
+                "La classe [ $classe ] ne doit pas commencer par un point lors de l'ajout à l'élément {$this->name}");
 
         $this->classes[] = $classe;
+    }
+
+    /**
+     * Display the field placeholder as a label.
+     * If the field don't have a placeholder or an id, return 
+     * an empty string.
+     * @return string the html string for the label
+     */
+    public function getLabel()
+    {
+        if(!isNull($this->placeholder) and !isNull($this->id))
+        {
+            return '<label for='.dbQuote($this->id).'>'.$this->placeholder.'</label>';
+        }
+        else if(!isNull($this->placeholder))
+        {
+            dbg('Le label du champ '.$this->name.' n\'a pas été placé car aucun id ne lui
+                a été donné.',0);
+        }
+        return '';
     }
     
     /**

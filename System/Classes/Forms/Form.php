@@ -11,6 +11,7 @@ class Form {
     protected $fields;
     protected $method;
     protected $name;
+    protected $displayLabels = false;
     protected $action;
     protected $buttonLabel;
     protected $customButtons = array();
@@ -41,6 +42,16 @@ class Form {
         else {
             $this->fields[] = $field;
         }
+    }
+
+
+    /**
+     * Set to True for display field placeHolder
+     * as the field label.
+     */
+    public function displayLabel($display = true)
+    {
+        $this->displayLabel = $display;
     }
 
     /**
@@ -109,6 +120,8 @@ class Form {
     {
         $s = '';
         foreach ($this->fields as $field) {
+            if($this->displayLabels)
+                $s .= $field->getLabel();
             $s .= $field->getHtml();
         }
         return $s;
