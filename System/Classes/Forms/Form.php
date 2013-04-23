@@ -6,7 +6,7 @@
  * @author lambda2
  * @see Field
  */
-class Form {
+class Form extends Element {
 
     protected $fields;
     protected $method;
