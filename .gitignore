@@ -17,3 +17,9 @@ System/Classes/Forms/report/
 System/Classes/Forms/report/*
 configuration.*
 config.*
+world/Config
+world/Controllers
+world/Forms
+world/index.php
+world/Modeles
+world/Vues
