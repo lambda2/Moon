@@ -93,13 +93,26 @@ class Form extends Element {
      */
     public function getFormOpenTag()
     {
-        $s = '<form action=' . dbQuote($this->action)
-                . ' method=' . dbQuote($this->method) . ' ';
+        $s = '<form action=' . dbQuote($this->findCustomActionTarget($this->action));
+        $s .=  ' method=' . dbQuote($this->method) . ' ';
+        $s .= parent::getHtmlAttributesList() .' ';
         if (!isNull($this->name)) {
             $s .= 'name=' . dbQuote($this->name).' ';
         }
         $s .= '>';
         return $s;
+    }
+
+    protected function findCustomActionTarget($target)
+    {
+        $acts = explode('/',$target);
+        if(count($acts) > 1)
+        {
+            if(is_callable($acts[0].'::'.$acts[1])){
+                $target = Core::opts()->system->siteroot.$target;
+            }
+        }
+        return $target;
     }
 
     /**

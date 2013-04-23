@@ -98,7 +98,7 @@ abstract class Element {
     public function addData($field, $value) {
 
         if (isNull($field))
-            throw new AlertException("Impossible d'ajouter une data nulle ou vide à l'élément {$this->name}");
+            throw new AlertException("Impossible d'ajouter une data nulle ou vide à l'élément {$this->getHTML()}");
 
         $this->datas[$field] = $value;
     }
@@ -215,7 +215,7 @@ abstract class Element {
                     $s .= $custom_type . '=' . dbQuote($custom_val) . ' ';
                 }
             }
-            
+
             if (!isNull($this->classes))
                 $s .= 'class=' . dbQuote($this->classes) . ' ';
             
