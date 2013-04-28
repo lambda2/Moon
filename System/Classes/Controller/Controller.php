@@ -389,11 +389,20 @@ abstract class Controller {
         }
     }
 
+    /**
+     * Will add additional webdata, such as POST, GET, SESSION
+     * or USER.
+     */
     final protected function loadWebData() {
         if (Core::getInstance()->debug()) {
             $this->webdata['debug'] =
                     Core::getInstance()->debug()->showReport();
         }
+        $this->webdata['user'] = Core::getUser();
+        $this->webdata['get'] = $_GET;
+        $this->webdata['post'] = $_POST;
+        $this->webdata['session'] = $_SESSION;
+        $this->webdata['logged'] = Core::getUser() != null;
     }
 
     /**

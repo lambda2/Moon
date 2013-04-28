@@ -36,7 +36,7 @@ class MemberTemplate extends Entity {
 
     public function seConnecter() {
         if ($this->exists()) {
-            $_SESSION['login'] = $this->pseudo;
+            $_SESSION['login'] = $this->pseudo->getValue();
             return true;
         } else {
             return false;

@@ -37,6 +37,14 @@ class Core {
         self::$options = new ArrayBrowser(extendArray($defaultConfigFile, $userConfigFile));
     }
 
+    protected function loadLoggedUser()
+    {
+        if(isset($_SESSION['login']))
+        {
+            $this->setUser($_SESSION['login']);
+        }
+    }
+
     protected static function loadTemplate()
     {
         $success = true;
@@ -106,7 +114,6 @@ class Core {
                     self::$options->system->mode, 
                     self::$options->database->db_prefix);
             
-            self::$user = null;
             self::$router = new Router();
             
             if(isConnecte()){
@@ -135,12 +142,7 @@ class Core {
     }
 
     public static function setUser($user){
-        if(is_a($user, 'Entity')){
-            self::$user = $user;
-            return true;
-        }
-        else
-            return false;
+        self::$user = $user;
     }
 
     protected function initialize($dev_mode, $dbPrefix) {
@@ -153,6 +155,7 @@ class Core {
         
         $this->databaseConnect();
         $this->generateHostTables();
+        $this->loadLoggedUser();
     }
 
     protected function databaseConnect() {
