@@ -496,4 +496,43 @@ function arr2paramArray($array,$separator = ',')
     return $res;
 }
 
+/**
+ * Return the value in the post array at the given index
+ * @param string $data the index to get from
+ * @return mixed the $_POST content or null if the key do not exists
+ */
+function fromPost($data)
+{
+    if(array_key_exists($data, $_POST))
+        return $_POST[$data];
+    else
+        return null;
+}
+
+/**
+ * Return the value in the $_get array at the given index
+ * @param string $data the index to get from
+ * @return mixed the $_get content or null if the key do not exists
+ */
+function fromGet($data)
+{
+    if(array_key_exists($data, $_get))
+        return $_GET[$data];
+    else
+        return null;
+}
+
+/**
+ * Return the value in the $_session array at the given index
+ * @param string $data the index to session from
+ * @return mixed the $_session content or null if the key do not exists
+ */
+function fromSession($data)
+{
+    if(array_key_exists($data, $_SESSION))
+        return $_SESSION[$data];
+    else
+        return null;
+}
+
 ?>

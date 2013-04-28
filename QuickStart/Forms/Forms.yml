@@ -1,0 +1,17 @@
+
+#
+#	This file can be user to specify the rules to apply at each form
+#	validation.
+#
+
+update-Membre :
+	pseudo :
+		label : 'pseudo'
+		rules : 'minLenght 10|maxLength 14|alpha'
+	pass :
+		label : 'mot de passe'
+		rules : 'minLenght 10'
+	nom :
+		rules : 'alpha'
+	prenom :
+		rules : 'alpha'
