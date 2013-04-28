@@ -1,4 +1,5 @@
 .gitignore~
+.gitignore
 
 /nbproject/node_modules/*
 /nbproject/
@@ -33,4 +34,6 @@ Templates/lambdaweb-template
 Templates/moon-template
 world/*
 Templates/lambdaweb-template/*
-Templates/moon-template/*executables
+Templates/moon-template/*
+executables
+executables/*
