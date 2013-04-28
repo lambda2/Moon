@@ -35,12 +35,15 @@ class Form extends Element {
      * @throws AlertException si l'élément fourni n'est pas un élément valide.
      */
     public function addField($field) {
-        if (!is_a($field, 'Field')) {
-            throw new AlertException("Le champ $field ne semble pas etre
-                    un élément de formulaire valide...");
+        if (is_a($field, 'Button')) {
+            $this->addCustomButton($field);
+        }
+        else if (is_a($field, 'Field')) {
+            $this->fields[] = $field;
         }
         else {
-            $this->fields[] = $field;
+            throw new AlertException("Le champ $field ne semble pas etre
+                    un élément de formulaire valide...");
         }
     }
 
@@ -158,9 +161,9 @@ class Form extends Element {
         $s = '';
         $submit = new Button(
             'submit-'.$this->name, 
-            $type="submit", 
-            $value="", 
-            $text=$this->buttonLabel);
+            "submit", 
+            "", 
+            $this->buttonLabel);
         $s .= $submit->getHtml();
         return $s;
     }
