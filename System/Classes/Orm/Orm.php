@@ -207,7 +207,6 @@ abstract class Orm {
             "Unable to execute the request '$request' : ["
             . $e->getMessage() . ']');
         }
-        echo 'request send :' .$request. '<br>';
         return $r;
     }
 

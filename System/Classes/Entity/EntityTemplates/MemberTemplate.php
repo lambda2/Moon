@@ -19,14 +19,13 @@ class MemberTemplate extends Entity {
 
     public static function logAndGet($fields)
     {
-    	var_dump(get_called_class());
     	$cl = EntityLoader::getClass(get_called_class());
         $exists = $cl->loadByArray($fields);
         $cl->autoLoadLinkedClasses();
 
         if($exists)
         {
-        	Core::getInstance()->setUser($cl);
+        	Core::getInstance()->setUser($cl->getPseudo()->getValue());
         	$cl->seConnecter();
         	return $cl;
         }
@@ -45,6 +44,7 @@ class MemberTemplate extends Entity {
 
     public static function seDeconnecter() {
         $_SESSION = array();
+        Core::getInstance()->setUser(null);
 
 		// le cookie de session.
         if (ini_get("session.use_cookies")) {

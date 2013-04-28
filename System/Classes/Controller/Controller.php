@@ -54,6 +54,22 @@ abstract class Controller {
             $this->index();
     }
 
+    /**
+     * Will add all the fields in the given array to the 
+     * template data.
+     */
+    public function registerParams($params = array())
+    {
+        if(is_array($params))
+        {
+            foreach ($params as $key => $value) 
+            {
+                $this->addData($key,$value);
+            }
+        }
+    }
+
+
     public function useCustomTemplate($template)
     {
         $this->setTemplateFolder($template);
@@ -470,7 +486,7 @@ abstract class Controller {
         return false;
     }
 
-    public abstract function index();
+    public abstract function index($params);
 
     final private function tryToRender() {
         try {

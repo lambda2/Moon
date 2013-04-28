@@ -69,24 +69,46 @@ class Debug {
         
     }
 
+    private function jsTransformDebugCode()
+    {
+        $jsCode = "
+        <script>
+            $('#debug-content').css(
+                {
+                    'bottom' : '0px',
+                    'left' : '0px',
+                    'right' : '1px',
+                    'height' : '50px',
+                    'position' : 'fixed',
+                    'display' : 'block',
+                    'border-top' : '1px solid #CCC',
+                    'background-color' : 'rgba(255,255,255,0.9)'
+                }
+            );
+            $('#debug-content *').css(
+                {
+                    'display' : 'inline-block',
+                    'max-height' : '50px'
+                }
+            );
+        </script>";
+        return $jsCode;
+    }
+
     private function getModalLink($text) {
         return '<a href="#debug-modal" role="button" class="btn btn-' . $this->getAlertLevel() . '" data-toggle="modal">' . $text . '</a>';
     }
 
     private function getModalContent() {
         $modalContent = '
-            <div id="debug-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="debug-modallabel" aria-hidden="true">
+            <div id="debug-content">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="debug-modallabel">Rapport de la page</h3>
+    <button type="button" data-to-close="debug-content">×</button>
   </div>
   <div class="modal-body">
-    ' . $this->getReportHtml() . '
+    ' .$this->getModalLink(count($this->content)). ' erreur(s) : '. $this->getReportHtml() . '
   </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Fermer</button>
-  </div>
-</div>';
+</div>' . $this->jsTransformDebugCode();
         return $modalContent;
     }
 
@@ -107,13 +129,8 @@ class Debug {
     }
 
     public function showReport() {
-
-        $report = '<div class="moon-debug-block">'
-                . $this->getModalLink(count($this->content))
-                . '</div>';
-
-        $report.= $this->getModalContent();
-        return $report . '';
+        $report = $this->getModalContent();
+        return $report;
     }
 
     public function isDebug() {

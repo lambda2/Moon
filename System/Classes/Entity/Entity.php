@@ -260,7 +260,6 @@ abstract class Entity {
         
         try 
         {
-            echo 'REQUEST => '.$request.'<br>';
             $Req = $this->bdd->prepare($request);
             $Req->execute(array());
         } 
