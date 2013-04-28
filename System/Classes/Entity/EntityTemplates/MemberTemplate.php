@@ -14,7 +14,24 @@ class MemberTemplate extends Entity {
 
     public function exists()
     {
+    	return  $this->instance;
+    }
 
+    public static function logAndGet($fields)
+    {
+    	var_dump(get_called_class());
+    	$cl = EntityLoader::getClass(get_called_class());
+        $exists = $cl->loadByArray($fields);
+        $cl->autoLoadLinkedClasses();
+
+        if($exists)
+        {
+        	Core::getInstance()->setUser($cl);
+        	$cl->seConnecter();
+        	return $cl;
+        }
+        else
+        	return false;
     }
 
     public function seConnecter() {

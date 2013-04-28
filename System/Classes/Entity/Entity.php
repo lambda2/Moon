@@ -29,6 +29,7 @@ abstract class Entity {
     protected $happyFields;
     protected $access;
     protected $linkedClassesLoaded = false;
+    protected $instance = false;
 
     protected $customButtons = array();
 
@@ -247,7 +248,7 @@ abstract class Entity {
             $args = array();
             foreach ($array as $key=>$val)  
             {
-                $args[] = $key." = ".$val;
+                $args[] = $key." = ".dbQuote($val);
             }
             $request .= implode(' AND ', $args);
         }
@@ -259,6 +260,7 @@ abstract class Entity {
         
         try 
         {
+            echo 'REQUEST => '.$request.'<br>';
             $Req = $this->bdd->prepare($request);
             $Req->execute(array());
         } 
@@ -281,6 +283,7 @@ abstract class Entity {
                     throw new OrmException('Les champs récupérés ne correspondent pas !');
                 }
             }
+            $this->instance = true;
             return true;
         } 
         else 
@@ -346,6 +349,7 @@ abstract class Entity {
                     throw new OrmException('Les champs récupérés ne correspondent pas !');
                 }
             }
+            $this->instance = true;
             return true;
         } 
         else 

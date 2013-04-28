@@ -134,6 +134,15 @@ class Core {
         return self::$user;
     }
 
+    public static function setUser($user){
+        if(is_a($user, 'Entity')){
+            self::$user = $user;
+            return true;
+        }
+        else
+            return false;
+    }
+
     protected function initialize($dev_mode, $dbPrefix) {
         $this->dev_mode = $dev_mode;
         $this->db_prefix = $dbPrefix;
