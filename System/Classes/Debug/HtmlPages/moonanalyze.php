@@ -131,6 +131,12 @@ $e = MoonChecker::$lastException;
 		.centered,
 		.centered > * {	text-align: center;}
 
+		.same-size td,
+		.same-size th
+		{
+			width: 200px;
+		}
+
 		.gree:before { padding-right: 10px; content: '✔';}
 		.red:before { padding-right: 10px; content: '✘';}
 
@@ -174,6 +180,54 @@ $e = MoonChecker::$lastException;
 					}
 					?>
 			</ol>
+		</article>
+			<hr>
+		<article class="small">
+			<header>
+				<h2>Contenu des formulaires</h2>
+			</header>
+			<section class="full centered">
+				<h3>Post</h3>
+				<table class="left degaged same-size">
+					<tr>
+						<th>Key</th>
+						<th>Value</th>
+						<th>Lenght</th>
+						<th>Type</th>
+					</tr>
+
+					<?php 
+					foreach ($_POST as $key => $value) {
+						echo ("<tr><td>$key</td>");
+						echo("<td><code>'$value'</code></td>");
+						echo('<td><pre>'.strlen($value).'</pre></td>');
+						echo('<td><pre>'.gettype($value).'</pre></td>');
+						echo("</tr>");
+					}
+					?>
+				</table>
+			</section>
+			<section class="full centered">
+				<h3>Get</h3>
+				<table class="left degaged same-size">
+					<tr>
+						<th>Key</th>
+						<th>Value</th>
+						<th>Lenght</th>
+						<th>Type</th>
+					</tr>
+
+					<?php 
+					foreach ($_GET as $key => $value) {
+						echo ("<tr><td>$key</td>");
+						echo("<td><code>'$value'</code></td>");
+						echo('<td><pre>'.strlen($value).'</pre></td>');
+						echo('<td><pre>'.gettype($value).'</pre></td>');
+						echo("</tr>");
+					}
+					?>
+				</table>
+			</section>
 		</article>
 			<hr>
 		<article class="small">
