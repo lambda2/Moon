@@ -23,6 +23,11 @@ world/Forms
 world/index.php
 world/Modeles
 world/Vues
+world/Config/*
+world/Controllers/*
+world/Forms/*
+world/Modeles/*
+world/Vues/*
 world
 Templates/lambdaweb-template
 Templates/moon-template
