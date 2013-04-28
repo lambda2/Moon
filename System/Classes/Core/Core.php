@@ -116,9 +116,9 @@ class Core {
             
             self::$router = new Router();
             
-            if(isConnecte()){
+            if(isConnecte() and class_exists('Membre'))
+            {
                 $membre = new Membre();
-                //$membre->loadBy('id_membre', getId($_SESSION['login'], $this->database));
             }
             
             /*
