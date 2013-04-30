@@ -504,8 +504,14 @@ abstract class Controller {
         }
     }
 
-    final public function render() {
-
+    final public function render() 
+    {
+    	// Check if the user have enought permissions
+    	if(!$this->grantAccess())
+		throw new MemberAccessException("Access Denied");
+	else
+		echo "<!-- access granted -->";
+	
         $this->template = $this->getTemplateFileName();
         
         if ($this->template == false) {
@@ -523,6 +529,11 @@ abstract class Controller {
 
         // And try to render
         $this->tryToRender();
+    }
+
+    protected function grantAccess()
+    {
+	return True;
     }
 
 }

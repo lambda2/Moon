@@ -37,3 +37,4 @@ Templates/lambdaweb-template/*
 Templates/moon-template/*
 executables
 executables/*
+*.swp

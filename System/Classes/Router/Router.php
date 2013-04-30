@@ -292,7 +292,7 @@ class Router {
 
 
         // On vérifie que on a bien tous les arguments.
-        if(isNull($action) or isNull($target) or isNull($class))
+        if(isNull($action) or isNull($target))
         {
             throw new AlertException
             ("Unable to find what to do with this form...", 1);

@@ -812,14 +812,15 @@ abstract class Entity {
     public function initProcess($data=array())
     {
         $this->happyFields->setFields($data);
-        $this->searchForDefinedRules($_GET['formName']);
+        $rulesExists = $this->searchForDefinedRules($_GET['formName']);
+	return $rulesExists;
     }
 
     /**
      * Procède à la mise à jour de la data fournie en parametre
      * dans la base de données.
      */
-    public function processUpdateForm($data=array())
+    public function processUpdateForm($data=array(),$callback=null)
     {
         
         if($this->validateUpdateForm($data)
@@ -831,17 +832,24 @@ abstract class Entity {
             if(Core::getBdd()->update(
                 $fields,
                 $this->table,
-                $this->getDefinedPrimaryFields())
-                )
-                return true;
+                $this->getDefinedPrimaryFields()))
+		{
+                	return $this->updateCallback($data);
+		}
             else
                 return false;
         }
         else /** @TODO : Gestion des messages d'erreur */
         {
+	    var_dump($this->happyFields->getRules());
             echo '<span style="color: red">rules NOT validated !</span>';
             return false;
         }
+    }
+
+    protected function updateCallback($data)
+    {
+	return True;
     }
 
     /**
