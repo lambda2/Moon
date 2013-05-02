@@ -68,7 +68,7 @@ class Form extends Element {
 	 * 
 	 * @return Form self
 	 */
-	public function loadRulesFromArray($array)
+	public function loadDataFromArray($array)
 	{
 		foreach ($array as $field => $datas) {
 
@@ -110,7 +110,7 @@ class Form extends Element {
         if(file_exists($search))
         {
             $datas = Spyc::YAMLLoad($search);
-            $this->loadRulesFromArray($datas);
+            $this->loadDataFromArray($datas);
             $this->displayLabels = true;
             $return = true;
         }
