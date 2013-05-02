@@ -401,7 +401,8 @@ abstract class Controller {
     protected function addDebugIncludes()
     {
         if (Core::getInstance()->debug()) {
-            $this->addCss('../System/Classes/Debug/debug.css');
+             $this->addCss('../System/Classes/Debug/debug.css');           
+             $this->addJs('../System/Classes/Debug/debug.js');
         }
     }
 

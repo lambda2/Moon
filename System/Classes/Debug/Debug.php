@@ -3,9 +3,20 @@
 class Debug {
 
     private $content = array();
+    protected static $logs = array();
+    protected static $instance;
 
-    public function __construct() {
-        
+    protected function __construct() {
+
+    }
+
+    
+    public static function getInstance()
+    {
+        if (!(self::$instance instanceof Debug) or self::$instance == null)
+            self::$instance = new Debug();
+        return self::$instance;
+ 
     }
 
     public function addReport($str, $severity=0) {
@@ -13,6 +24,16 @@ class Debug {
         $a['level'] = $severity;
         $a['msg']   = $str;
         $this->content[] = $a;
+    }
+
+    public static function log($str, $severity=0)
+    {
+        self::$logs[] = $str;
+    }
+
+    public static function getLogs()
+    {
+        return self::$logs;
     }
 
     private function getSeverityLabel($severity) {
@@ -95,6 +116,19 @@ class Debug {
         return $jsCode;
     }
 
+    /**
+     * Todo, not already in use...
+     */
+    private function getHtmlLogsList()
+    {
+        $ret = '<ul>';
+        foreach (self::$logs as $log) {
+            $ret .= '<li>'.$log.'</li>';
+        }
+        $ret .= '</ul>';
+        return $ret;
+    }
+
     private function getModalLink($text) {
         return '<a href="#debug-modal" role="button" class="btn btn-' . $this->getAlertLevel() . '" data-toggle="modal">' . $text . '</a>';
     }
@@ -106,8 +140,9 @@ class Debug {
     <button type="button" data-to-close="debug-content">×</button>
   </div>
   <div class="modal-body">
-    ' .$this->getModalLink(count($this->content)). ' erreur(s) : '. $this->getReportHtml() . '
+    ' .$this->getModalLink(count($this->content)). ' erreur(s) : '. $this->getReportHtml() . '.<a id="debug-log" href="#">Logs</a>'.'
   </div>
+  <!-- <div id="debug-log-aera">'.$this->getHtmlLogsList().'</div> -->
 </div>' . $this->jsTransformDebugCode();
         return $modalContent;
     }

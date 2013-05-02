@@ -149,7 +149,7 @@ class Core {
         $this->dev_mode = $dev_mode;
         $this->db_prefix = $dbPrefix;
         if($dev_mode == 'DEBUG')
-            $this->debug = new Debug($this);
+            $this->debug = Debug::getInstance($this);
         else
             $this->debug = null;
         
