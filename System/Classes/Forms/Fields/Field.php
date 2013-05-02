@@ -61,7 +61,10 @@ abstract class Field extends Element {
         return '';
     }
     
-    
+    public function setLabel($label)
+    {
+        return $this->setPlaceholder($label);
+    }
 
     public function getPlaceholder() {
         return $this->placeholder;

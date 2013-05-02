@@ -701,6 +701,12 @@ abstract class Entity {
      */
     public function generateFormFor($action,$name = '', $label='', $empty=false)
     {
+        
+        if(isNull($name))
+        {
+            $name = $action.'-'.get_class($this);
+        }
+
         $this->setupFields();
 
         if(isNull($name))
@@ -724,6 +730,8 @@ abstract class Entity {
                 $form->addField($valeur->getHtmlField());
             }
         }
+
+        $form->searchForDefinedDatas($name);
 
         return $form;
     }
@@ -813,7 +821,7 @@ abstract class Entity {
     {
         $this->happyFields->setFields($data);
         $rulesExists = $this->searchForDefinedRules($_GET['formName']);
-	return $rulesExists;
+        return $rulesExists;
     }
 
     /**

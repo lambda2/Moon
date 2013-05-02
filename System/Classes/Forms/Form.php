@@ -39,13 +39,86 @@ class Form extends Element {
             $this->addCustomButton($field);
         }
         else if (is_a($field, 'Field')) {
-            $this->fields[] = $field;
+            $this->fields[$field->getName()] = $field;
         }
         else {
             throw new AlertException("Le champ $field ne semble pas etre
                     un élément de formulaire valide...");
         }
     }
+
+    /**
+	 * Will load all the data / classes / labels in the given array.
+	 * Example structure : 
+	 *  ---------------------------------------------
+	 * |
+	 * | array(
+	 * |     'nom' => 
+	 * |         array(
+	 * |             'label' => 'family name'
+	 * |         ),
+	 * |     'email' => 
+	 * |         array(
+	 * |             'label' => 'email adress',
+	 * |             'rules' => 'email'
+	 * |         ),
+	 * | )
+	 * |
+	 *  ---------------------------------------------
+	 * 
+	 * @return Form self
+	 */
+	public function loadRulesFromArray($array)
+	{
+		foreach ($array as $field => $datas) {
+
+            if($field == 'form')
+            {
+                if(array_key_exists('align',$datas))
+                {
+                    $this->addData('align',$datas['align']);
+                }
+            }
+            else if(array_key_exists($field, $this->fields))
+            {
+                
+                if(array_key_exists('label', $datas))
+                {
+                    $this->fields[$field]->setLabel($datas['label'])->setId($field);
+                }
+
+            }
+            else
+            {
+                Debug::log("Le champ $field n'existe pas...");
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Will search in the form files for a rules set
+     * corresponding to the given $formName.
+     * If the file exists, it apply the rules.
+     * @return boolean true if found, false otherwise
+     */
+    public function searchForDefinedDatas($formName)
+    {
+        $return = false;
+        $search = Core::opts()->forms->form_files.$formName.'.yml';
+        if(file_exists($search))
+        {
+            $datas = Spyc::YAMLLoad($search);
+            $this->loadRulesFromArray($datas);
+            $this->displayLabels = true;
+            $return = true;
+        }
+
+        return $return;
+    }
+
+
 
 
     /**
@@ -137,7 +210,9 @@ class Form extends Element {
         $s = '';
         foreach ($this->fields as $field) {
             if($this->displayLabels)
+            {
                 $s .= $field->getLabel();
+            }
             $s .= $field->getHtml();
         }
         return $s;

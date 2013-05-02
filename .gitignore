@@ -38,3 +38,5 @@ Templates/moon-template/*
 executables
 executables/*
 *.swp
+..swo
+*.swo
