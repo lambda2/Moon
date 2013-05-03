@@ -203,7 +203,6 @@ class Router {
         $params = $_GET;
         if (isset($params['p'])) {
 
-                //echo 'requete : ' . $params['p'];
                 $request = explode('->',$params['p']);
                 $classe = $request[0];
                 $options = array();

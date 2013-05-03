@@ -714,8 +714,6 @@ abstract class Entity {
         else
             $formName = $name;
 
-        var_dump($this);
-
         $form = new Form($formName,
             Core::opts()->system->siteroot
             .'index.php?moon-action='.$action.'&target='
@@ -887,6 +885,10 @@ abstract class Entity {
      * corresponding to the given $formName.
      * If the file exists, it apply the rules.
      * @return boolean true if found, false otherwise
+     *
+     * @TODO : Introduire la notion de domaine dans le Core.
+     * Par exemple, le domain de Profile/Project est [Profile]
+     * et doit etre set dans le Controlleur.
      */
     protected function searchForDefinedRules($formName)
     {
