@@ -201,7 +201,6 @@ class Router {
     public function routeGet()
     {
         $params = $_GET;
-
         if (isset($params['p'])) {
 
                 //echo 'requete : ' . $params['p'];
@@ -228,7 +227,6 @@ class Router {
                     {
                         $c->setUrlParams($options);
                     }
-
                     $c->$method();
                 }
                 else {

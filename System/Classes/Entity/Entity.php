@@ -704,21 +704,22 @@ abstract class Entity {
         
         if(isNull($name))
         {
-            $name = $action.'-'.get_class($this);
+            $name = $action.'-'.strtolower($this->table);
         }
 
         $this->setupFields();
 
         if(isNull($name))
-            $formName = $action.'-'.get_class($this);
+            $formName = $action.'-'.strtolower($this->table);
         else
             $formName = $name;
 
+        var_dump($this);
 
         $form = new Form($formName,
             Core::opts()->system->siteroot
             .'index.php?moon-action='.$action.'&target='
-            .get_class($this).'&formName='
+            .strtolower($this->table).'&formName='
             .$formName);
 
         if(!isNull($label))

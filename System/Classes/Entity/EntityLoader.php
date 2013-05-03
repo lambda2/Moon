@@ -43,16 +43,16 @@ class EntityLoader {
         }
         else 
         {
-            //echo("classe inexistante... scan de la base de données...");
+            echo("classe inexistante... scan de la base de données...");
             $reducClassName = $className;
             $withPrefix = $reducClassName;
             if(Core::getInstance()->getDbPrefix() != '')
                 $withPrefix = strstr($reducClassName, Core::getInstance()->getDbPrefix());
-            //echo("contient le prefixe ? ");
-            //echo $withPrefix ? 'true' : 'false';
+            echo("contient le prefixe ? ");
+            echo $withPrefix ? 'true' : 'false';
 
             if ($withPrefix != FALSE) {
-                //echo "before : $reducClassName";
+                echo "before : $reducClassName";
                 $reducClassName = substr_replace(
                     $className, 
                     '', 
@@ -60,12 +60,12 @@ class EntityLoader {
                     strlen(Core::getInstance()->getDbPrefix())
                     );
                 
-                //echo "after : $reducClassName";
+                echo "after : $reducClassName";
                 
             }
-            //echo('isValidClass ?  ('.$reducClassName.Core::getInstance()->getDbPrefix().')');
+            echo('isValidClass ?  ('.$reducClassName.Core::getInstance()->getDbPrefix().')');
             if (Core::isValidClass($reducClassName . Core::getInstance()->getDbPrefix())) {
-                //echo('isValidClass !  ('.$reducClassName.Core::getInstance()->getDbPrefix().')');
+                echo('isValidClass !  ('.$reducClassName.Core::getInstance()->getDbPrefix().')');
                 $return = new TableEntity($reducClassName);
             }
             else if (Core::isValidClass($reducClassName)) {

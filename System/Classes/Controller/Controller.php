@@ -55,9 +55,6 @@ abstract class Controller {
         $this->setTemplateFolder(Core::opts()->templates->default_template);
         $this->initialize();
 
-
-        if ($request == '')
-            $this->index();
     }
 
     /**
@@ -512,6 +509,7 @@ abstract class Controller {
     public abstract function index($params);
 
     final private function tryToRender() {
+        var_dump('### TRY TO RENDER');
         try {
             echo $this->twig->render($this->template, $this->mergeData());
         } catch (Twig_Error_Loader $exc) {
