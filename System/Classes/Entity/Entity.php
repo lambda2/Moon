@@ -841,15 +841,20 @@ abstract class Entity {
                 $fields,
                 $this->table,
                 $this->getDefinedPrimaryFields()))
-		{
+		    {
                 	return $this->updateCallback($data);
-		}
+		    }
             else
+            {
+                echo 'Echec lors de l\'insertion...';
                 return false;
+            }
         }
         else /** @TODO : Gestion des messages d'erreur */
         {
-	    var_dump($this->happyFields->getRules());
+	        var_dump($this->happyFields->getRulesErrors());
+            var_dump($this->validateUpdateForm($data));
+            var_dump($this->happyFields->check());
             echo '<span style="color: red">rules NOT validated !</span>';
             return false;
         }
@@ -891,6 +896,8 @@ abstract class Entity {
         if(file_exists($search))
         {
             $rules = Spyc::YAMLLoad($search);
+            if(isset($rules['form']))
+                unset($rules['form']);
             $this->happyFields->clearRules()->loadRulesFromArray($rules);
             $return = true;
         }

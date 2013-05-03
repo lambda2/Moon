@@ -39,6 +39,12 @@ abstract class Controller {
     protected $webdata = array();
 
     /**
+     * @var array urlParams le tableau contenant tous les parametres passées
+     * à la template. (dans l'url, tout ce qu'il y a apres le "?"
+     */
+    protected $urlParams = array();
+
+    /**
      * @var array data le tableau contenant les données que le controleur doit
      * passer à la vue.
      */
@@ -475,6 +481,22 @@ abstract class Controller {
         $this->template = $template;
     }
 
+    public function setUrlParams($params)
+    {
+        $this->urlParams = $params;
+        return $this;
+    }
+
+    /**
+     * @return array the url parameters.
+     * Url parameters are all url elements
+     * given after the ? symbol.
+     */
+    public function getUrlParams()
+    {
+        return $this->urlParams;
+    }
+
     final protected function getTemplateFileName() {
         $index = 0;
         $trace = debug_backtrace();
@@ -509,9 +531,9 @@ abstract class Controller {
     {
     	// Check if the user have enought permissions
     	if(!$this->grantAccess())
-		throw new MemberAccessException("Access Denied");
-	else
-		echo "<!-- access granted -->";
+            throw new MemberAccessException("Access Denied");
+        else
+            echo "<!-- access granted -->";
 	
         $this->template = $this->getTemplateFileName();
         

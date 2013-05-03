@@ -204,10 +204,17 @@ class Router {
 
         if (isset($params['p'])) {
 
+                //echo 'requete : ' . $params['p'];
                 $request = explode('->',$params['p']);
                 $classe = $request[0];
+                $options = array();
                 if(count($request) > 1){
                     $method = explode('?',explode('#',$request[1])[0])[0];
+                    $opts = explode('?',$request[1]);
+                    if(count($opts)>1)
+                    {
+                        $options = $opts[1];
+                    }
                 }
                 else
                     $method = 'index';
@@ -215,7 +222,13 @@ class Router {
                 // Et que cette page existe
                 if (class_exists($classe)) {
                     // On la charge
-                    $c      = new $classe($params);
+                    $c = new $classe();
+                    
+                    if(is_a($c,'Controller'))
+                    {
+                        $c->setUrlParams($options);
+                    }
+
                     $c->$method();
                 }
                 else {
