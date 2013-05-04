@@ -45,12 +45,22 @@ class MoonTwig extends Twig_Extension
      * invraisemblable de mettre un lien avec des nombres ou du genre...
      */
     public static function moonLink($str, $text='') {
-        $pl = explode('.',$str);
+        $pl = explode('.',self::getProperVal($str));
         if(strcmp($text,'') == 0){
             $text = $pl[0];
         }
         $str = Core::opts()->system->siteroot.implode(DIRECTORY_SEPARATOR, $pl);
-        return '<a href="'.$str.'">' . $text . '</a>';
+        $opts = array();
+        $numOpts = func_num_args();
+        if($numOpts > 2)
+        {
+            $options = func_get_args();
+            for($i=2; $i < $numOpts; $i++)
+            {
+                $opts[] = self::getProperVal($options[$i]);
+            }
+        }
+        return '<a href="'.$str.'/'.implode('/',$opts).'">' . $text . '</a>';
     }
     
     /**
@@ -152,6 +162,18 @@ class MoonTwig extends Twig_Extension
             $str = Moon::create($str);
         }
         return $str;
+    }
+
+    protected static function getProperVal($obj)
+    {
+        if(is_a($obj,'EntityField'))
+        {
+            return $obj->getValue();
+        }
+        else
+        {
+            return $obj;
+        }
     }
     
     function getName() {
