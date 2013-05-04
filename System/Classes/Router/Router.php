@@ -205,6 +205,10 @@ class Router {
 
                 $request = explode('->',$params['p']);
                 $classe = $request[0];
+
+                // We define the current context to the core
+                Core::setContext($classe);
+                
                 $options = array();
                 if(count($request) > 1){
                     $method = explode('?',explode('#',$request[1])[0])[0];

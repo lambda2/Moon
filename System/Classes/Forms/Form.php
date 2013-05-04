@@ -106,13 +106,21 @@ class Form extends Element {
     public function searchForDefinedDatas($formName)
     {
         $return = false;
-        $search = Core::opts()->forms->form_files.$formName.'.yml';
+        $search = Core::opts()->forms->form_files.Core::getContext().'.yml';
+       
         if(file_exists($search))
         {
+
             $datas = Spyc::YAMLLoad($search);
-            $this->loadDataFromArray($datas);
-            $this->displayLabels = true;
-            $return = true;
+            if(array_key_exists($formName,$datas))
+            {
+                $datas = $datas[$formName];
+                $this->loadDataFromArray($datas);
+                $this->displayLabels = true;
+                $return = true;
+            }
+            else
+                $return = false;
         }
 
         return $return;

@@ -18,6 +18,7 @@ class Core {
     protected $dev_mode;
     protected $db_prefix;
     protected $debug;
+    protected static $context;
     protected static $router;
     protected static $user_routes;
     protected static $options = null;
@@ -147,6 +148,7 @@ class Core {
 
     protected function initialize($dev_mode, $dbPrefix) {
         $this->dev_mode = $dev_mode;
+        $this->context = '';
         $this->db_prefix = $dbPrefix;
         if($dev_mode == 'DEBUG')
             $this->debug = Debug::getInstance($this);
@@ -186,6 +188,16 @@ class Core {
             return true;
         else
             return false;
+    }
+
+    public static function setContext($context)
+    {
+        self::$context = $context;
+    }
+
+    public static function getContext()
+    {
+        return self::$context;
     }
 
     public static function isStarted() {

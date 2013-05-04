@@ -893,16 +893,22 @@ abstract class Entity {
     protected function searchForDefinedRules($formName)
     {
         $return = false;
-        $search = Core::opts()->forms->form_files.$formName.'.yml';
+        $search = Core::opts()->forms->form_files.Core::getContext().'.yml';
 
         echo ' - trying to load rules file : '.$search.'<br>';
         if(file_exists($search))
         {
             $rules = Spyc::YAMLLoad($search);
-            if(isset($rules['form']))
-                unset($rules['form']);
-            $this->happyFields->clearRules()->loadRulesFromArray($rules);
-            $return = true;
+            if(array_key_exists($formName,$rules))
+            {
+                $rules = $rules[$formName];
+                if(isset($rules['form']))
+                    unset($rules['form']);
+                $this->happyFields->clearRules()->loadRulesFromArray($rules);
+                $return = true;
+            }
+            else
+                $return = false;
         }
 
         return $return;
