@@ -30,7 +30,7 @@ class Moon {
      * spécifiés. Le champ doit etre une clé primaire ou un champ unique.
      * Par exemple le chat avec l'id numero 1 => get('Chat', 'id_chat', '1').
      * Si plusieurs objets correspondent, le premier objet sera retourné.
-     * @param string $class le classe a instancier
+     * @param string $class la classe a instancier
      * @param string $field le champ a tester
      * @param string $value la valeur du champ
      * @return Entity Une instance de la classe correspondant aux champs.
@@ -39,6 +39,20 @@ class Moon {
         $cl = EntityLoader::getClass($class);
         $cl->loadBy($field, $value);
         $cl->autoLoadLinkedClasses();
+        return $cl;
+    }    
+
+    /**
+     * Crée un tableau contenant le ou les objets correspondants aux critères 
+     * passés en parametre, et les chargent en utilisant le champ et la valeur
+     * spécifiés. Le champ ne doit pas forcement etre une clé primaire ou un champ unique.
+     * @param string $class la classe a instancier
+     * @param string $field le champ a tester
+     * @param string $value la valeur du champ
+     * @return Array un tableau d'instances de la classe correspondant aux champs.
+     */
+    public static function getAllWhere($class, $field, $value){
+        $cl = Entity::loadAllBy($class,$field,$value);
         return $cl;
     }
     

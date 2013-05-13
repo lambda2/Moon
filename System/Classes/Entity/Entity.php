@@ -129,12 +129,12 @@ abstract class Entity {
                         {
 
                             $res = EntityLoader::getClass($moonLinkValue->table);
-                            $res->loadBy(
-                                $moonLinkValue->attribute, 
-                                $this->fields[$moonLinkValue->destinationColumn]->getValue());
-                            $res->reloadLinkedClasses();
-                            $t[] = $res;
-
+                            if($res != null) {
+                                $t = Entity::loadAllBy(
+                                    $moonLinkValue->table,
+                                    $moonLinkValue->attribute, 
+                                    $this->fields[$moonLinkValue->destinationColumn]->getValue());                          
+                            }
                         }
                     }
                     if(count($t) > 0){
@@ -144,7 +144,7 @@ abstract class Entity {
             }
         }
         if (Core::getInstance()->debug()) {
-            return '<b>[?]</b>';
+            throw AlertException("The attribute $name doesn't exists.",1);
         }
         return false;
     }
@@ -321,9 +321,6 @@ abstract class Entity {
             $request = "SELECT * FROM {$this->table} WHERE {$field} = '{$value}'";
         }
 
-        //echo 'REQUEST = '.$request.'<br>';
-
-        
         try 
         {
             $Req = $this->bdd->prepare($request);
@@ -355,6 +352,65 @@ abstract class Entity {
         {
             return false;
         }
+    }
+
+ 
+    /**
+     * Charge tous les objets en fonction d'un ou plusieurs parametres
+     * et renvoie l'ensemble sous forme de tableau.
+     */
+    public static function loadAllBy($classe,$field, $value) {
+        $c = EntityLoader::getClass($classe);
+        $request = "";
+        
+        /**
+         * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
+         * par exemple...) on ajoute les contraintes dans la requete.
+         */
+        if(is_array($field) 
+            and is_array($value) 
+            and count($field) == count($value))
+        {
+            $request = "SELECT * FROM {$c->getTable()} WHERE ";
+            $args = array();
+            foreach ($field as $key=>$cle)  
+            {
+                $args[] = $cle." = ".$value[$key];
+            }
+            $request .= implode(' AND ', $args);
+        }
+        else
+        {
+            $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
+        }
+
+        try 
+        {
+            $Req = Core::getBdd()->getDb()->prepare($request);
+            $Req->execute(array());
+        } 
+        catch (Exception $e) //interception de l'erreur
+        {
+            throw new OrmException("Error Processing Request");
+        }
+        $t = array();
+        // Si on récupère quelque chose :
+        if ($Req->rowCount() != 0) 
+        {
+            while ($res = $Req->fetch(PDO::FETCH_OBJ))
+            {
+                $f          = EntityLoader::getClass($classe);
+                $pri        = $f->getValuedPrimaryFields($res);
+                if (!isNull($pri)) 
+                {
+                    $f->loadByArray($pri);
+                    $f->autoLoadLinkedClasses();
+                    $t[] = $f;
+                }
+            
+            }
+        } 
+        return $t;
     }
 
     /**
@@ -402,6 +458,10 @@ abstract class Entity {
     return $t;
     }
 
+    /**
+     * A checker... Elle semble identique à celle du dessus... 
+     * @TODO : Voir au dessus...
+     */
     public function getAll() {
         $t = array();
         try {
