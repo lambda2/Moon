@@ -177,25 +177,26 @@ class Router {
      * [Classe].[Methode]
      * @return boolean True si tout est bon, false sinon.
      */
-    protected function callController($controllerUrl,$params){
+    public function callController($controllerUrl,$params,$urlParams=array()){
         $s = split('\.',$controllerUrl);
+        $c = new $s[0]();
+        $c->setUrlParams($urlParams);
         if (count($s) > 1) {
-            $c = new $s[0]($params);
-            $c->$s[1]();
-            return true;
+            $c->$s[1]($params);
         }
         else 
-            return false;
+            $c->index($params);
     }
     
     /**
      * Apelle la méthode index du controlleur par défaut.
      * @param array $params les parametres de la requete
      */
-    protected function callDefaultController($params){
+    public function callDefaultController($params,$urlParams=array()){
         $defC = Core::opts()->system->default_controller;
-        $c = new $defC($params);
-        $c->index();
+        $c = new $defC();
+        $c->setUrlParams($urlParams);
+        $c->index($params);
     }
 
     public function routeGet()
@@ -205,6 +206,7 @@ class Router {
 
                 $request = explode('->',$params['p']);
                 $classe = $request[0];
+                $method = 'index';
 
                 // We define the current context to the core
                 Core::setContext($classe);
@@ -218,7 +220,8 @@ class Router {
                         $options = $opts[1];
                     }
                 }
-                else
+
+                if(isNull($method))
                     $method = 'index';
 
                 // Et que cette page existe

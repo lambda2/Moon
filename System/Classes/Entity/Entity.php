@@ -144,7 +144,7 @@ abstract class Entity {
             }
         }
         if (Core::getInstance()->debug()) {
-            throw AlertException("The attribute $name doesn't exists.",1);
+            throw new AlertException("The attribute $name doesn't exists.",1);
         }
         return false;
     }
@@ -411,6 +411,11 @@ abstract class Entity {
             }
         } 
         return $t;
+    }
+
+    public function exists()
+    {
+        return $this->instance;
     }
 
     /**

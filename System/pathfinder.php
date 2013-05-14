@@ -45,7 +45,7 @@ class PathFinder {
                         }
                     }
                     else {
-                        if (strpos($fichier, '.php') != false)
+                        if (strpos($fichier, '.php') != false and substr($fichier,-4,4) == '.php')
                             self::$res[self::removeExt($fichier)] = $dir . DIRECTORY_SEPARATOR . $fichier;
                     }
                 }

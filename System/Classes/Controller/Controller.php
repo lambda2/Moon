@@ -494,6 +494,19 @@ abstract class Controller {
         return $this->urlParams;
     }
 
+    /**
+     * Redirect the user to the specified path.
+     * As usual, path must have a form like :
+     * <Controller>.<Method> (like "Home.index")
+     */
+    public function redirect($path = null, $options=array(), $urlParams=array())
+    {
+        if(isNull($path))
+            return Core::getRouter()->callDefaultController($options, $urlParams);
+        else
+            return Core::getRouter()->callController($path, $options, $urlParams);
+    }
+
     final protected function getTemplateFileName() {
         $index = 0;
         $trace = debug_backtrace();

@@ -200,6 +200,11 @@ class Core {
         return self::$context;
     }
 
+    public static function getRouter()
+    {
+        return self::$router;
+    }
+
     public static function isStarted() {
         return (self::$instance instanceof self);
     }
