@@ -444,6 +444,14 @@ function dbQuote($string, $separator = " ") {
 }
 
 /**
+ * Return the num firsts caracters of the string
+ */
+function truncate($text, $num=100, $end="...")
+{
+    return substr($text,0,$num).$end;
+}
+
+/**
  * Convertit une chaine de caractères de la forme
  * clé=valeur, clé=valeur...
  * en tableau contenant {clé:valeur,clé:valeur,...}

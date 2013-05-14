@@ -31,6 +31,7 @@ class MoonTwig extends Twig_Extension
             new Twig_SimpleFunction('getFormOpenTag','MoonTwig::getFormOpenTag'),
             new Twig_SimpleFunction('getFormCloseTag','MoonTwig::getFormCloseTag'),
             new Twig_SimpleFunction('getFormFieldList','MoonTwig::getFormFieldList'),
+            new Twig_SimpleFunction('truncate','MoonTwig::truncate'),
             );
     }
     
@@ -121,6 +122,11 @@ class MoonTwig extends Twig_Extension
                 "Invalid entity supplied for form generation", 1);
 
         return $entity->generateDeleteForm('',$label);
+    }
+
+    public static function truncate($text,$num=100,$end="")
+    {
+        return truncate($text, $num, $end); 
     }
 
     /**
