@@ -40,3 +40,4 @@ executables/*
 *.swp
 ..swo
 *.swo
+System/Configuration/configuration.yml
