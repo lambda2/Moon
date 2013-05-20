@@ -51,10 +51,8 @@ abstract class Controller {
     protected $data = array();
 
     public function __construct($request = '') {
-
         $this->setTemplateFolder(Core::opts()->templates->default_template);
         $this->initialize();
-
     }
 
     /**
@@ -495,6 +493,14 @@ abstract class Controller {
     }
 
     /**
+     * @return string the specified url parameter.
+     */
+    public function getUrlParam($param)
+    {
+        return $this->urlParams[$param];
+    }
+
+    /**
      * Redirect the user to the specified path.
      * As usual, path must have a form like :
      * <Controller>.<Method> (like "Home.index")
@@ -562,6 +568,11 @@ abstract class Controller {
 
         // And try to render
         $this->tryToRender();
+    }
+
+    final public function jsonRender()
+    {
+        echo json_encode($this->data); 
     }
 
     protected function grantAccess()

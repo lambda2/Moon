@@ -19,7 +19,7 @@
  * et qui ne peut pas contenir deux clés de meme valeur, donc pas deux fois
  * la meme table... Pas de parrains pour les filleuls quoi...
  */
-abstract class Entity {
+abstract class Entity implements JsonSerializable {
 
     protected $table;
 
@@ -413,9 +413,25 @@ abstract class Entity {
         return $t;
     }
 
+    /**
+     * @return True if the instance exists
+     */
     public function exists()
     {
         return $this->instance;
+    }
+
+    /**
+     * Explain how the php engine have to serialize an
+     * Entity object to json.
+     */
+    public function jsonSerialize() {
+        $ret = array();
+        foreach($this->fields as $field)
+        {
+            $ret[$field->getName()] = $field->getValue();
+        }
+        return $ret;
     }
 
     /**

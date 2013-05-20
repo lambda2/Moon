@@ -231,7 +231,8 @@ class Router {
                     
                     if(is_a($c,'Controller'))
                     {
-                        $c->setUrlParams($options);
+                        $annotParams = $this->parseUrlParams($c,$method,$options);
+                        $c->setUrlParams($annotParams);
                     }
                     $c->$method();
                 }
@@ -277,9 +278,46 @@ class Router {
                 }
                 else {
                     // Si aucune page n'est définie, on va sur la page par défaut
-                    $this->callDefaultController($params);
-                }
+                    $this->callDefaultController($params);                }
             }
+    }
+
+    /**
+     * Will read annotation in selected class for find
+     * a param(s) definition, and will return corresponding
+     * array. The param name are the keys, the param value are the value.
+     * @return Array An associative array with [param name] = value
+     * @ since 0.0.4
+     */
+    protected function parseUrlParams($className,$method,$params)
+    {
+        $pa = explode('/',$params); 
+        $reflectedClass = new ReflectionAnnotatedMethod($className,$method);
+
+        if(!$reflectedClass->hasAnnotation('PathInfo'))
+        {
+            return $pa;
+        }
+        else
+        {
+            $annoClass = $reflectedClass->getAnnotation('PathInfo');
+            $return = array();
+            $scheme = explode('/',$annoClass->value);
+            $counter = 0;
+            foreach($pa as $urlElt)
+            {
+                if($counter <= count($scheme) -1)
+                {
+                    $return[$scheme[$counter]] = $urlElt;
+                }
+                else 
+                {
+                    $return[] = $urlElt;
+                }
+                $counter ++;
+            }
+            return $return;
+        }
     }
 
     protected function checkAccess($action, $target)
