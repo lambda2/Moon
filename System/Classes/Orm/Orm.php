@@ -22,7 +22,21 @@ abstract class Orm {
     protected $driver;
     protected static $db;
     protected static $instance;
+    
+    // Constraints
 
+    /** @var $wcontraints contains all the [where] contraints */
+    protected $wconstraints = array();
+
+    /** @var $fcontraints contains all the [from] contraints */
+    protected $fconstraints = array();
+
+    /** @var $ficontraints contains all the [select] contraints */
+    protected $ficonstraints = array();
+
+    
+    /* ----------------- Common methods ------------------- */
+    
     public function __construct($driver) {
         $this->driver = $driver;
         /** @TODO : Peut etre peut on enlever la respondsabilitée de la base
@@ -271,6 +285,143 @@ abstract class Orm {
         }
         return $t;
     }
+
+    /* ---------------------- Query selectors --------------------- */
+
+
+    /**
+     * Add a [select] constraint to the next query.
+     * @param $fields the fields to select
+     * @return $this the current instance.
+     * @since 0.0.4
+     */
+    public function select($fields)
+    {
+        $fields = explode(',',$fields);
+        foreach ($fields as $f)
+        {
+            $this->ficonstraints[] = $f;
+        }
+        return $this;
+    }
+
+    /**
+     * Add a [where] constraint to the next query.
+     * @param $field the field to be constrained
+     * @param $value the value to contraint
+     * @param $arg the contraint operator. default: [=]
+     * @param $assoc the logical operand
+     * @return $this the current instance.
+     * @since 0.0.4
+     * @TODO set a betted system to manipulate logical operands.
+     * Currently, we can't.
+     */
+    public function where($field, $value, $arg='=', $assoc='AND')
+    {
+        $this->wconstraints[] = $field.' '.$arg.' '.$value.'::'.$assoc;
+        return $this;
+    }
+
+    /**
+     * Add a [from] constraint to the next query.
+     * @param $table the table to search
+     * @return $this the current instance.
+     * @since 0.0.4
+     */
+    public function from($table)
+    {
+        $this->fconstraints[] = $table;
+        return $this;
+    }
+
+    /**
+     * Will execute a [select] query for defined fields, constraints and tables.
+     * @return Array a set of element corresponding to the results of the
+     * query.
+     * @since 0.0.4
+     */
+     public function fetchArray()
+     {
+        $this->getQuerySql();
+     }
+
+     protected function getQuerySql()
+     {
+        if(!$this->checkContraintsForQuery())
+            return false;
+
+        $sql = $this->getSelectSql();
+        $sql .= $this->getFromSql();
+        $sql .= $this->getWhereSql();
+        var_dump($sql);
+     }
+
+    /**
+     * @return the [select] part of the defined sql request
+     */
+     protected function getSelectSql()
+     {
+        return ' SELECT '.implode(', ',$this->ficonstraints);
+     }
+    
+    /**
+     * @return the [from] part of the defined sql request
+     */
+     protected function getFromSql()
+     {
+        return ' FROM '.implode(', ',$this->fconstraints);
+     }
+
+    /**
+     * @return the [where] part of the defined sql request
+     */
+     protected function getWhereSql()
+     {
+        $req = ' WHERE ';
+        $first = True;
+        foreach($this->wconstraints as $w)
+        {
+            $assoc = explode('::',$w);
+            if($first)
+            {
+                $req .= $assoc[0];
+                $first = false;
+            }
+            else
+            {
+                $req .= ' '.$assoc[1].' '.$assoc[0];
+            }
+        }
+        return $req;
+     }
+
+    /**
+     * Will check if all the constraints are defined 
+     * in order to execute a query. For example, if
+     * no table has been defined with [from()] method,
+     * will return an horrible exception who will change
+     * the little world where you're living now.
+     * @return Boolean False if all constraints aren't set, true otherwise.
+     * @throw OrmException if all constraints aren't set.
+     */
+     protected function checkContraintsForQuery()
+     {
+        $valide = True;
+        if(count($this->ficonstraints) == 0)
+        {
+            $valide = False;
+            throw new OrmException("At least one field must be selected to perform the request");
+        }
+        else if(count($this->fconstraints) == 0)
+        {
+            $valide = False;
+            throw new OrmException("At least one table must be defined in order to execute the query");
+        }
+        return $valide;
+     }
+
+
+    /* --------------- To be defined in lower classes ---------- */
 
     public abstract function getAllTables();
 
