@@ -61,7 +61,11 @@ class MoonTwig extends Twig_Extension
                 $opts[] = self::getProperVal($options[$i]);
             }
         }
-        return '<a href="'.$str.'/'.implode('/',$opts).'">' . $text . '</a>';
+        $o = '';
+        if(count($opts) > 0)
+            $o = '/'.implode('/',$opts);
+
+        return '<a href="'.$str.$o.'">' . $text . '</a>';
     }
     
     /**
@@ -70,9 +74,22 @@ class MoonTwig extends Twig_Extension
      * @return string le lien. Pratique pour créer des href un peu personnalisés
      */
     public static function moonHref($str) {
-        $pl = explode('.',$str);
+        $pl = explode('.',self::getProperVal($str));
         $str = Core::opts()->system->siteroot.implode(DIRECTORY_SEPARATOR, $pl);
-        return $str;
+        $opts = array();
+        $numOpts = func_num_args();
+        if($numOpts > 1)
+        {
+            $options = func_get_args();
+            for($i=1; $i < $numOpts; $i++)
+            {
+                $opts[] = self::getProperVal($options[$i]);
+            }
+        }
+        $o = '';
+        if(count($opts) > 0)
+            $o = '/'.implode('/',$opts);
+        return $str.$o;
     }
 
     /**

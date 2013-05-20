@@ -317,7 +317,7 @@ abstract class Entity implements JsonSerializable {
             $request .= implode(' AND ', $args);
         }
         else
-        {
+        {            
             $request = "SELECT * FROM {$this->table} WHERE {$field} = '{$value}'";
         }
 
