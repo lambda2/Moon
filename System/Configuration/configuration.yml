@@ -20,7 +20,7 @@
 #
 
 info :
-  version : "0.0.3"
+  version : "0.0.4"
   stable : false
   supported_sql_drivers : ["mysql"]
   required : { PHP: 5.2, MySQL: 5.1, Apache: 2.2.20 }
