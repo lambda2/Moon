@@ -31,6 +31,7 @@ function __autoload($nomClasse) {
         require $file;
     }
 
+
     /**
      * Et on laisse la main à notre PathFinder
      */
@@ -50,6 +51,11 @@ function __autoload($nomClasse) {
     }
     else if (array_key_exists($nomClasse, $foundModels)) {
         require_once($foundModels[$nomClasse]);
+    }
+
+    if(!class_exists('Annotation_Target'))
+    {
+        require __DIR__.'/../'.'System/Addendum/annotations.php';
     }
 }
 
