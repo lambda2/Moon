@@ -269,6 +269,23 @@ abstract class Orm {
         return $t;
     }
 
+    protected function arrayQuery($request, $args = array()) {
+        $t = array();
+        try {
+            $Req = self::$db->prepare($request);
+            $Req->execute(array_values($args));
+        } catch (Exception $e) { //interception de l'erreur
+            throw new OrmException(
+            "Unable to execute the request '$request' : ["
+            . $e->getMessage() . ']');
+        }
+        while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
+            $t[] = $res;
+        }
+        return $t;
+    }
+
+
     public function getAttributeFrom($attr, $table)
     {
         $t = array();
@@ -342,7 +359,8 @@ abstract class Orm {
      */
      public function fetchArray()
      {
-        $this->getQuerySql();
+        $query = $this->getQuerySql();
+        return $this->arrayQuery($query);
      }
 
      protected function getQuerySql()
@@ -353,7 +371,7 @@ abstract class Orm {
         $sql = $this->getSelectSql();
         $sql .= $this->getFromSql();
         $sql .= $this->getWhereSql();
-        var_dump($sql);
+        return $sql;
      }
 
     /**
@@ -377,6 +395,9 @@ abstract class Orm {
      */
      protected function getWhereSql()
      {
+        if(count($this->wconstraints) == 0)
+            return '';
+
         $req = ' WHERE ';
         $first = True;
         foreach($this->wconstraints as $w)
