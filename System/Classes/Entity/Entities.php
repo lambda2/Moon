@@ -3,7 +3,7 @@
 /**
  * Représente un ensemble d'entitées
  */
-class Entities implements Iterator {
+class Entities implements Iterator, Countable {
 
     protected $table;
     protected $bdd;
@@ -150,9 +150,6 @@ class Entities implements Iterator {
                                         $entity->getFields()[$moonLinkValue->destinationColumn]->getValue());
                             }
                         }
-                    }
-                    if(count($nextEntities) > 0) // Et si notre paquet n'est plus vide
-                    {
                         return $nextEntities; // On le renvoie !
                     }
                 }
@@ -184,24 +181,29 @@ class Entities implements Iterator {
 
     /* -------------- Iterator methods ---------------- */
 
-    function rewind() {
+    public function rewind() {
         $this->position = 0;
     }
 
-    function current() {
+    public function current() {
         return $this->entities[$this->position];
     }
 
-    function key() {
+    public function key() {
         return $this->position;
     }
 
-    function next() {
+    public function next() {
         ++$this->position;
     }
 
-    function valid() {
+    public function valid() {
         return isset($this->entities[$this->position]);
+    }
+
+    public function count()
+    {
+        return count($this->entities);
     }
 
 

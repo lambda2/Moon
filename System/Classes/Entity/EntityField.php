@@ -119,6 +119,7 @@ class EntityField {
         {
             $field = FieldFactory::createField(
             $this->type,$this->name);
+
             $field->setRequired(!$this->isNull);
             $field->setPlaceholder($this->placeHolder);
             $field->setVisible(!$this->isAuto);

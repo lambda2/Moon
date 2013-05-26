@@ -33,6 +33,8 @@ class MoonTwig extends Twig_Extension
             new Twig_SimpleFunction('getFormFieldList','MoonTwig::getFormFieldList'),
             new Twig_SimpleFunction('truncate','MoonTwig::truncate'),
             new Twig_SimpleFunction('gravatar','MoonTwig::getGravatar'),
+            new Twig_SimpleFunction('plu','MoonTwig::plural'),
+            new Twig_SimpleFunction('len','MoonTwig::getCount')
             );
     }
     
@@ -202,6 +204,38 @@ class MoonTwig extends Twig_Extension
         {
             return $obj;
         }
+    }
+
+    public static function plural($str,$obj,$ext='s',$before=null,$none=null)
+    {
+        $nb = count($obj);
+        if($nb > 1)
+        {
+            if($before)
+                return $before.$nb.' '.$str.$ext;
+            else
+                return $nb.' '.$str.$ext;
+        }
+        else if($nb == 0)
+        {
+            if($none)
+                return $none.' '.$str;
+            else if($before)
+                return $before.$nb.' '.$str;
+            else
+                return $nb.' '.$str;
+        }
+        else {
+            if($before)
+                return $before.$nb.' '.$str;
+            else
+                return $nb.' '.$str;
+        }
+    }
+
+    public static function getCount($obj)
+    {
+        return count($obj);
     }
     
     function getName() {

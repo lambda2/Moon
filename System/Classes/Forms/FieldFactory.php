@@ -28,6 +28,10 @@ class FieldFactory {
                 $field = new Input($name,'number');
                 break;
 
+            case 'tinyint':
+                $field = new CheckBox($name,$name);
+                break;
+
             case 'date':
                 $field = new Input($name,'date');
                 break;

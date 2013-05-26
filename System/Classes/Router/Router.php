@@ -291,7 +291,7 @@ class Router {
      */
     protected function parseUrlParams($className,$method,$params)
     {
-        $pa = explode('/',$params); 
+        $pa = implode('/',$params); 
         $reflectedClass = new ReflectionAnnotatedMethod($className,$method);
 
         if(!$reflectedClass->hasAnnotation('PathInfo'))

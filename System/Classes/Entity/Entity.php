@@ -137,10 +137,8 @@ abstract class Entity implements JsonSerializable {
                                     $moonLinkValue->attribute,
                                     $this->fields[$moonLinkValue->destinationColumn]->getValue());
                             }
+                            return $t;
                         }
-                    }
-                    if(count($t) > 0){
-                        return $t;
                     }
                 }
             }
