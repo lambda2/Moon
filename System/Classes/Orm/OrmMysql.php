@@ -131,16 +131,26 @@ class OrmMysql extends Orm {
      * @return array(\MoonLink)
      * @throws OrmException si une erreur survient
      */
-    public function getMoonLinksFrom($tableName, $external=false) {
+    public function getMoonLinksFrom($tableName, $external=false,$d=False) {
         $relations = $this->getAllRelationsFrom($tableName);
         if($external)
         {
             $relations = $this->getAllRelationsWith($tableName);
         }
         $links     = array();
+
+        if(false) {
+
+            echo '###### ANOU ##########<br>';
+            var_dump($relations);
+            var_dump($this);
+            var_dump(debug_backtrace());
+            echo '###### PLU ANOU ##########<br>';
+        }
+
         foreach ($relations as $relation) {
             $urls        = explode('@', $relation);
-            if (count($urls) < 2)
+            if(count($urls) < 2)
             {
                 throw new OrmException(
                 "Unable to generate moonLink for relation [$relation]");
@@ -148,6 +158,23 @@ class OrmMysql extends Orm {
             $sourceField = explode('.', $urls[0]);
             $links[$sourceField[1]] = new MoonLink($urls[0], $urls[1]);
         }
+        /*if($d) {
+            echo '###### ANOU ##########<br>';
+            var_dump($links);
+            var_dump($this);
+            echo '###### PLU ANOU ##########<br>';
+        }
+        else if($tableName == 'membre_equipe')
+        {
+
+            echo '%%%%%% ANOU %%%%%%%%%%<br>';
+            var_dump($links);
+            var_dump($this);
+            echo '%%%%%% PLU ANOU %%%%%%%%%%<br>';
+
+        }*/
+
+
         return $links;
     }
 
@@ -180,8 +207,8 @@ class OrmMysql extends Orm {
             if($field->Key == 'PRI'){
                 $f->setIsPrimary(true);
             }
-            else if ($field->Key == 'MUL' 
-                and array_key_exists($name, $moonLinks) 
+            else if ($field->Key == 'MUL'
+                and array_key_exists($name, $moonLinks)
                 and !isNull($moonLinks[$name]))
             {
                 $f->setIsForeign(true);
@@ -253,7 +280,7 @@ class OrmMysql extends Orm {
     protected static function parseInnerParenthValue($value)
     {
         $result = array();
-        preg_match('#\(+(.*)\)+#', $value, $result); 
+        preg_match('#\(+(.*)\)+#', $value, $result);
         return implode('', explode('\'',$result[1]));
     }
 
