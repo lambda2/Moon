@@ -121,18 +121,14 @@ abstract class Entity implements JsonSerializable {
             }
             else // Et enfin, on regarde si quelque chose référence cet attribut
             {
-                //echo 'not methode !<br>';
-                $externals = Core::getBdd()->getMoonLinksFrom($this->table,true);
+                $externals = Core::getBdd()->getMoonLinksFrom($this->table,true,true);
                 $t = array();
                 if(!isNull($externals)){
-
                     foreach ($externals as $moonLinkKey => $moonLinkValue)
                     {
                         //echo 'searching for '.$name.' into '.$moonLinkValue.'<br>';
                         if($moonLinkValue->table == $name)
                         {
-                            //echo 'table found : '.$moonLinkValue->table.'<br>';
-
                             $res = EntityLoader::getClass($moonLinkValue->table);
                             //echo 'class born : '.$res.'<br>';
                             if($res != null) {
@@ -146,10 +142,6 @@ abstract class Entity implements JsonSerializable {
                     if(count($t) > 0){
                         return $t;
                     }
-                }
-                else {
-
-
                 }
             }
         }
@@ -234,7 +226,7 @@ abstract class Entity implements JsonSerializable {
 
         foreach ($this->linkedClasses as $key => $value) {
             // Nouvelle version, basée sur le nom du champ local.
-            if (strcasecmp($key, $table) == 0) {
+            if (strcasecmp($value->attribute, $table) == 0) {
                 if (!isNull($value->instance))
                     return $value->instance;
             }

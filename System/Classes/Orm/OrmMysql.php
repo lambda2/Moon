@@ -139,14 +139,7 @@ class OrmMysql extends Orm {
         }
         $links     = array();
 
-        if(false) {
 
-            echo '###### ANOU ##########<br>';
-            var_dump($relations);
-            var_dump($this);
-            var_dump(debug_backtrace());
-            echo '###### PLU ANOU ##########<br>';
-        }
 
         foreach ($relations as $relation) {
             $urls        = explode('@', $relation);
@@ -156,7 +149,7 @@ class OrmMysql extends Orm {
                 "Unable to generate moonLink for relation [$relation]");
             }
             $sourceField = explode('.', $urls[0]);
-            $links[$sourceField[1]] = new MoonLink($urls[0], $urls[1]);
+            $links[$relation] = new MoonLink($urls[0], $urls[1]);
         }
         /*if($d) {
             echo '###### ANOU ##########<br>';
@@ -164,16 +157,8 @@ class OrmMysql extends Orm {
             var_dump($this);
             echo '###### PLU ANOU ##########<br>';
         }
-        else if($tableName == 'membre_equipe')
-        {
-
-            echo '%%%%%% ANOU %%%%%%%%%%<br>';
-            var_dump($links);
-            var_dump($this);
-            echo '%%%%%% PLU ANOU %%%%%%%%%%<br>';
-
-        }*/
-
+        */
+        
 
         return $links;
     }
