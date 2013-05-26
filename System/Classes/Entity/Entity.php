@@ -8,14 +8,14 @@
  * ...qui sucent ce carton.
  * ...et font des trous.
  * ...et il pleut.
- * 
+ *
  * @TODO : enlever tous les vieux echo(...) dégeulasses après avoir testé
- * [serieusement] cette classe. 
- * 
+ * [serieusement] cette classe.
+ *
  * @TODO : [UNE FOIS LES TESTS UNITAIRES FAITS] Gerer les relations multiples
  * et récursives. Pour l'instant on ne gere que les relations 1..0 à 1..0 et
- * seulement une relation par table ! Voir l'attribut [$linkedClasses] qui est 
- * un put*** de tableau associatif ou la clé est la table distante référencée 
+ * seulement une relation par table ! Voir l'attribut [$linkedClasses] qui est
+ * un put*** de tableau associatif ou la clé est la table distante référencée
  * et qui ne peut pas contenir deux clés de meme valeur, donc pas deux fois
  * la meme table... Pas de parrains pour les filleuls quoi...
  */
@@ -61,11 +61,10 @@ abstract class Entity implements JsonSerializable {
      * Va tenter d'instancier les classes liées a l'instance courante.
      */
     public function autoLoadLinkedClasses($force = false) {
-        if($this->linkedClassesLoaded == false or $force == true)
-        {       
+        if$this->linkedClassesLoaded == false or $force == true)
+        {
             $this->clearLinkedClasses();
             $this->linkedClasses = Core::getBdd()->getMoonLinksFrom($this->table);
-            
             foreach ($this->linkedClasses as $linked) {
                 if (!isNull($this->fields[$linked->attribute]->getValue()))
                 {
@@ -73,7 +72,6 @@ abstract class Entity implements JsonSerializable {
                         $this->fields[$linked->attribute]->getValue());
                 }
             }
-            
             $this->linkedClassesLoaded = true;
         }
     }
@@ -123,17 +121,20 @@ abstract class Entity implements JsonSerializable {
                 //echo 'on a '.count($externals).' external(s)... <br>';
                 if(!isNull($externals)){
                     //var_dump($externals);
-                    foreach ($externals as $moonLinkKey => $moonLinkValue) 
+                    foreach ($externals as $moonLinkKey => $moonLinkValue)
                     {
+                        //echo 'searching for '.$name.' into '.$moonLinkValue.'<br>';
                         if($moonLinkValue->table == $name)
                         {
+                            //echo 'table found : '.$moonLinkValue->table.'<br>';
 
                             $res = EntityLoader::getClass($moonLinkValue->table);
+                            //echo 'class born : '.$res.'<br>';
                             if($res != null) {
-                                $t = Entity::loadAllBy(
+                                $t = Entity::loadAllEntitiesBy(
                                     $moonLinkValue->table,
-                                    $moonLinkValue->attribute, 
-                                    $this->fields[$moonLinkValue->destinationColumn]->getValue());                          
+                                    $moonLinkValue->attribute,
+                                    $this->fields[$moonLinkValue->destinationColumn]->getValue());
                             }
                         }
                     }
@@ -165,7 +166,7 @@ abstract class Entity implements JsonSerializable {
     }
 
     /**
-     * Véritable nid à bugs de l'application. 
+     * Véritable nid à bugs de l'application.
      * Nécessite un vrai debug puis refactoring
      * @TODO: Voir ci-dessus.
      *    ^----- @since 0.0.3 c'est quand meme un peu mieux...
@@ -199,13 +200,12 @@ abstract class Entity implements JsonSerializable {
             case 'default':
             return false;
         }
-        
     }
 
     /**
-     * @author lambda2 
+     * @author lambda2
      * @return null no return value
-     * 
+     *
      * @since v0.0.3 Les propriétés deviennent des classes.
      * -> source potentielle de bugs... be awake !
      */
@@ -237,7 +237,6 @@ abstract class Entity implements JsonSerializable {
     public function loadByArray($array)
     {
         $request = "";
-        
         /**
          * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
          * par exemple...) on ajoute les contraintes dans la requete.
@@ -246,7 +245,7 @@ abstract class Entity implements JsonSerializable {
         {
             $request = "SELECT * FROM {$this->table} WHERE ";
             $args = array();
-            foreach ($array as $key=>$val)  
+            foreach ($array as $key=>$val)
             {
                 $args[] = $key." = ".dbQuote($val);
             }
@@ -257,12 +256,11 @@ abstract class Entity implements JsonSerializable {
             throw new CriticalException(
                 "Invalid parameters to load an object with array !", 1);
         }
-        
-        try 
+        try
         {
             $Req = $this->bdd->prepare($request);
             $Req->execute(array());
-        } 
+        }
         catch (Exception $e) //interception de l'erreur
         {
             throw new OrmException("Error Processing Request");
@@ -284,8 +282,8 @@ abstract class Entity implements JsonSerializable {
             }
             $this->instance = true;
             return true;
-        } 
-        else 
+        }
+        else
         {
             return false;
         }
@@ -294,38 +292,36 @@ abstract class Entity implements JsonSerializable {
     /**
      * Charge un objet en fonction d'un ou plusieurs parametres.
      * @since 0.0.3, c'est la merde. L'introduction de EntityField
-     * dans le système a un peu perturbé. 
+     * dans le système a un peu perturbé.
      */
     public function loadBy($field, $value) {
 
         $request = "";
-        
         /**
          * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
          * par exemple...) on ajoute les contraintes dans la requete.
          */
-        if(is_array($field) 
-            and is_array($value) 
+        if(is_array($field)
+            and is_array($value)
             and count($field) == count($value))
         {
             $request = "SELECT * FROM {$this->table} WHERE ";
             $args = array();
-            foreach ($field as $key=>$cle)  
+            foreach ($field as $key=>$cle)
             {
                 $args[] = $cle." = ".$value[$key];
             }
             $request .= implode(' AND ', $args);
         }
         else
-        {            
             $request = "SELECT * FROM {$this->table} WHERE {$field} = '{$value}'";
         }
 
-        try 
+        try
         {
             $Req = $this->bdd->prepare($request);
             $Req->execute(array());
-        } 
+        }
         catch (Exception $e) //interception de l'erreur
         {
             throw new OrmException("Error Processing Request");
@@ -347,14 +343,80 @@ abstract class Entity implements JsonSerializable {
             }
             $this->instance = true;
             return true;
-        } 
-        else 
+        }
+        else
         {
             return false;
         }
     }
 
- 
+     /**
+     * Charge tous les objets en fonction d'un ou plusieurs parametres
+     * et renvoie l'ensemble sous forme d'un groupe d'entitées.
+     * @return Entities le groupe d'entitées.
+     */
+    public static function loadAllEntitiesBy($classe,$field, $value) {
+        $c = EntityLoader::getClass($classe);
+        //echo 'loaded : '.$c.'<br>';
+        $request = "";
+
+        /**
+         * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
+         * par exemple...) on ajoute les contraintes dans la requete.
+         */
+        if(is_array($field)
+            and is_array($value)
+            and count($field) == count($value))
+        {
+            $request = "SELECT * FROM {$c->getTable()} WHERE ";
+            $args = array();
+            foreach ($field as $key=>$cle)
+            {
+                $args[] = $cle." = ".$value[$key];
+            }
+            $request .= implode(' AND ', $args);
+        }
+        else
+        {
+            $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
+        }
+        //echo 'request : '.$request.'<br>';
+
+        try
+        {
+            $Req = Core::getBdd()->getDb()->prepare($request);
+            $Req->execute(array());
+        }
+        catch (Exception $e) //interception de l'erreur
+        {
+            throw new OrmException("Error Processing Request");
+        }
+        $t = new Entities($c->getTable());
+        //echo 'Entities created : '.$t.'<br>';
+        // Si on récupère quelque chose :
+        if ($Req->rowCount() != 0)
+        {
+            while ($res = $Req->fetch(PDO::FETCH_OBJ))
+            {
+                $f          = EntityLoader::getClass($classe);
+                $pri        = $f->getValuedPrimaryFields($res);
+                //echo 'PRI identified : '.$pri.'<br>';
+                if (!isNull($pri))
+                {
+                    $f->loadByArray($pri);
+                    //echo 'Loaded by array : '.$f.'<br>';
+                    $f->autoLoadLinkedClasses();
+                    //echo 'auto loaded : '.$f.'<br>';
+                    $t->addEntity($f);
+                    //echo 'Entity added : '.$t.'<br>';
+                }
+
+            }
+        }
+        //echo 'READY TO RETURN '.$t.'<br>';
+        return $t;
+    }
+
     /**
      * Charge tous les objets en fonction d'un ou plusieurs parametres
      * et renvoie l'ensemble sous forme de tableau.
@@ -362,18 +424,18 @@ abstract class Entity implements JsonSerializable {
     public static function loadAllBy($classe,$field, $value) {
         $c = EntityLoader::getClass($classe);
         $request = "";
-        
+
         /**
          * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
          * par exemple...) on ajoute les contraintes dans la requete.
          */
-        if(is_array($field) 
-            and is_array($value) 
+        if(is_array($field)
+            and is_array($value)
             and count($field) == count($value))
         {
             $request = "SELECT * FROM {$c->getTable()} WHERE ";
             $args = array();
-            foreach ($field as $key=>$cle)  
+            foreach ($field as $key=>$cle)
             {
                 $args[] = $cle." = ".$value[$key];
             }
@@ -384,32 +446,32 @@ abstract class Entity implements JsonSerializable {
             $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
         }
 
-        try 
+        try
         {
             $Req = Core::getBdd()->getDb()->prepare($request);
             $Req->execute(array());
-        } 
+        }
         catch (Exception $e) //interception de l'erreur
         {
             throw new OrmException("Error Processing Request");
         }
         $t = array();
         // Si on récupère quelque chose :
-        if ($Req->rowCount() != 0) 
+        if ($Req->rowCount() != 0)
         {
             while ($res = $Req->fetch(PDO::FETCH_OBJ))
             {
                 $f          = EntityLoader::getClass($classe);
                 $pri        = $f->getValuedPrimaryFields($res);
-                if (!isNull($pri)) 
+                if (!isNull($pri))
                 {
                     $f->loadByArray($pri);
                     $f->autoLoadLinkedClasses();
                     $t[] = $f;
                 }
-            
+
             }
-        } 
+        }
         return $t;
     }
 
@@ -473,14 +535,13 @@ abstract class Entity implements JsonSerializable {
                 $f->autoLoadLinkedClasses();
                 $t[] = $f;
             }
-            
         }
 
     return $t;
     }
 
     /**
-     * A checker... Elle semble identique à celle du dessus... 
+     * A checker... Elle semble identique à celle du dessus...
      * @TODO : Voir au dessus...
      */
     public function getAll() {
@@ -563,6 +624,8 @@ abstract class Entity implements JsonSerializable {
         return $r;
     }
 
+    public function isLinkedClassesLoaded() { return $this->linkedClassesLoaded; }
+
     public function __toString() {
         return $this->toShortString();
     }
@@ -606,7 +669,7 @@ abstract class Entity implements JsonSerializable {
     }
 
     /**
-     * Renvoie TRUE si la chaine donnée en parametre correspond à une référence 
+     * Renvoie TRUE si la chaine donnée en parametre correspond à une référence
      * d'une table exterieure et que cette dernière n'est pas nulle.
      * Renvoie FALSE sinon.
      */
@@ -782,7 +845,6 @@ abstract class Entity implements JsonSerializable {
      */
     public function generateFormFor($action,$name = '', $label='', $empty=false)
     {
-        
         if(isNull($name))
         {
             $name = $action.'-'.strtolower($this->table);
@@ -891,7 +953,6 @@ abstract class Entity implements JsonSerializable {
                 return true;
             else
                 return false;
-                
         }
         else /** @TODO : Gestion des messages d'erreur */
             return false;
@@ -910,7 +971,6 @@ abstract class Entity implements JsonSerializable {
      */
     public function processUpdateForm($data=array(),$callback=null)
     {
-        
         if($this->validateUpdateForm($data)
             and $this->happyFields->check())
         {
@@ -1007,9 +1067,9 @@ abstract class Entity implements JsonSerializable {
      * Innitially, there is no verifications.
      * The developper have to redefine this method.
      * @param array data the data to check.
-     * The data is an array like this : 
+     * The data is an array like this :
      * $data [ field name ]  => field value
-     * 
+     *
      * @return boolean true if success, false otherwise.
      */
     public function validateInsertForm($data)
@@ -1024,9 +1084,9 @@ abstract class Entity implements JsonSerializable {
      * Innitially, there is no verifications.
      * The developper have to redefine this method.
      * @param array data the data to check.
-     * The data is an array like this : 
+     * The data is an array like this :
      * $data [ field name ]  => field value
-     * 
+     *
      * @return boolean true if success, false otherwise.
      */
     public function validateUpdateForm($data)
