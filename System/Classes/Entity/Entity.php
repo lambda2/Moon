@@ -61,7 +61,7 @@ abstract class Entity implements JsonSerializable {
      * Va tenter d'instancier les classes liées a l'instance courante.
      */
     public function autoLoadLinkedClasses($force = false) {
-        if$this->linkedClassesLoaded == false or $force == true)
+        if($this->linkedClassesLoaded == false or $force == true)
         {
             $this->clearLinkedClasses();
             $this->linkedClasses = Core::getBdd()->getMoonLinksFrom($this->table);
@@ -314,6 +314,7 @@ abstract class Entity implements JsonSerializable {
             $request .= implode(' AND ', $args);
         }
         else
+        {
             $request = "SELECT * FROM {$this->table} WHERE {$field} = '{$value}'";
         }
 
