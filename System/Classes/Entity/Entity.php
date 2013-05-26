@@ -104,6 +104,12 @@ abstract class Entity implements JsonSerializable {
         {
             return $i;
         }
+
+        $iTable = $this->getExternalTables($name,$this);
+        if ($iTable != false)
+        {
+            return $iTable;
+        }
         else // Sinon on regarde si c'est un attribut de la classe
         {
             $meth = 'get' . ucfirst($name);
@@ -118,9 +124,8 @@ abstract class Entity implements JsonSerializable {
                 //echo 'not methode !<br>';
                 $externals = Core::getBdd()->getMoonLinksFrom($this->table,true);
                 $t = array();
-                //echo 'on a '.count($externals).' external(s)... <br>';
                 if(!isNull($externals)){
-                    //var_dump($externals);
+
                     foreach ($externals as $moonLinkKey => $moonLinkValue)
                     {
                         //echo 'searching for '.$name.' into '.$moonLinkValue.'<br>';
@@ -141,6 +146,10 @@ abstract class Entity implements JsonSerializable {
                     if(count($t) > 0){
                         return $t;
                     }
+                }
+                else {
+
+
                 }
             }
         }
@@ -224,9 +233,25 @@ abstract class Entity implements JsonSerializable {
     public function getExternalInstance($table) {
 
         foreach ($this->linkedClasses as $key => $value) {
-
             // Nouvelle version, basée sur le nom du champ local.
             if (strcasecmp($key, $table) == 0) {
+                if (!isNull($value->instance))
+                    return $value->instance;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Va voir si l'objet courant a une relation avec la table spécifiée.
+     * Si oui, va renvoyer l'instance de l'objet référencé.
+     * @param type $table la table ciblée
+     * @return mixed l'instance de la classe distante, false sinon
+     */
+    public function getExternalTables($table, $entity) {
+        foreach ($entity->getLinkedClasses() as $key => $value) {
+            if(strcasecmp($value->destinationTable,$table) == 0)
+            {
                 if (!isNull($value->instance))
                     return $value->instance;
             }

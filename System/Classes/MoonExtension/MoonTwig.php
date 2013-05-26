@@ -32,6 +32,7 @@ class MoonTwig extends Twig_Extension
             new Twig_SimpleFunction('getFormCloseTag','MoonTwig::getFormCloseTag'),
             new Twig_SimpleFunction('getFormFieldList','MoonTwig::getFormFieldList'),
             new Twig_SimpleFunction('truncate','MoonTwig::truncate'),
+            new Twig_SimpleFunction('gravatar','MoonTwig::getGravatar'),
             );
     }
     
@@ -107,6 +108,10 @@ class MoonTwig extends Twig_Extension
 
         return $entity->generateInsertForm('',$label);
             
+    }
+
+    public static function getGravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
+        return getGravatar( $email, $s, $d, $r, $img, $atts);
     }
 
     /**
