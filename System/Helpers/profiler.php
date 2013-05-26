@@ -12,17 +12,26 @@
  * pourrions avoir besoin pour calculer ce que nous coutent nos méthodes...
  */
 
-function testResults($function,$args=array(),$source=null){
+function testResults($function,$args=array(),$source=null,$desc=''){
+
+    $return = null;
+
     echo "<br>============== Calling $function() with args ["
             .arr2str($args, ', ')
             ."]===============<br>";
+    if(!isNull($desc))
+    {
+        echo '<p>'.$desc.'</p>';
+    }
     if(isNull($source)){
-        var_dump(call_user_func_array($function, $args));
+        $return = (call_user_func_array($function, $args));
     }
     else {
-        var_dump( call_user_method_array($function, $source, $args));
+         $return = (call_user_method_array($function, $source, $args));
     }
-    echo "<br><br>";
+    var_dump($return);
+    echo "<br><------------------- End -------------------><br>";
+    return $return;
 }
 
 function arr2str($array,$sep=' '){
