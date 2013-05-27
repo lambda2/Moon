@@ -133,9 +133,9 @@ class Form extends Element {
      * Set to True for display field placeHolder
      * as the field label.
      */
-    public function displayLabel($display = true)
+    public function displayLabels($display = true)
     {
-        $this->displayLabel = $display;
+        $this->displayLabels = $display;
     }
 
     /**

@@ -513,9 +513,13 @@ abstract class Controller {
     public function redirect($path = null, $options=array(), $urlParams=array())
     {
         if(isNull($path))
+        {
             return Core::getRouter()->callDefaultController($options, $urlParams);
+        }
         else
+        {
             return Core::getRouter()->callController($path, $options, $urlParams);
+        }
     }
 
     final protected function getTemplateFileName() {

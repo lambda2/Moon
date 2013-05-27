@@ -149,7 +149,7 @@ class OrmMysql extends Orm {
                 "Unable to generate moonLink for relation [$relation]");
             }
             $sourceField = explode('.', $urls[0]);
-            $links[$relation] = new MoonLink($urls[0], $urls[1]);
+            $links[$urls[0]] = new MoonLink($urls[0], $urls[1]);
         }
         /*if($d) {
             echo '###### ANOU ##########<br>';
@@ -189,23 +189,33 @@ class OrmMysql extends Orm {
 
             $f->setIsNull(self::parseNullValue($field->Null));
 
+
+            if($field->Key == 'MUL')
+            {
+                //echo $tableName.'.'.$name.'<br>';
+                //var_dump($moonLinks);
+
+            }
+
             if($field->Key == 'PRI'){
                 $f->setIsPrimary(true);
             }
             else if ($field->Key == 'MUL'
-                and array_key_exists($name, $moonLinks)
-                and !isNull($moonLinks[$name]))
+                and array_key_exists($tableName.'.'.$name, $moonLinks)
+                and !isNull($moonLinks[$tableName.'.'.$name]))
             {
                 $f->setIsForeign(true);
                 $f->setForeignTarget(
-                    $moonLinks[$name]->destinationTable
-                    .'.'.$moonLinks[$name]->destinationColumn);
-                //echo '<b>'.$moonLinks[$name]->destinationTable
-                //    .'.'.$moonLinks[$name]->destinationColumn.'</b><br>';
+                    $moonLinks[$tableName.'.'.$name]->destinationTable
+                    .'.'.$moonLinks[$tableName.'.'.$name]->destinationColumn);
+                
+                //echo '<b>'.$moonLinks[$tableName.'.'.$name]->destinationTable
+                //    .'.'.$moonLinks[$tableName.'.'.$name]->destinationColumn.'</b><br>';
                 //echo 'keys = '.arr2str(array_keys($moonLinks)).'<br>';
+                
                 $f->setForeignDisplayTarget(
-                    $moonLinks[$name]->destinationTable
-                    .'.'.$moonLinks[$name]->destinationColumn);
+                    $moonLinks[$tableName.'.'.$name]->destinationTable
+                    .'.'.$moonLinks[$tableName.'.'.$name]->destinationColumn);
             }
 
             $f->setPlaceHolder($field->Default);

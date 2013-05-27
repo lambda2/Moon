@@ -177,11 +177,14 @@ class Router {
      * [Classe].[Methode]
      * @return boolean True si tout est bon, false sinon.
      */
-    public function callController($controllerUrl,$params,$urlParams=array()){
+    public function callController($controllerUrl,$params,$urlParams=array())
+    {
         $s = split('\.',$controllerUrl);
         $c = new $s[0]();
+        Core::setContext($s[0]);
         $c->setUrlParams($urlParams);
-        if (count($s) > 1) {
+        if (count($s) > 1) 
+        {
             $c->$s[1]($params);
         }
         else 
@@ -291,7 +294,9 @@ class Router {
      */
     protected function parseUrlParams($className,$method,$params)
     {
-        $pa = implode('/',$params); 
+        $pa = array();
+        if(!isNull($params))
+            $pa = explode('/',$params); 
         $reflectedClass = new ReflectionAnnotatedMethod($className,$method);
 
         if(!$reflectedClass->hasAnnotation('PathInfo'))

@@ -76,7 +76,7 @@ class EntityField {
                     $displayTable = $displayTarget[0];
                     $displayAttr = $displayTarget[1];
                 }
-
+                
                 $displayValues = Core::getBdd()->getAttributeFrom(
                     $displayAttr, $displayTable);
             }

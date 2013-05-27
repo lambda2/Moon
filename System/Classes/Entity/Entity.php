@@ -857,6 +857,59 @@ abstract class Entity implements JsonSerializable {
     }
 
     /**
+     * Will search in the form files for a rules set
+     * corresponding to the given $formName.
+     * If the file exists, it apply the rules.
+     * @return boolean true if found, false otherwise
+     */
+    public function searchForDefinedDatas($formName)
+    {
+        $return = false;
+        $search = Core::opts()->forms->form_files.Core::getContext().'.yml';
+       
+        if(file_exists($search))
+        {
+
+            $datas = Spyc::YAMLLoad($search);
+            if(array_key_exists($formName,$datas))
+            {
+                $datas = $datas[$formName];
+                $return = $datas;
+            }
+            else
+                $return = false;
+        }
+
+        return $return;
+    }
+
+    protected function applyDataToEntityFields($data)
+    {
+        if($data === false)
+            return false;
+        else 
+        {
+            foreach ($data as $field => $datas) {
+
+                if(array_key_exists($field, $this->fields))
+                {
+
+                    if(array_key_exists('foreignLabel', $datas))
+                    {
+                        $this->fields[$field]->setForeignDisplayTarget($datas['foreignLabel']);
+                    }
+
+                }
+                else
+                {
+                    Debug::log("Le champ $field n'existe pas...");
+                }
+            }
+            return true;
+        }
+    }
+
+    /**
      * Génere un champ pour l'action ciblée.
      */
     public function generateFormFor($action,$name = '', $label='', $empty=false)
@@ -872,6 +925,9 @@ abstract class Entity implements JsonSerializable {
             $formName = $action.'-'.strtolower($this->table);
         else
             $formName = $name;
+
+        $datas = $this->searchForDefinedDatas($name);
+        $this->applyDataToEntityFields($datas);
 
         $form = new Form($formName,
             Core::opts()->system->siteroot
@@ -889,8 +945,8 @@ abstract class Entity implements JsonSerializable {
             }
         }
 
-        $form->searchForDefinedDatas($name);
-
+        $form->loadDataFromArray($datas);
+        $form->displayLabels(true);
         return $form;
     }
 
@@ -1050,22 +1106,13 @@ abstract class Entity implements JsonSerializable {
     protected function searchForDefinedRules($formName)
     {
         $return = false;
-        $search = Core::opts()->forms->form_files.Core::getContext().'.yml';
 
-        echo ' - trying to load rules file : '.$search.'<br>';
-        if(file_exists($search))
+        if($rules !== false)
         {
-            $rules = Spyc::YAMLLoad($search);
-            if(array_key_exists($formName,$rules))
-            {
-                $rules = $rules[$formName];
-                if(isset($rules['form']))
-                    unset($rules['form']);
-                $this->happyFields->clearRules()->loadRulesFromArray($rules);
-                $return = true;
-            }
-            else
-                $return = false;
+            if(isset($rules['form']))
+                unset($rules['form']);
+            $this->happyFields->clearRules()->loadRulesFromArray($rules);
+            $return = true;
         }
 
         return $return;
