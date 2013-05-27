@@ -70,30 +70,32 @@ class Form extends Element {
 	 */
 	public function loadDataFromArray($array)
 	{
-		foreach ($array as $field => $datas) {
+        if($array !== false)
+        {
+            foreach ($array as $field => $datas) {
 
-            if($field == 'form')
-            {
-                if(array_key_exists('align',$datas))
+                if($field == 'form')
                 {
-                    $this->addData('align',$datas['align']);
+                    if(array_key_exists('align',$datas))
+                    {
+                        $this->addData('align',$datas['align']);
+                    }
                 }
-            }
-            else if(array_key_exists($field, $this->fields))
-            {
-                
-                if(array_key_exists('label', $datas))
+                else if(array_key_exists($field, $this->fields))
                 {
-                    $this->fields[$field]->setLabel($datas['label'])->setId($field);
-                }
+                    
+                    if(array_key_exists('label', $datas))
+                    {
+                        $this->fields[$field]->setLabel($datas['label'])->setId($field);
+                    }
 
-            }
-            else
-            {
-                Debug::log("Le champ $field n'existe pas...");
+                }
+                else
+                {
+                    Debug::log("Le champ $field n'existe pas...");
+                }
             }
         }
-
         return $this;
     }
 

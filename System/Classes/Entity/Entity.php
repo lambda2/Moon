@@ -947,6 +947,7 @@ abstract class Entity implements JsonSerializable {
 
         $form->loadDataFromArray($datas);
         $form->displayLabels(true);
+
         return $form;
     }
 
