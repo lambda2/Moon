@@ -45,6 +45,14 @@ class EntityField {
         return (string) $this->value;
     }
 
+    /**
+     * @TODO : fill this method
+     */
+    public function tryToGenerateMicroData()
+    {
+        
+    }
+
     public function getHtmlField()
     {
         $field = null;
