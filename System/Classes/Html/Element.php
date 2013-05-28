@@ -65,6 +65,22 @@ abstract class Element {
         return $this->classes;
     }
 
+    /**
+     * Add the given classes to the Element.
+     * For add more than one class, just
+     * add a space between the classes.
+     * ex: 'icon-time icon-large button'
+     * @param string $class the class(es) to add
+     */
+    public function setClass($class)
+    {
+        $classes = explode(' ',$class);
+        foreach($classes as $classe)
+        {
+            $this->addClass($classe);
+        }
+    }
+
     public function isVisible() {
         return $this->visible;
     }

@@ -107,7 +107,15 @@ class Form extends Element {
                             break;
 
                             case 'default':
-                                $this->fields[$field]->setValue($val);
+                                $currentField->setValue($val);
+                            break;
+
+                            default:
+                                $requestedMethod = 'set'.ucfirst($key);
+                                if(method_exists($currentField, $requestedMethod))
+                                {
+                                    $currentField->$requestedMethod($val);
+                                }
                             break;
                         }
                     }
