@@ -49,14 +49,17 @@ abstract class Field extends Element {
      */
     public function getLabel()
     {
-        if(!isNull($this->placeholder) and !isNull($this->id))
+        if($this->isVisible())
         {
-            return '<label for='.dbQuote($this->id).'>'.$this->placeholder.'</label>';
-        }
-        else if(!isNull($this->placeholder))
-        {
-            dbg('Le label du champ '.$this->name.' n\'a pas été placé car aucun id ne lui
-                a été donné.',0);
+            if(!isNull($this->placeholder) and !isNull($this->id))
+            {
+                return '<label for='.dbQuote($this->id).'>'.$this->placeholder.'</label>';
+            }
+            else if(!isNull($this->placeholder))
+            {
+                dbg('Le label du champ '.$this->name.' n\'a pas été placé car aucun id ne lui
+                    a été donné.',0);
+            }
         }
         return '';
     }

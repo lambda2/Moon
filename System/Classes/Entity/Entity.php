@@ -957,7 +957,7 @@ abstract class Entity implements JsonSerializable {
     public function generateInsertForm($name = '', $label='')
     {
         $form = $this->generateFormFor('insert',$name, $label);
-        $form->clearFieldsValues();
+        // $form->clearFieldsValues();
         return $form;
     }
 

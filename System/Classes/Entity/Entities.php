@@ -41,6 +41,11 @@ class Entities implements Iterator, Countable {
         return "Entities@".$this->table.'('.count($this->entities).')';
     }
 
+    public function __invoke($name)
+    {
+        echo 'trying to invoke '.$name.' !!<br>';
+    }
+
     /**
      * Will add the given entity to the array of entities
      * @throw AlertException if the given object isn't an entity

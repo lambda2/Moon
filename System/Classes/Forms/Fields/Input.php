@@ -7,7 +7,8 @@
  * number , password, radio, range , reset, search, submit, tel, text, time , 
  * url ou week.
  */
-class Input extends Field{
+class Input extends Field
+{
     
     /**
      * @var array allowed_types Les types de champ input déclarés
@@ -38,7 +39,9 @@ class Input extends Field{
     /**
      * Va retourner le code Html de l'input
      */
-    public function getHtml() { if(!$this->isVisible()) return '';
+    public function getHtml() 
+    { 
+        if(!$this->isVisible()) return '';
         $s = '<input '.$this->getHtmlAttributesList();
         if($this->required)
             $s .= 'required';

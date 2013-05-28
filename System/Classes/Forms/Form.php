@@ -83,10 +83,33 @@ class Form extends Element {
                 }
                 else if(array_key_exists($field, $this->fields))
                 {
-                    
-                    if(array_key_exists('label', $datas))
+
+                    foreach ($datas as $key => $val)
                     {
-                        $this->fields[$field]->setLabel($datas['label'])->setId($field);
+                        $currentField = $this->fields[$field];
+
+                        switch($key)
+                        {
+                            case 'label':
+                                $currentField->setLabel($val)->setId($field);
+                            break;
+
+                            case 'editable':
+                                $currentField->setEnabled($val);
+                            break;
+
+                            case 'required':
+                                $currentField->setRequired($val);
+                            break;
+
+                            case 'visible':
+                                $currentField->setVisible($val);
+                            break;
+
+                            case 'default':
+                                $this->fields[$field]->setValue($val);
+                            break;
+                        }
                     }
 
                 }
