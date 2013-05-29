@@ -35,6 +35,12 @@ class TextArea extends Field{
         return $this->rows;
     }
 
+    // Shortcut to innerText.
+    public function setValue($value)
+    {
+        return $this->setInnerText($value);
+    }
+
     /**
      * Va définir le nombre de lignes de la zone de texte.
      * Par défault, une zone de texte fait 2 lignes.
