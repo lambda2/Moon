@@ -190,6 +190,8 @@ class Core {
             return false;
     }
 
+    public function isDebug() { return $this->dev_mode == 'DEBUG'; }
+
     public static function setContext($context)
     {
         self::$context = $context;
@@ -244,8 +246,27 @@ class Core {
         }
 
         
-        
+
     }
+
+    /**
+     * Will search in the form files for a rules set.
+     * If the file exists, content is returned as an array.
+     * @return mixed Array if found, boolean False otherwise.
+     */
+    public static function getFormDefinitionArray()
+    {
+        $return = false;
+        $search = self::$options->forms->form_files.self::$context.'.yml';
+
+        echo "<pre>search = $search</pre>";
+        if(file_exists($search))
+        {
+            $return = Spyc::YAMLLoad($search);
+        }
+        return $return;
+    }
+
 
 }
 

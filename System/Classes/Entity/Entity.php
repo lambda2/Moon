@@ -957,7 +957,7 @@ abstract class Entity implements JsonSerializable {
     public function generateInsertForm($name = '', $label='')
     {
         $form = $this->generateFormFor('insert',$name, $label);
-        // $form->clearFieldsValues();
+        $form->addField($this->getContextField());
         return $form;
     }
 
@@ -971,9 +971,23 @@ abstract class Entity implements JsonSerializable {
         $keysList = $this->getDefinedPrimaryFields();
         $destination = new Input('ids','hidden');
         $destination->setValue(arr2param($keysList,','));
+
+        $form->addField($this->getContextField());
         $form->addField($destination);
 
         return $form;
+    }
+
+    /**
+     * Will return a hidden field wich will
+     * contain the current context.
+     * @return Input the hidden field.
+     */
+    protected function getContextField()
+    {
+        $context = new Input('moon-context','hidden');
+        $context->setValue(Core::getContext());
+        return $context;
     }
 
     /**
@@ -990,6 +1004,49 @@ abstract class Entity implements JsonSerializable {
         $form->addField($destination);
 
         return $form;
+    }
+
+    /**
+     * will apply defined filters to the fields to 
+     * insert / update.
+     */
+    protected function applyDefinedFilters($data)
+    {
+        $rules = $this->getRulesForForm($_GET['formName']);
+        
+        if($rules !== false)
+        {
+            if(isset($rules['form']))
+                unset($rules['form']);
+            $filteredData = $data;
+
+            foreach($data as $key => $field)
+            {
+                if(array_key_exists($key,$rules))
+                {
+                    if(array_key_exists('filter',$rules[$key]))
+                    {
+                        $toApply = $rules[$key]['filter'];
+                        $filter = new Filter($field,$toApply);
+                        $filteredData[$key] = $filter->execute();
+                    }
+                }
+            }
+            return $filteredData;
+        }
+        else
+            return $data;
+    }
+
+    protected function getRulesForForm($formName)
+    {
+        $return = false;
+        $rules = Core::getFormDefinitionArray();
+        if(array_key_exists($formName,$rules))
+            $return = $rules[$formName];
+        else
+            return false;
+        return $return;
     }
 
     /**
@@ -1017,18 +1074,33 @@ abstract class Entity implements JsonSerializable {
      */
     public function processInsertForm($data=array())
     {
-        $fields = $this->parseDataForAction($data);
-
-        // Check if the form is valid
-        if($this->validateInsertForm($data))
+        if($this->validateInsertForm($data)
+                and $this->happyFields->check())
         {
-            if(Core::getBdd()->insert($fields,$this->table))
-                return true;
+            echo '<p style="color: green">rules validated !</p>';
+            $data = $this->applyDefinedFilters($data);
+            $fields = $this->parseDataForAction($data);
+            var_dump($data);
+            var_dump($fields);
+            if(Core::getBdd()->insert($fields, $this->table))
+            {
+                return $this->insertCallback($data);
+            }
             else
+            {
+                echo 'Echec lors de l\'insertion... ';
+                echo 'Peut etre que l\'entrée existe déja ?';
                 return false;
+            }
         }
         else /** @TODO : Gestion des messages d'erreur */
+        {
+	        var_dump($this->happyFields->getRulesErrors());
+	        var_dump($this->happyFields->getRulesErrors());
+            echo '<span style="color: red">rules NOT validated !</span>';
             return false;
+        }
+
     }
 
     public function initProcess($data=array())
@@ -1042,12 +1114,13 @@ abstract class Entity implements JsonSerializable {
      * Procède à la mise à jour de la data fournie en parametre
      * dans la base de données.
      */
-    public function processUpdateForm($data=array(),$callback=null)
+    public function processUpdateForm($data=array())
     {
         if($this->validateUpdateForm($data)
             and $this->happyFields->check())
         {
             echo '<span style="color: green">rules validated !</span>';
+            $data = $this->applyDefinedFilters($data);
             $fields = $this->parseDataForAction($data);
 
             if(Core::getBdd()->update(
@@ -1059,15 +1132,15 @@ abstract class Entity implements JsonSerializable {
 		    }
             else
             {
-                echo 'Echec lors de l\'insertion...';
+                echo 'Echec lors de la mise à jour...';
                 return false;
             }
         }
         else /** @TODO : Gestion des messages d'erreur */
         {
-	        var_dump($this->happyFields->getRulesErrors());
             var_dump($this->validateUpdateForm($data));
             var_dump($this->happyFields->check());
+	        var_dump($this->happyFields->getRulesErrors());
             echo '<span style="color: red">rules NOT validated !</span>';
             return false;
         }
@@ -1075,8 +1148,20 @@ abstract class Entity implements JsonSerializable {
 
     protected function updateCallback($data)
     {
-	return True;
+	    return True;
     }
+
+    protected function insertCallback($data)
+    {
+	    return True;
+    }
+
+
+    protected function deleteCallback($data)
+    {
+	    return True;
+    }
+
 
     /**
      * Procède à la supression de la data fournie en parametre
@@ -1107,7 +1192,7 @@ abstract class Entity implements JsonSerializable {
     protected function searchForDefinedRules($formName)
     {
         $return = false;
-
+        $rules = $this->getRulesForForm($formName);
         if($rules !== false)
         {
             if(isset($rules['form']))

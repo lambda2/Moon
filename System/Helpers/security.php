@@ -21,7 +21,7 @@ function sha256sum($data)
 	return hash('sha256', $data);
 }
 
-function encrypt($data,$algo='sha256',$salt='')
+function encrypt($data,$algo='sha1',$salt='')
 {
 	return hash($algo,$salt.$data.$salt);
 }

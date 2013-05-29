@@ -360,8 +360,14 @@ class Router {
             return false;
         }
 
+        if(isset($_POST['moon-context']))
+        {
+            Core::setContext($_POST['moon-context']);
+        }
+
         $class = EntityLoader::getClass($target);
 
+        // We define the current context to the core
 
         /**
          * On vérifie les accès.
@@ -376,6 +382,7 @@ class Router {
 
         $class->initProcess($_POST);
 
+        echo '<br>begin of router !<br>';
         switch ($action) {
             case 'insert':
                 $sucess = $class->processInsertForm($_POST);
@@ -399,14 +406,17 @@ class Router {
                 $sucess = $class->processDeleteForm($values);
 
                 break;
-            
+
             default:
                 throw new MemberAccessException
                     ("Action non valide ($action) sur la ressource $target");
                 break;
         }
 
-        if($sucess)
+        echo '<br>fin router !<br>';
+        var_dump($sucess);
+
+        if(false) //$sucess)
         {
             if(!isNull($p))
             {
@@ -445,6 +455,10 @@ class Router {
 
                     $request = explode('->',$params['p']);
                     $classe = $request[0];
+                    // We define the current context to the core
+                    Core::setContext($classe);
+
+
                     if(count($request) > 1){
                         $method = explode('?',explode('#',$request[1])[0])[0];
                     }
