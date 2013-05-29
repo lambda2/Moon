@@ -416,7 +416,7 @@ class Router {
         echo '<br>fin router !<br>';
         var_dump($sucess);
 
-        if(false) //$sucess)
+        if($sucess)
         {
             if(!isNull($p))
             {
