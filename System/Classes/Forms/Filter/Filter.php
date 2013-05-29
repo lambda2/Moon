@@ -49,7 +49,11 @@ class Filter {
      
         foreach ($ru as $key => $value)
         {
-            if(is_callable(trim($value)))
+            if(FilterFunctions::isFilterFunction($value))
+            {
+                $this->rules[] = trim(FilterFunctions::getCallableName($value));
+            }
+            else if(is_callable(trim($value)))
             {
                 $this->rules[] = trim($value);
             }
@@ -74,11 +78,18 @@ class Filter {
     public function execute()
     {
         $value = $this->value;
+
         if(!isNull($this->rules) and !isNull($value))
         {
             foreach($this->rules as $rule)
             {
-                $value = $rule($value);
+                if(FilterFunctions::isFilterFunction($rule)){
+                    $value = forward_static_call_array(
+						array('FilterFunctions',$rule),
+						array($value));
+                }
+                else
+                    $value = $rule($value);
             }
         }
         else if(Core::getInstance()->isDebug())
