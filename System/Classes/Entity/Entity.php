@@ -861,26 +861,11 @@ abstract class Entity implements JsonSerializable {
      * corresponding to the given $formName.
      * If the file exists, it apply the rules.
      * @return boolean true if found, false otherwise
+     * @TODO : replace this method by [getRulesForForm]
      */
     public function searchForDefinedDatas($formName)
     {
-        $return = false;
-        $search = Core::opts()->forms->form_files.Core::getContext().'.yml';
-       
-        if(file_exists($search))
-        {
-
-            $datas = Spyc::YAMLLoad($search);
-            if(array_key_exists($formName,$datas))
-            {
-                $datas = $datas[$formName];
-                $return = $datas;
-            }
-            else
-                $return = false;
-        }
-
-        return $return;
+        return $this->getRulesForForm($formName);
     }
 
     protected function applyDataToEntityFields($data)

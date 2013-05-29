@@ -13,7 +13,7 @@ class Core {
 
     const userConfigFile = 'Config/configuration.yml';
     const defaultConfigFile = '../System/Configuration/configuration.yml';
-    
+
     protected $database;
     protected $dev_mode;
     protected $db_prefix;
@@ -64,7 +64,7 @@ class Core {
             $tplOpts = Spyc::YAMLLoad($templateConfigPath);
             $tplOptsBr = new ArrayBrowser($tplOpts);
 
-            if(is_array($tplOpts) 
+            if(is_array($tplOpts)
                 and self::$options->templates->appendNewBrowser('config',$tplOptsBr))
             {
                 $success = true;
@@ -72,14 +72,14 @@ class Core {
         }
         return $success;
     }
-    
+
     public static function opts()
     {
         if(isNull(self::$options))
             self::loadOptions ();
         return self::$options;
     }
-    
+
     public static function loadRoutes()
     {
         $routeFiles = Core::opts()->system->routes_files;
@@ -96,39 +96,39 @@ class Core {
         }
         self::$user_routes = new ArrayBrowser($r['routes']);
     }
-    
+
     public static function routes(){
         if(isNull(self::$user_routes))
             self::loadRoutes();
         return self::$user_routes;
     }
-    
+
     public static function startEngine() {
 
         try {
-            
+
             //MoonChecker::runTests();
             self::loadOptions();
             self::loadRoutes();
-            
+
             self::$instance = new Core(
-                    self::$options->system->mode, 
+                    self::$options->system->mode,
                     self::$options->database->db_prefix);
-            
+
             self::$router = new Router();
-            
+
             if(isConnecte() and class_exists('Membre'))
             {
                 $membre = new Membre();
             }
-            
+
             /*
              * Pour les gens un peu old school, dégueux, ou les deux, on stocke un pointeur
              * sur l'instance de notre moteur dans une superglobale accessible partout.
              * On notera que la configuration est un singleton. Ainsi, ces deux expressions
              * sont équivalentes à n'importe quel endroit :
              * > $GLOBALS['System'] === Configuration::getInstance()
-             * 
+             *
              * @TODO : Virer cette superglobale. elle est quand meme crasseuse.
              */
             $GLOBALS['System'] = self::$instance;
@@ -137,7 +137,7 @@ class Core {
             MoonChecker::showHtmlReport($e);
         }
     }
-    
+
     public static function getUser(){
         return self::$user;
     }
@@ -154,7 +154,7 @@ class Core {
             $this->debug = Debug::getInstance($this);
         else
             $this->debug = null;
-        
+
         $this->databaseConnect();
         $this->generateHostTables();
         $this->loadLoggedUser();
@@ -182,7 +182,7 @@ class Core {
         else
             return self::$instance->bdd();
     }
-    
+
     public static function isValidClass($className) {
         if (in_array($className, self::$host_tables))
             return true;
@@ -226,26 +226,26 @@ class Core {
     public function debug() {
         return $this->debug;
     }
-    
+
     public function getTablesList(){
         return self::$host_tables;
     }
-    
+
     public static function getAccess($classe){
         $a = new Access();
         $a->loadFromTable($classe);
         return $a;
     }
-    
+
     public static function route(){
         try {
             $tpl = self::$router->route();
-            
+
         } catch (Exception $exc) {
             MoonChecker::showHtmlReport($exc);
         }
 
-        
+
 
     }
 
@@ -259,12 +259,33 @@ class Core {
         $return = false;
         $search = self::$options->forms->form_files.self::$context.'.yml';
 
-        echo "<pre>search = $search</pre>";
         if(file_exists($search))
         {
             $return = Spyc::YAMLLoad($search);
         }
-        return $return;
+
+        return self::parseFormDefinitionArray($return);
+    }
+
+    protected static function parseFormDefinitionArray($form)
+    {
+        $fixedArray = array();
+        foreach ($form as $formName => $rules) {
+
+            $f = explode('|',$formName);
+            if(count($f) > 1)
+            {
+                foreach($f as $formNameSplitted)
+                {
+                    $fixedArray[trim($formNameSplitted)] = $rules;
+                }
+            }
+            else
+            {
+                $fixedArray[$formName] = $rules;
+            }
+        }
+        return $fixedArray;
     }
 
 

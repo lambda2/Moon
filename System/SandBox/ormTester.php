@@ -37,6 +37,12 @@ try
     $pseudo = 'lambda2';
     $user = Moon::get('membre','pseudo',$pseudo);
 
+    Core::setContext('Profile');
+    $rules = Core::getFormDefinitionArray();
+
+
+    var_dump($rules);
+    /*
     if(!$user->exists())
         echo 'Utilisateur inexistant : '.$user.'<br>';
 
