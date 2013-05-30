@@ -36,6 +36,10 @@ class FieldFactory {
                 $field = new Input($name,'date');
                 break;
 
+            case 'timestamp':
+                $field = new Input($name,'date');
+                break;
+
             case 'enum':
                 $field = new Select($name);
                 break;

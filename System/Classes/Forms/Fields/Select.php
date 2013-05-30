@@ -94,8 +94,13 @@ class Select extends Field {
      * @return boolean true si tout c'est bien passé, false sinon
      */
     public function addOption($value, $text='') {
-        $o = new Option($value, $text);
-        return $this->addOptionObject($o);
+        if($this->isAValidOption($value))
+            return $this->addOptionObject($value);
+        else
+        {
+            $o = new Option($value, $text);
+            return $this->addOptionObject($o);
+        }
     }
 
     /**

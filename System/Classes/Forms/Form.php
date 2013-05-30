@@ -30,6 +30,23 @@ class Form extends Element {
     }
 
     /**
+     * Will return the field with the given name
+     * wich is already in the current form.
+     * @param string $name the name of the field to get.
+     * @return Field if the field exists, false otherwise.
+     */
+    public function getField($name) {
+        if(array_key_exists($name,$this->fields))
+        {
+            return $this->fields[$name];
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
      * Ajoute un élément de formulaire au formulaire
      * @param Field $field l'élément de formulaire à ajouter
      * @throws AlertException si l'élément fourni n'est pas un élément valide.
@@ -44,6 +61,20 @@ class Form extends Element {
         else {
             throw new AlertException("Le champ $field ne semble pas etre
                     un élément de formulaire valide...");
+        }
+    }
+
+    /**
+     * Will add the given element to the form
+     */
+    public function addElement($element)
+    {
+        if (is_a($element, 'Element')) {
+            $this->fields[] = $element;
+        }
+        else {
+            throw new AlertException("L'élément $element ne semble pas etre
+                    un élément html valide...");
         }
     }
 
