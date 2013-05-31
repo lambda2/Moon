@@ -125,7 +125,6 @@ class EntityField {
         }
         else 
         {
-            var_dump($this->type);
             $field = FieldFactory::createField(
             $this->type,$this->name);
 
