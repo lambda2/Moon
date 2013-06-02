@@ -84,12 +84,72 @@ abstract class Entity implements JsonSerializable {
     }
 
     /**
+     * Permet d'attribuer une valeur a nos champs
+     */
+    public function __set($name,$value)
+    {
+        if(array_key_exists($name,$this->fields))
+        {
+            $this->fields[$name]->setValue($value);
+        }
+    }
+
+    public function table($name)
+    {
+        $iTable = $this->getExternalTables($name,$this);
+        if ($iTable != false)
+        {
+            return $iTable;
+        }
+        else // Sinon on regarde si c'est un attribut de la classe
+        {
+            // Et enfin, on regarde si quelque chose référence cet attribut
+            
+            $externals = Core::getBdd()->getMoonLinksFrom($this->table,true,true);
+            $t = array();
+            if(!isNull($externals)){
+                foreach ($externals as $moonLinkKey => $moonLinkValue)
+                {
+                    //echo 'searching for '.$name.' into '.$moonLinkValue.'<br>';
+                    if($moonLinkValue->table == $name)
+                    {
+                        $res = EntityLoader::getClass($moonLinkValue->table);
+                        //echo 'class born : '.$res.'<br>';
+                        if($res != null) {
+                            $t = Entity::loadAllEntitiesBy(
+                                $moonLinkValue->table,
+                                $moonLinkValue->attribute,
+                                $this->fields[$moonLinkValue->destinationColumn]->getValue());
+                        }
+                        return $t;
+                    }
+                }
+            }
+        }
+
+        return false;
+
+    }
+
+    /**
      * Surcharge de la méthode magique __get().
      * On va d'abord regarder si l'attribut demandé est une classe liée.
      * On délegue ensuite a la méthode __call()
      */
     public function __get($name) {
 
+        if(array_key_exists($name,$this->fields))
+        {
+            return $this->fields[$name]->getValue();
+        }
+
+        $meth = 'get' . ucfirst($name);
+        $methodResult = $this->$meth();
+
+        if($methodResult != false)
+        {
+            return $methodResult;
+        }
 
         // On charge les classes liées
         if($this->linkedClassesLoaded == false)
@@ -104,45 +164,11 @@ abstract class Entity implements JsonSerializable {
         {
             return $i;
         }
+        
+        $ext =  $this->table($name);
+        if($ext !== false)
+            return $ext;
 
-        $iTable = $this->getExternalTables($name,$this);
-        if ($iTable != false)
-        {
-            return $iTable;
-        }
-        else // Sinon on regarde si c'est un attribut de la classe
-        {
-            $meth = 'get' . ucfirst($name);
-            $methodResult = $this->$meth();
-
-            if($methodResult != false)
-            {
-                return $methodResult;
-            }
-            else // Et enfin, on regarde si quelque chose référence cet attribut
-            {
-                $externals = Core::getBdd()->getMoonLinksFrom($this->table,true,true);
-                $t = array();
-                if(!isNull($externals)){
-                    foreach ($externals as $moonLinkKey => $moonLinkValue)
-                    {
-                        //echo 'searching for '.$name.' into '.$moonLinkValue.'<br>';
-                        if($moonLinkValue->table == $name)
-                        {
-                            $res = EntityLoader::getClass($moonLinkValue->table);
-                            //echo 'class born : '.$res.'<br>';
-                            if($res != null) {
-                                $t = Entity::loadAllEntitiesBy(
-                                    $moonLinkValue->table,
-                                    $moonLinkValue->attribute,
-                                    $this->fields[$moonLinkValue->destinationColumn]->getValue());
-                            }
-                            return $t;
-                        }
-                    }
-                }
-            }
-        }
         if (Core::getInstance()->debug()) {
             throw new AlertException("The attribute $name doesn't exists.",1);
         }
@@ -990,6 +1016,20 @@ abstract class Entity implements JsonSerializable {
 
         return $form;
     }
+    
+    /**
+     * Génere une url de supression en HTML.
+     */
+    public function generateDeleteLink()
+    {
+
+        $keysList = $this->getDefinedPrimaryFields();
+        $href = Core::opts()->system->siteroot
+            .'index.php?moon-action=delete&target='
+            .strtolower($this->table).'&ids='.arr2param($keysList,',');
+
+        return $href;
+    }
 
     /**
      * will apply defined filters to the fields to 
@@ -1067,8 +1107,10 @@ abstract class Entity implements JsonSerializable {
             $fields = $this->parseDataForAction($data);
             var_dump($data);
             var_dump($fields);
-            if(Core::getBdd()->insert($fields, $this->table))
+            $result = Core::getBdd()->insert($fields, $this->table);
+            if($result !== false)
             {
+                $data['moon_id'] = $result;
                 return $this->insertCallback($data);
             }
             else
@@ -1091,7 +1133,10 @@ abstract class Entity implements JsonSerializable {
     public function initProcess($data=array())
     {
         $this->happyFields->setFields($data);
-        $rulesExists = $this->searchForDefinedRules($_GET['formName']);
+        if(isset($_GET['formName']))
+            $rulesExists = $this->searchForDefinedRules($_GET['formName']);
+        else
+            $rulesExists = false;
         return $rulesExists;
     }
 
@@ -1191,6 +1236,15 @@ abstract class Entity implements JsonSerializable {
 
 
     /*********************************************************
+     *                  Database CRUD methods                *
+     *********************************************************/
+
+    public function insert()
+    {
+        return Core::getBdd()->insertEntity($this);
+    }
+
+    /*********************************************************
      * All the user functions that must be redefined :       *
      *********************************************************/
 
@@ -1227,6 +1281,9 @@ abstract class Entity implements JsonSerializable {
     {
         return true;
     }
+
+
+
 
     // End of Entity class //
 

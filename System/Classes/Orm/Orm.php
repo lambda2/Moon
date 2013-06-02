@@ -136,6 +136,7 @@ abstract class Orm {
         return arr2str($ret,$sep);
     }
 
+
     /**
      * Va inserer la data fournie en parametre dans la table spécifiée.
      */
@@ -156,6 +157,10 @@ abstract class Orm {
         try {
             $Req = self::$db->prepare($request);
             $r = $Req->execute(array_values($data));
+            if($r)
+            {
+                $r = self::$db->lastInsertId();
+            }
         } catch (Exception $e) { //interception de l'erreur
 
             Debug::log("Erreur lors de l'insertion : $e->getMessage()",1);
@@ -167,6 +172,29 @@ abstract class Orm {
             
         }
         return $r;
+    }
+ 
+    protected function convertFieldsToParams($entity)
+    {
+        $params = array();
+        foreach($entity->getFields() as $field)
+        {
+            if($field->getValue() !== null)
+            {
+                $params[$field->getName()] = $field->getValue();
+            }
+        }
+        return $params;
+    }
+
+   
+    public function insertEntity($entity)
+    {
+        $table = $entity->getTable();
+        $fields = $this->convertFieldsToParams($entity);
+        echo "ready to insert in table $table :<br>";
+        var_dump($fields);
+        return $this->insert($fields,$table);
     }
 
     /**
