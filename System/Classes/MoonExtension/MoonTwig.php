@@ -27,6 +27,7 @@ class MoonTwig extends Twig_Extension
             new Twig_SimpleFunction('href','MoonTwig::moonHref',array('is_safe' => array('html'))),
             new Twig_SimpleFunction('insertForm','MoonTwig::insertForm'),
             new Twig_SimpleFunction('deleteForm','MoonTwig::deleteForm'),
+            new Twig_SimpleFunction('deleteLink','MoonTwig::deleteLink'),
             new Twig_SimpleFunction('updateForm','MoonTwig::updateForm'),
             new Twig_SimpleFunction('getFormOpenTag','MoonTwig::getFormOpenTag'),
             new Twig_SimpleFunction('getFormCloseTag','MoonTwig::getFormCloseTag'),
@@ -146,6 +147,20 @@ class MoonTwig extends Twig_Extension
                 "Invalid entity supplied for form generation", 1);
 
         return $entity->generateDeleteForm('',$label);
+    }
+    
+    /**
+     * Permet de générer un lien html de supression.
+     * @param Entity $entity la classe pour laquelle créer le lien.
+     * @return string le lien
+     */
+    public static function deleteLink($entity)
+    {
+        if(!is_a($entity, 'Entity'))
+            throw new AlertException(
+                "Invalid entity supplied for form generation", 1);
+
+        return $entity->generateDeleteLink();
     }
 
     public static function truncate($text,$num=100,$end="")
