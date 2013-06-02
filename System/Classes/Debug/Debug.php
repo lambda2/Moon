@@ -2,7 +2,7 @@
 
 class Debug {
 
-    private $content = array();
+    private static $content = array();
     protected static $logs = array();
     protected static $instance;
 
@@ -23,12 +23,15 @@ class Debug {
         $a = array();
         $a['level'] = $severity;
         $a['msg']   = $str;
-        $this->content[] = $a;
+        self::$content[] = $a;
     }
 
     public static function log($str, $severity=0)
     {
-        self::$logs[] = $str;
+        $a = array();
+        $a['level'] = $severity;
+        $a['msg']   = $str;
+        self::$content[] = $a;
     }
 
     public static function getLogs()
@@ -41,18 +44,19 @@ class Debug {
     }
 
     private function getSeverityClass($severity) {
-        $class = 'error';
+        $class = '[c="color:';
         switch ($severity) {
             case -1:
-                $class = 'success';
+                $class .= 'green"]✔[c] ';
                 break;
             case 0:
-                $class = 'info';
+                $class .= 'orange"]o[c] ';
                 break;
             case 1:
-                $class = 'warning';
+                $class .= 'red"]x[c] ';
                 break;
             default:
+                $class .= 'red"]x[c] ';
                 break;
         }
         return $class;
@@ -66,9 +70,9 @@ class Debug {
         $warning = 0;
         $info    = 0;
         $success = 0;
-        if(count($this->content) == 0)
+        if(count(self::$content) == 0)
             return "success";
-        foreach ($this->content as $value) {
+        foreach (self::$content as $value) {
             if($value['level'] == -1)
                 $success++;
             else if($value['level'] == 0)
@@ -90,32 +94,6 @@ class Debug {
         
     }
 
-    private function jsTransformDebugCode()
-    {
-        $jsCode = "
-        <script>
-            $('#debug-content').css(
-                {
-                    'bottom' : '0px',
-                    'left' : '0px',
-                    'right' : '1px',
-                    'height' : '50px',
-                    'position' : 'fixed',
-                    'display' : 'block',
-                    'border-top' : '1px solid #CCC',
-                    'background-color' : 'rgba(255,255,255,0.9)'
-                }
-            );
-            $('#debug-content *').css(
-                {
-                    'display' : 'inline-block',
-                    'max-height' : '50px'
-                }
-            );
-        </script>";
-        return $jsCode;
-    }
-
     /**
      * Todo, not already in use...
      */
@@ -129,36 +107,23 @@ class Debug {
         return $ret;
     }
 
-    private function getModalLink($text) {
-        return '<a href="#debug-modal" role="button" class="btn btn-' . $this->getAlertLevel() . '" data-toggle="modal">' . $text . '</a>';
-    }
-
     private function getModalContent() {
-        $modalContent = '
-            <div id="debug-content">
-  <div class="modal-header">
-    <button type="button" data-to-close="debug-content">×</button>
-  </div>
-  <div class="modal-body">
-    ' .$this->getModalLink(count($this->content)). ' erreur(s) : '. $this->getReportHtml() . '.<a id="debug-log" href="#">Logs</a>'.'
-  </div>
-  <!-- <div id="debug-log-aera">'.$this->getHtmlLogsList().'</div> -->
-</div>' . $this->jsTransformDebugCode();
+        $modalContent = '<script>'.$this->getReportHtml() .'</script>';
         return $modalContent;
     }
 
     private function getReportHtml() {
-        $report = '';
-        if (count($this->content) > 0) {
-            $report.= '<table class="table table-striped table-condensed">
-                <thead><tr><td>Rapports :</td></tr> </thead>';
-            foreach ($this->content as $erreur) {
-                $report.= "<tr class=\"" .$this->getSeverityClass($erreur['level'])."\"><td>" . $erreur['msg'] . "</td></tr>";
+        $style= 'var head_style = \'font-family: "Oxygen", sans-serif; text-align:center;font-size: 26px; color: #aaa; padding: 8px 0; line-height: 40px\';';
+        $style_sub= 'var sub_style = \'font-family: "Oxygen", font-weight:bold;sans-serif; font-size: 13px; color: #999; border-top : 1px solid #CCC; padding: 8px 0; line-height: 20px\';';
+
+        $report = $style.'log.l(\'%cMoon Framework\',head_style);';
+        $report .= $style_sub.'log.l(\'%cDebug content for the current running application\',sub_style);';
+
+        if (count(self::$content) > 0) {
+            foreach (self::$content as $erreur) {
+                $report.= 'log(\'' .$this->getSeverityClass($erreur['level']).addslashes($erreur['msg']) . "');";
+                
             }
-            $report.= '</table>';
-        }
-        else {
-            $report.= '<p>Tout va bien...</p>';
         }
         return $report;
     }
