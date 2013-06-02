@@ -930,8 +930,8 @@ abstract class Entity implements JsonSerializable {
             }
         }
 
-        $form->loadDataFromArray($datas);
         $form->displayLabels(true);
+        $form->loadDataFromArray($datas);
 
         return $form;
     }

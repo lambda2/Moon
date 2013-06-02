@@ -60,7 +60,7 @@ abstract class Orm {
                             array(PDO::MYSQL_ATTR_INIT_COMMAND
                 => 'SET NAMES \'UTF8\'')
             );
-            self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+            self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             throw new OrmException(
                     "Erreur lors de l\'initialisation de la base de données : " 
@@ -158,10 +158,13 @@ abstract class Orm {
             $r = $Req->execute(array_values($data));
         } catch (Exception $e) { //interception de l'erreur
 
+            Debug::log("Erreur lors de l'insertion : $e->getMessage()",1);
             // Peut etre faudra il enlever cette exception.
+            
             throw new OrmException(
             "Unable to execute the request '$request' : ["
             . $e->getMessage() . ']');
+            
         }
         return $r;
     }
@@ -188,10 +191,13 @@ abstract class Orm {
             $r = $Req->execute($this->getUpdatePreparedParams($data,$ids));
         } catch (Exception $e) { //interception de l'erreur
 
+            Debug::log("Erreur lors de la mise à jour : $e->getMessage()",1);
             // Peut etre faudra il enlever cette exception.
+            /*
             throw new OrmException(
             "Unable to execute the request '$request' : ["
             . $e->getMessage() . ']');
+            */
         }
         return $r;
     }

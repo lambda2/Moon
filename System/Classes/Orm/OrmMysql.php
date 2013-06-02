@@ -179,6 +179,7 @@ class OrmMysql extends Orm {
 
             //var_dump($field);
             $name = $field->Field;
+
             $type = self::parseTypeValue($field->Type);
 
             //echo '<br><br>nouvel ENTITYFIELD de '.$name.'('.$type.')<br>';
@@ -200,7 +201,8 @@ class OrmMysql extends Orm {
             if($field->Key == 'PRI'){
                 $f->setIsPrimary(true);
             }
-            else if ($field->Key == 'MUL'
+            
+            if (($field->Key == 'MUL' or $field->Key == 'PRI')
                 and array_key_exists($tableName.'.'.$name, $moonLinks)
                 and !isNull($moonLinks[$tableName.'.'.$name]))
             {

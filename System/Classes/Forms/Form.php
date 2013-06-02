@@ -111,6 +111,12 @@ class Form extends Element {
                     {
                         $this->addData('align',$datas['align']);
                     }
+                    if(array_key_exists('displayLabel',$datas))
+                    {
+                        Debug::log("We have to set the Display-label : ".$datas['displayLabel'],0);
+                        $this->displayLabels = $datas['displayLabel'];
+                    }
+
                 }
                 else if(array_key_exists($field, $this->fields))
                 {

@@ -63,6 +63,7 @@ class EntityField {
          * lister toutes les valeurs possibles pour la table distante.
          * @TODO : pour les relations (* -> *), il va falloir etre fort...
          */
+
         if ($this->isForeign and !isNull($this->foreignTarget))
         {
             $target = explode('.',$this->foreignTarget);

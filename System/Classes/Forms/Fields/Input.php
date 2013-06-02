@@ -9,7 +9,7 @@
  */
 class Input extends Field
 {
-    
+   protected $autocomplete = true; 
     /**
      * @var array allowed_types Les types de champ input déclarés
      * valides au 5/3/13 par le W3C.
@@ -34,6 +34,18 @@ class Input extends Field
             throw new AlertException("Le type $type ne semble pas etre un type de champ valide...");
         }
         $this->type = $type;
+
+    }
+
+    /**
+     * will enable or disable the autocompletion of 
+     * the current input.
+     * @return Input self
+     */
+    public function setAutocomplete($bool = true)
+    {
+        $this->autocomplete = $bool;
+        return $this;
     }
     
     /**
@@ -43,6 +55,8 @@ class Input extends Field
     { 
         if(!$this->isVisible()) return '';
         $s = '<input '.$this->getHtmlAttributesList();
+        if(!$this->autocomplete)
+            $s .= 'autocomplete="off" ';
         if($this->required)
             $s .= 'required';
         else if(!$this->enabled)
