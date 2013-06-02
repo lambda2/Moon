@@ -969,6 +969,7 @@ abstract class Entity implements JsonSerializable {
     {
         $form = $this->generateFormFor('insert',$name, $label);
         $form->addField($this->getContextField());
+        $form->addData('type','smart-input');
         return $form;
     }
 

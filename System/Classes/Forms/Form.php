@@ -284,11 +284,13 @@ class Form extends Element {
     {
         $s = '';
         foreach ($this->fields as $field) {
+            $s .= '<span>';
             if($this->displayLabels)
             {
                 $s .= $field->getLabel();
             }
             $s .= $field->getHtml();
+            $s .= '</span>';
         }
         return $s;
     }

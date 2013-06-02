@@ -87,6 +87,19 @@ class Entities implements Iterator, Countable {
         return false;
     }
 
+    public function getEntities()
+    {
+        return $this->entities;
+    }
+
+    public function addEntitiesObject($entities)
+    {
+        foreach($entities->getEntities() as $entity)
+        {
+            $this->entities[] = $entity;
+        }
+    }
+
     /**
      * Surcharge de la méthode magique __get().
      * On va d'abord regarder si l'attribut demandé est une classe liée.
@@ -149,10 +162,10 @@ class Entities implements Iterator, Countable {
                             $res = EntityLoader::getClass($moonLinkValue->table);
                             if($res != null)
                             {
-                                $nextEntities = Entity::loadAllEntitiesBy(
+                                $nextEntities->addEntitiesObject(Entity::loadAllEntitiesBy(
                                         $moonLinkValue->table,
                                         $moonLinkValue->attribute,
-                                        $entity->getFields()[$moonLinkValue->destinationColumn]->getValue());
+                                        $entity->getFields()[$moonLinkValue->destinationColumn]->getValue()));
                             }
                         }
                         return $nextEntities; // On le renvoie !
