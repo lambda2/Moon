@@ -34,6 +34,9 @@ abstract class Orm {
     /** @var $ficontraints contains all the [select] contraints */
     protected $ficonstraints = array();
 
+    /** @var $endconstraints contains all the ending contraints like [LIMIT] */
+    protected $endconstraints = array();
+
     
     /* ----------------- Common methods ------------------- */
     
@@ -351,7 +354,8 @@ abstract class Orm {
         $fields = explode(',',$fields);
         foreach ($fields as $f)
         {
-            $this->ficonstraints[] = $f;
+            if(!in_array($f,$this->ficonstraints))
+                $this->ficonstraints[] = $f;
         }
         return $this;
     }
@@ -369,7 +373,9 @@ abstract class Orm {
      */
     public function where($field, $value, $arg='=', $assoc='AND')
     {
-        $this->wconstraints[] = $field.' '.$arg.' '.$value.'::'.$assoc;
+        $elt = $field.' '.$arg.' '.$value.'::'.$assoc;
+            if(!in_array($elt,$this->wconstraints))
+        $this->wconstraints[] = $elt;
         return $this;
     }
 
@@ -381,7 +387,35 @@ abstract class Orm {
      */
     public function from($table)
     {
-        $this->fconstraints[] = $table;
+        if(!in_array($table,$this->fconstraints))
+            $this->fconstraints[] = $table;
+        return $this;
+    }
+
+    /**
+     * Add a [limit] constraint to the next query.
+     * @param $limit the number of tuples to limit
+     * @return $this the current instance
+     * @since 0.0.4
+     */
+    public function limit($limit)
+    {
+        $this->endconstraints['limit'] = $limit;
+        return $this;
+    }
+
+    /**
+     * Add a [order by] constraint to the next query.
+     * @param $columns the columns to order to
+     * @param $order the order of sorting (asc or desc)
+     * @return $this the current instance
+     * @since 0.0.4
+     */
+    public function orderBy($columns,$order = 'asc')
+    {
+        $this->endconstraints['orderBy'] = array();
+        $this->endconstraints['orderBy']['columns'] = $columns;
+        $this->endconstraints['orderBy']['order'] = $order;
         return $this;
     }
 
@@ -397,6 +431,9 @@ abstract class Orm {
         return $this->arrayQuery($query);
      }
 
+
+     /* -------------- protected methods for query selectors ---------------- */
+
      protected function getQuerySql()
      {
         if(!$this->checkContraintsForQuery())
@@ -405,6 +442,7 @@ abstract class Orm {
         $sql = $this->getSelectSql();
         $sql .= $this->getFromSql();
         $sql .= $this->getWhereSql();
+        $sql .= $this->getEndingSql();
         return $sql;
      }
 
@@ -448,6 +486,22 @@ abstract class Orm {
             }
         }
         return $req;
+     }
+
+     protected function getEndingSql()
+     {
+        $rending = '';
+        if(array_key_exists('orderBy',$this->endconstraints))
+        {
+            $rending .= ' ORDER BY '.$this->endconstraints['orderBy']['columns'];
+            $rending .= ' '.$this->endconstraints['orderBy']['order'];
+        }
+
+        if(array_key_exists('limit',$this->endconstraints))
+        {
+            $rending .= ' LIMIT '.$this->endconstraints['limit'];
+        }
+        return $rending;
      }
 
     /**

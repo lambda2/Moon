@@ -12,68 +12,14 @@ try
 {
 
 	$orm = OrmFactory::getOrm();
-	/*echo '<h3>Debug outputs for <i>Orm</i> class</h3>';
-
-	var_dump($orm);
-
-	//$tables = $orm->getAllRelationsFrom();
-	testResults('getAllTables', array(), $orm);
-
-
-	testResults('getAllColumnsFrom', array('astre'), $orm);
-	testResults('getAllRelations', array(), $orm);
-	testResults('getAllRelationsFrom', array('astre'), $orm);
-	testResults('getAllRelationsFrom', array('distance'), $orm);
-	testResults('getMoonLinksFrom', array('distance'), $orm);
-
-	echo '<h3>Debug outputs for <i>Orm</i> class</h3>';
-	echo '<h5>→ External relations detection</h5>';
-
-	testResults('getAllRelationsWith', array('astre'), $orm);
-	testResults('getMoonLinksFrom', array('astre'), $orm);
-	testResults('getMoonLinksFrom', array('astre',true), $orm);
-
-*/
-    $pseudo = 'lambda2';
-    $user = Moon::get('membre','pseudo',$pseudo);
-
-    Core::setContext('Profile');
-    $rules = Core::getFormDefinitionArray();
-
-
-    var_dump($rules);
-    /*
-    if(!$user->exists())
-        echo 'Utilisateur inexistant : '.$user.'<br>';
-
-    testResults('__toString',array(),$user);
-
-	$membre_equipe = testResults('__get', array('membre_equipe'), $user,
-    'On récupère les equipes dont le membre '.$pseudo.' fait partie');
-	
-    $equipe = testResults('__get', array('equipe'), $membre_equipe,'On récupère les equipes de '.$pseudo.', depuis membre_equipe');
-    $project = testResults('__get', array('project'), $equipe,'On récupère les projets de l\'equipe '.$equipe);
-
-/*
-    var_dump($externals);
-    var_dump(Core::getInstance());
-
-	echo '<h3>Debug outputs for <i>Entity</i> class</h3>';
-	$astres = Moon::getAllHeavy('astre');
-
-	testResults('__get', array('distance'), $astres[0]);
-	testResults('query', array("select * from astre where ? = 1"
-		, array('id_astre')), $orm);
-
-	testResults('getNom', array(), $astres[0]);
-	testResults('getNom_astre', array(), $astres[0]);
-	testResults('Nom_astre', array(), $astres[0]);
-	testResults('Nom', array(), $astres[0]);
-	testResults('getSysteme', array(), $astres[0]);
-	testResults('systeme', array(), $astres[0]);
-	testResults('__get', array('systeme'), $astres[0]);
-	testResults('__get', array('pouet'), $astres[0]);
-*/
+	echo '<h3>Tests on the ORM requests</h3>';
+    $r = $orm->select('*')->from('project_log')->where('id_project','3')->fetchArray();
+    echo '<p>'.count($r).' élement(s) recu(s)</p>';
+    $r = $orm->select('*')->from('project_log')->where('id_project','3')->limit(10)->fetchArray();
+    echo '<p>'.count($r).' élement(s) recu(s) avec une limite de 10</p>';
+    $r = $orm->select('*')->from('project_log')->where('id_project','3')->limit(10)->orderBy('id_commit','asc');
+	testResults('fetchArray', array(), $r);
+    echo '<p>'.count($r->fetchArray()).' élement(s) recu(s) avec une limite de 10 et un tri par message</p>';
 } 
 catch (Exception $exc) 
 {
