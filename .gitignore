@@ -41,3 +41,5 @@ executables/*
 ..swo
 *.swo
 System/Configuration/configuration.yml
+System/one
+Templates/lambdaweb-template/three
