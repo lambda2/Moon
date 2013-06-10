@@ -399,7 +399,6 @@ abstract class Entity implements JsonSerializable {
      */
     public static function loadAllEntitiesBy($classe,$field, $value) {
         $c = EntityLoader::getClass($classe);
-        //echo 'loaded : '.$c.'<br>';
         $request = "";
 
         /**
@@ -422,41 +421,7 @@ abstract class Entity implements JsonSerializable {
         {
             $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
         }
-        //echo 'request : '.$request.'<br>';
-
-        try
-        {
-            $Req = Core::getBdd()->getDb()->prepare($request);
-            $Req->execute(array());
-        }
-        catch (Exception $e) //interception de l'erreur
-        {
-            throw new OrmException("Error Processing Request");
-        }
-        $t = new Entities($c->getTable());
-        //echo 'Entities created : '.$t.'<br>';
-        // Si on récupère quelque chose :
-        if ($Req->rowCount() != 0)
-        {
-            while ($res = $Req->fetch(PDO::FETCH_OBJ))
-            {
-                $f          = EntityLoader::getClass($classe);
-                $pri        = $f->getValuedPrimaryFields($res);
-                //echo 'PRI identified : '.$pri.'<br>';
-                if (!isNull($pri))
-                {
-                    $f->loadByArray($pri);
-                    //echo 'Loaded by array : '.$f.'<br>';
-                    $f->autoLoadLinkedClasses();
-                    //echo 'auto loaded : '.$f.'<br>';
-                    $t->addEntity($f);
-                    //echo 'Entity added : '.$t.'<br>';
-                }
-
-            }
-        }
-        //echo 'READY TO RETURN '.$t.'<br>';
-        return $t;
+        return EntityLoader::loadEntitiesFromRequest($request,$c->getTable()); 
     }
 
     /**

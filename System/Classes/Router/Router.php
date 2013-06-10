@@ -205,7 +205,6 @@ class Router {
     public function routeGet()
     {
         $params = $_GET;        
-        
         // If it's a moon generated form :
         if(array_key_exists('moon-action', $_GET))
         {
@@ -220,16 +219,23 @@ class Router {
 
                 // We define the current context to the core
                 Core::setContext($classe);
-                
+
                 $options = array();
                 if(count($request) > 1){
                     $method = explode('?',explode('#',$request[1])[0])[0];
                     $opts = explode('?',$request[1]);
-                    if(count($opts)>1)
+                    $alt_meth = array_shift($opts);
+                    if(count($opts))
                     {
-                        $options = $opts[1];
+                        $options = implode('/',$opts);
                     }
                 }
+
+                /*
+                echo "classe = $classe<br>";
+                echo "method = $method<br>";
+                echo "options = ".arr2str($options)."<br>";
+                */
 
                 if(isNull($method))
                     $method = 'index';

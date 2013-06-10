@@ -492,6 +492,7 @@ abstract class Controller {
         return $this->urlParams;
     }
 
+
     public function __toString()
     {
         return "[Controller] > ".get_class($this);
@@ -500,8 +501,10 @@ abstract class Controller {
     /**
      * @return string the specified url parameter.
      */
-    public function getUrlParam($param)
+    public function getUrlParam($param=null)
     {
+        if($param == null)
+            return $this->urlParams;
         return $this->urlParams[$param];
     }
 

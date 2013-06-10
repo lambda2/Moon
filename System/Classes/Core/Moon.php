@@ -68,7 +68,20 @@ class Moon {
     public static function getAllHeavy($class){
         return Entity::getAllObjects($class);
     }
-    
+        
+    /**
+     * Retourne tous les objets de la classe présents dans la basede données.
+     * Cette méthode peut etre très lourde, car elle instancie chaque objet,
+     * et <b>doit etre evitée</b> lorsque il n'y a pas d'interaction avec 
+     * ces objets, en utilisant Moon::getAll(). 
+     * @param string $class la classe des objets
+     * @return array un tableaux contenant les instances de la classe.
+     * @see Moon::getAll
+     */
+    public static function getEntities($class){
+        return EntityLoader::loadAllEntities($class);
+    }
+
     /**
      * Retourne tous les objets de la classe présents dans la base de données
      * sous la forme d'objets légers. Chaque élément du tableau ne contient 

@@ -98,6 +98,57 @@ class EntityLoader {
         }
         return $class;
     }
+    
+    /**
+     * Will load Entities from an SQL request. The table name have 
+     * to be specified.
+     * @param $request String the sql request to execute
+     * @param $table String the name of the table / Class to be instancied
+     * @return Entities the Entities who matches with the request
+     */
+    public static function loadEntitiesFromRequest($request,$table)
+    {
+        $t = array();
+        try {
+            $Req = Core::getBdd()->getDb()->prepare($request);
+            $Req->execute(array());
+        } catch (Exception $e) {
+            throw new OrmException(
+            "Unable to execute the request '$request' : ["
+            . $e->getMessage() . ']');
+        }
+
+        $t = new Entities($table);
+        // Si on récupère quelque chose :
+        if ($Req->rowCount() != 0)
+        {
+            while ($res = $Req->fetch(PDO::FETCH_OBJ))
+            {
+                $f          = self::getClass($table);
+                $pri        = $f->getValuedPrimaryFields($res);
+                if (!isNull($pri))
+                {
+                    $f->loadByArray($pri);
+                    $f->autoLoadLinkedClasses();
+                    $t->addEntity($f);
+                }
+
+            }
+        }
+        return $t;
+    }
+
+    /**
+     * Charge tous les objets en fonction d'un ou plusieurs parametres
+     * et renvoie l'ensemble sous forme d'un groupe d'entitées.
+     * @return Entities le groupe d'entitées.
+     */
+    public static function loadAllEntities($classe) {
+        $c = EntityLoader::getClass($classe);
+        $request = "SELECT * FROM {$c->getTable()}";
+        return EntityLoader::loadEntitiesFromRequest($request,$c->getTable()); 
+    }
+
 
 }
 

@@ -431,6 +431,19 @@ abstract class Orm {
         return $this->arrayQuery($query);
      }
 
+    /**
+     * Will execute a [select] query for defined fields, constraints and tables.
+     * @return Entities a set of element corresponding to the results of the
+     * query.
+     * @since 0.0.4
+     */
+     public function fetchEntities()
+     {
+        $query = $this->getQuerySql();
+        $table = $this->fconstraints[count($this->fconstraints)-1];
+        return EntityLoader::loadEntitiesFromRequest($query, $table);
+     }
+
 
      /* -------------- protected methods for query selectors ---------------- */
 

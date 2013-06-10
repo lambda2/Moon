@@ -10,7 +10,8 @@
  */
 try 
 {
-
+    $classe = Moon::getEntities('project')->filter('[nom!="moon"] and [id_projet>"3"]');
+    /*
 	$orm = OrmFactory::getOrm();
 	echo '<h3>Tests on the ORM requests</h3>';
     $r = $orm->select('*')->from('project_log')->where('id_project','3')->fetchArray();
@@ -19,7 +20,14 @@ try
     echo '<p>'.count($r).' élement(s) recu(s) avec une limite de 10</p>';
     $r = $orm->select('*')->from('project_log')->where('id_project','3')->limit(10)->orderBy('id_commit','asc');
 	testResults('fetchArray', array(), $r);
+	$ent = testResults('fetchEntities', array(), $r);
+    $p = $ent->project;
+    foreach($p as $pro)
+    {
+        echo $pro->getNom();
+    }
     echo '<p>'.count($r->fetchArray()).' élement(s) recu(s) avec une limite de 10 et un tri par message</p>';
+    */
 } 
 catch (Exception $exc) 
 {
