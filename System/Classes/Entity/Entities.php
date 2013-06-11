@@ -194,7 +194,57 @@ class Entities implements Iterator, Countable {
         return true;
     }
 
+    /* -------- Database query filtering methods -------*/
 
+    public function filter($filter)
+    {
+        $res = array();
+        $regex = "/\[([\w]*)+(\=|!\=|<|>|<\=|>\=)?(([\d]*)|(\"[\w]*\"))\]/";
+        $result = preg_match_all($regex,$filter,$res);
+        if($result > 0 and isset($res[0]))
+        {
+            foreach($res[0] as $match)
+            {
+                $this->digestConstraint($match);
+            }
+        }
+    }
+
+    protected function digestConstraint($constraint)
+    {
+        $constraint = $this->cleanConstraint($constraint);
+        if(substr_count($constraint,'!='))
+        {
+            $matches = explode('!=',$constraint);
+            $this->removeFromArrayWhere($matches[0],$matches[1],
+                function($a,$b){ return $a != $b; });
+        }
+
+    }
+
+    protected function cleanConstraint($constraint)
+    {
+        $withoutBrace = str_replace(
+            '[','',str_replace(
+                ']','',str_replace(
+                    '"','',$constraint)));
+        return $withoutBrace;
+    }
+
+    protected function removeFromArrayWhere($element,$value,$predicate)
+    {
+        $locationMarker = 0;
+        foreach($this->entities as $entity)
+        {
+            $evalue = $entity->__get($element);
+            if(!$predicate($evalue,$value))
+            {
+               unset($this->entities[$locationMarker]);
+               $this->entities = array_values($this->entities);
+            }
+            $locationMarker ++;
+        }
+    }
 
 
     /* -------------- Iterator methods ---------------- */

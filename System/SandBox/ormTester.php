@@ -10,7 +10,18 @@
  */
 try 
 {
-    $classe = Moon::getEntities('project')->filter('[nom!="moon"] and [id_projet>"3"]');
+    $classe = Moon::getEntities('project');
+    echo '<p>-------------------------------------<p>';
+    foreach($classe as $cl)
+        echo ' - '.$cl->nom.'<br>';
+    echo '<h2> COUNT : '.count($classe).'</h2>';
+    echo '<p>-------------------------------------<p>';
+    echo '<p>After :</p>';
+    $classe->filter('[nom!="Moon"] and [id_projet>"3"]');
+    foreach($classe as $cl)
+        echo ' @ '.$cl->nom.'<br>';
+    echo '<h2> COUNT : '.count($classe).'</h2>';
+
     /*
 	$orm = OrmFactory::getOrm();
 	echo '<h3>Tests on the ORM requests</h3>';
