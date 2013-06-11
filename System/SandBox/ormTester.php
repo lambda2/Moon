@@ -16,13 +16,34 @@ try
         echo ' - '.$cl->nom.'<br>';
     echo '<h2> COUNT : '.count($classe).'</h2>';
     echo '<p>-------------------------------------<p>';
-    echo '<p>After :</p>';
-    $classe->filter('[nom!="Moon"] and [id_projet>"3"]');
+    echo '<p>After [nom!="Moon"]</p>';
+    $classe->filter('[nom!="Moon"]');
     foreach($classe as $cl)
         echo ' @ '.$cl->nom.'<br>';
     echo '<h2> COUNT : '.count($classe).'</h2>';
 
-    /*
+    echo '<p>-------------------------------------<p>';
+    echo '<p>After [id_projet>="2"]</p>';
+    $classe->filter('[id_projet>="2"]');
+    foreach($classe as $cl)
+        echo ' @ '.$cl->nom.'<br>';
+    echo '<h2> COUNT : '.count($classe).'</h2>';
+
+    echo '<p>-------------------------------------<p>';
+    echo '<p>After [id_projet<"10"]</p>';
+    $classe->filter('[id_projet<"20"]');
+    foreach($classe as $cl)
+        echo ' @ '.$cl->equipe->nom.'<br>';
+    echo '<h2> COUNT : '.count($classe).'</h2>';
+
+
+    echo '<p>-------------------------------------<p>';
+    echo '<p>After [equipe.nom]</p>';
+    $classe->filter('[equipe.nom="Mammuth"]');
+    foreach($classe as $cl)
+        echo ' @ '.$cl->nom.'<br>';
+    echo '<h2> COUNT : '.count($classe).'</h2>';
+ /*
 	$orm = OrmFactory::getOrm();
 	echo '<h3>Tests on the ORM requests</h3>';
     $r = $orm->select('*')->from('project_log')->where('id_project','3')->fetchArray();

@@ -175,7 +175,7 @@ class Entities implements Iterator, Countable {
         }
         // Si on ne référence pas la table demandée, et qu'aucune table ne nous référence
         // On renvoie faux.
-        return false;
+        return null;
     }
 
 
@@ -199,10 +199,11 @@ class Entities implements Iterator, Countable {
     public function filter($filter)
     {
         $res = array();
-        $regex = "/\[([\w]*)+(\=|!\=|<|>|<\=|>\=)?(([\d]*)|(\"[\w]*\"))\]/";
+        $regex = "/\[([\w\.]*)+(\=|!\=|<|>|<\=|>\=)?(([\d]*)|(\"[\w\.]*\"))\]/";
         $result = preg_match_all($regex,$filter,$res);
         if($result > 0 and isset($res[0]))
         {
+            var_dump($res[0]);
             foreach($res[0] as $match)
             {
                 $this->digestConstraint($match);
@@ -210,15 +211,76 @@ class Entities implements Iterator, Countable {
         }
     }
 
+    /**
+     * Juste affreux. Besoin d'une ame charitable pour trouver
+     * une regex correcte qui va me permettre d'éviter ce bain
+     * de sang. Cordialement.
+     * @Todo : To Do It !
+     *
+     * Will transform a contraint (ie: "[id>=3]" ) into a filter
+     * and will execute it on the current Entities.
+     */
     protected function digestConstraint($constraint)
     {
         $constraint = $this->cleanConstraint($constraint);
+        var_dump($constraint);
         if(substr_count($constraint,'!='))
         {
             $matches = explode('!=',$constraint);
             $this->removeFromArrayWhere($matches[0],$matches[1],
                 function($a,$b){ return $a != $b; });
         }
+        else if(substr_count($constraint,'=='))
+        {
+            $matches = explode('==',$constraint);
+            $this->removeFromArrayWhere($matches[0],$matches[1],
+                function($a,$b){ return $a == $b; });
+        }
+        else if(substr_count($constraint,'>='))
+        {
+            $matches = explode('>=',$constraint);
+            $this->removeFromArrayWhere($matches[0],$matches[1],
+                function($a,$b){ return $a >= $b; });
+        }
+        else if(substr_count($constraint,'<='))
+        {
+            $matches = explode('<=',$constraint);
+            $this->removeFromArrayWhere($matches[0],$matches[1],
+                function($a,$b){ return $a <= $b; });
+        }
+        else if(substr_count($constraint,'>'))
+        {
+            $matches = explode('>',$constraint);
+            $this->removeFromArrayWhere($matches[0],$matches[1],
+                function($a,$b){ return $a > $b; });
+        }
+        else if(substr_count($constraint,'<'))
+        {
+            $matches = explode('<',$constraint);
+            $this->removeFromArrayWhere($matches[0],$matches[1],
+                function($a,$b){ return $a < $b; });
+        }
+        else if(substr_count($constraint,'='))
+        {
+            echo " [=] -> $constraint<br>";
+            $matches = explode('=',$constraint);
+            $this->removeFromArrayWhere($matches[0],$matches[1],
+                function($a,$b){ return $a == $b; });
+        }
+        else if(substr_count($constraint,' '))
+        {
+            $matches = explode(' ',$constraint);
+            $this->removeFromArrayWhere($matches[0],$matches[1],
+                function($a,$b){ return $a == $b; });
+        }
+        else
+        {
+            $matches = $constraint;
+            $this->removeFromArrayWhere($matches,null,
+                function($a,$b){ return $a != $b; });
+        }
+
+
 
     }
 
@@ -236,13 +298,36 @@ class Entities implements Iterator, Countable {
         $locationMarker = 0;
         foreach($this->entities as $entity)
         {
-            $evalue = $entity->__get($element);
+            $evalue = $this->getEntityValue($entity,explode('.',$element));
             if(!$predicate($evalue,$value))
             {
                unset($this->entities[$locationMarker]);
                $this->entities = array_values($this->entities);
+               $locationMarker--;
             }
             $locationMarker ++;
+        }
+    }
+
+    protected function getEntityValue($entity,$val)
+    {
+        $val = array_values($val);
+        if(is_array($val) and count($val) > 1)
+        {
+            $value = $val[0];
+            unset($val[0]);
+            $val = array_values($val);
+            $entity = $entity->__get($value);
+            return $this->getEntityValue($entity,$val);
+        }
+        else
+        {
+            if(is_array($val))
+            {
+                $val = array_values($val);
+                $value = $val[0];
+            }
+            return $entity->__get($value);
         }
     }
 
