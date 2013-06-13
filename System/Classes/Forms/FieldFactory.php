@@ -32,6 +32,10 @@ class FieldFactory {
                 $field = new CheckBox($name,$name);
                 break;
 
+            case 'decimal':
+                $field = new Input($name,'number');
+                break;
+
             case 'date':
                 $field = new Input($name,'date');
                 break;

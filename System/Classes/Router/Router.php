@@ -380,11 +380,20 @@ class Router {
         if(isset($_GET['p']))
             $p = $_GET['p'];
 
+        $ajax = False;
+        if(isset($params['ajaxForm']))
+            $ajax = True;
+
 
 
         // On vérifie que on a bien tous les arguments.
         if(isNull($action) or isNull($target))
         {
+            if($ajax){
+                echo "-1";
+                return false;
+            }
+            
             throw new AlertException
             ("Unable to find what to do with this form...", 1);
             
@@ -406,6 +415,11 @@ class Router {
          */
         if(!$this->checkAccess($action, $target))
         {
+            if($ajax){
+                echo "-1";
+                return false;
+            }
+
             throw new MemberAccessException
                 ("Accès non autorisé pour faire un $action sur $target");
             return false;
@@ -413,20 +427,20 @@ class Router {
 
         $class->initProcess($params);
 
-        echo '<br>begin of router !<br>';
+        $ajaxOutput = "ok";
+
         switch ($action) {
             case 'insert':
                 $sucess = $class->processInsertForm($params);
+                if($sucess)
+                    $ajaxOutput = Core::getBdd()->getLastInsertId();
                 break;
             case 'update':
-                echo '<br>begin of router !<br>';
                 $identifiers = $params['ids'];
 
                 $values = param2arr($identifiers);
                 $class->loadByArray($values);
                 $sucess = $class->processUpdateForm($params);
-                echo '<br>fin router !<br>';
-
                 break;
 
             case 'delete':
@@ -435,7 +449,6 @@ class Router {
                 $values = param2arr($identifiers);
                 $class->loadByArray($values);
                 $sucess = $class->processDeleteForm($values);
-
                 break;
 
             default:
@@ -444,12 +457,13 @@ class Router {
                 break;
         }
 
-        echo '<br>fin router !<br>';
-        var_dump($sucess);
-
         if($sucess)
         {
-            if(!isNull($p))
+            if($ajax)
+            {
+                echo $ajaxOutput;
+            }
+            else if(!isNull($p))
             {
                 redirectStatut($p);
             }
@@ -463,6 +477,10 @@ class Router {
                     echo('<script language="javascript">document.location.href="'. $page .'"</script>');
                 }
             }
+        }
+        else if($ajax)
+        {
+            echo "0";
         }
         return $sucess;
     }

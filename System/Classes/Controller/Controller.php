@@ -546,13 +546,18 @@ abstract class Controller {
             try {
                 echo $this->twig->render(strtolower($this->template), $this->mergeData());
             } catch (Twig_Error_Loader $excTwo) {
-                dbg($excTwo->getMessage()
+                Debug::log($excTwo->getMessage()
                         . "<p>La template {$this->template} n'a pas pu etre chargée ! Le fichier existe t'il ?</p>"
                         . "<p><b>Chargement de la template de base du controlleur</b></p>", 2);
                 $this->template = strtolower(get_class($this)) . '.twig';
                 echo $this->twig->render(strtolower($this->template), $this->mergeData());
             }
         }
+    }
+
+    protected function rejectAccess($why="Access Denied")
+    {
+        throw new MemberAccessException($why);        
     }
 
     final public function render() 

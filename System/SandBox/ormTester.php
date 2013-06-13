@@ -24,11 +24,11 @@ try
 
     echo '<p>-------------------------------------<p>';
     echo '<p>After [id_projet>="2"]</p>';
-    $classe->filter('[id_projet>="2"]');
+    $classe->filter('[id_projet>="2"][id_projet!=10]');
     foreach($classe as $cl)
         echo ' @ '.$cl->nom.'<br>';
     echo '<h2> COUNT : '.count($classe).'</h2>';
-
+ /*
     echo '<p>-------------------------------------<p>';
     echo '<p>After [id_projet<"10"]</p>';
     $classe->filter('[id_projet<"20"]');
@@ -43,7 +43,7 @@ try
     foreach($classe as $cl)
         echo ' @ '.$cl->nom.'<br>';
     echo '<h2> COUNT : '.count($classe).'</h2>';
- /*
+
 	$orm = OrmFactory::getOrm();
 	echo '<h3>Tests on the ORM requests</h3>';
     $r = $orm->select('*')->from('project_log')->where('id_project','3')->fetchArray();

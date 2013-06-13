@@ -1068,11 +1068,8 @@ abstract class Entity implements JsonSerializable {
         if($this->validateInsertForm($data)
                 and $this->happyFields->check())
         {
-            echo '<p style="color: green">rules validated !</p>';
             $data = $this->applyDefinedFilters($data);
             $fields = $this->parseDataForAction($data);
-            var_dump($data);
-            var_dump($fields);
             $result = Core::getBdd()->insert($fields, $this->table);
             if($result !== false)
             {
@@ -1115,7 +1112,6 @@ abstract class Entity implements JsonSerializable {
         if($this->validateUpdateForm($data)
             and $this->happyFields->check())
         {
-            echo '<span style="color: green">rules validated !</span>';
             $data = $this->applyDefinedFilters($data);
             $fields = $this->parseDataForAction($data);
 

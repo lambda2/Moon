@@ -122,7 +122,8 @@ abstract class Orm {
     {
         $ret = array();
         foreach ($count as $key => $value) {
-            $ret[] = '?';
+            if($value != '')
+                $ret[] = '?';
         }
         return arr2str($ret,$sep);
     }
@@ -139,6 +140,25 @@ abstract class Orm {
         return arr2str($ret,$sep);
     }
 
+    protected function getDefinedFieldsFromData($data, $sep=',')
+    {
+        $ret = array();
+        foreach ($data as $key => $value) {
+            if($value != '')
+                $ret[] = $key;
+        }
+        return arr2str($ret,$sep);
+    }
+
+    protected function getDefinedValuesFromData($data, $sep=',')
+    {
+        $ret = array();
+        foreach ($data as $key => $value) {
+            if($value != '')
+                $ret[] = $value;
+        }
+        return $ret;
+    }
 
     /**
      * Va inserer la data fournie en parametre dans la table spécifiée.
@@ -150,7 +170,7 @@ abstract class Orm {
         if(!is_array($data))
             throw new OrmException("Arguments invalides pour l'insertion.", 1);
 
-        $fields = arr2str(array_keys($data),',');
+        $fields = $this->getDefinedFieldsFromData($data);
         $parenthValues = $this->generateInterrArray($data);
         $request = 
             'INSERT INTO '
@@ -159,7 +179,7 @@ abstract class Orm {
 
         try {
             $Req = self::$db->prepare($request);
-            $r = $Req->execute(array_values($data));
+            $r = $Req->execute($this->getDefinedValuesFromData($data));
             if($r)
             {
                 $r = self::$db->lastInsertId();
@@ -172,9 +192,15 @@ abstract class Orm {
             throw new OrmException(
             "Unable to execute the request '$request' : ["
             . $e->getMessage() . ']');
+            var_dump($e);
             
         }
         return $r;
+    }
+
+    public function getLastInsertId()
+    {
+        return self::$db->lastInsertId();
     }
  
     protected function convertFieldsToParams($entity)
