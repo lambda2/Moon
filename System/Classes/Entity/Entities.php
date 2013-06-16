@@ -3,7 +3,7 @@
 /**
  * Représente un ensemble d'entitées
  */
-class Entities implements Iterator, Countable {
+class Entities implements Iterator, Countable, JsonSerializable {
 
     protected $table;
     protected $bdd;
@@ -99,6 +99,20 @@ class Entities implements Iterator, Countable {
             $this->entities[] = $entity;
         }
     }
+
+    /**
+     * Explain how the php engine have to serialize an
+     * Entities object to json.
+     */
+    public function jsonSerialize() {
+        $ret = array();
+        foreach($this->entities as $entity)
+        {
+            $ret[] = $entity->jsonSerialize();
+        }
+        return $ret;
+    }
+
 
     /**
      * Surcharge de la méthode magique __get().
@@ -223,7 +237,6 @@ class Entities implements Iterator, Countable {
         $result = preg_match_all($regex,$filter,$res);
         if($result > 0 and isset($res[0]))
         {
-            var_dump($res[0]);
             foreach($res[0] as $match)
             {
                 $this->digestConstraint($match);
@@ -243,7 +256,6 @@ class Entities implements Iterator, Countable {
     protected function digestConstraint($constraint)
     {
         $constraint = $this->cleanConstraint($constraint);
-        var_dump($constraint);
         if(substr_count($constraint,'!='))
         {
             $matches = explode('!=',$constraint);

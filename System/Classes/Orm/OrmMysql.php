@@ -177,7 +177,6 @@ class OrmMysql extends Orm {
 
         foreach ($sqlFields as $table => $field) {
 
-            //var_dump($field);
             $name = $field->Field;
 
             $type = self::parseTypeValue($field->Type);

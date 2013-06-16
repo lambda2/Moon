@@ -231,12 +231,6 @@ class Router {
                     }
                 }
 
-                /*
-                echo "classe = $classe<br>";
-                echo "method = $method<br>";
-                echo "options = ".arr2str($options)."<br>";
-                */
-
                 if(isNull($method))
                     $method = 'index';
 
@@ -244,6 +238,8 @@ class Router {
                 if (class_exists($classe)) {
                     // On la charge
                     $c = new $classe();
+                    if(!$c->isAccessGranted())
+                        throw new MemberAccessException("Access Denied");
                     
                     if(is_a($c,'Controller'))
                     {
@@ -373,15 +369,11 @@ class Router {
         $target = $_GET['target'];
         $p = '';
 
-        if(isset($_GET['ajax']))
-            $ajax = $_GET['ajax'];
-
-
         if(isset($_GET['p']))
             $p = $_GET['p'];
 
         $ajax = False;
-        if(isset($params['ajaxForm']))
+        if(isset($params['ajaxForm']) or isset($_GET['ajax']))
             $ajax = True;
 
 
@@ -456,7 +448,7 @@ class Router {
                     ("Action non valide ($action) sur la ressource $target");
                 break;
         }
-
+        
         if($sucess)
         {
             if($ajax)

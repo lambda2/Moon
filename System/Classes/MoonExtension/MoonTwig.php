@@ -154,13 +154,13 @@ class MoonTwig extends Twig_Extension
      * @param Entity $entity la classe pour laquelle créer le lien.
      * @return string le lien
      */
-    public static function deleteLink($entity)
+    public static function deleteLink($entity,$ajax=false)
     {
         if(!is_a($entity, 'Entity'))
             throw new AlertException(
                 "Invalid entity supplied for form generation", 1);
 
-        return $entity->generateDeleteLink();
+        return $entity->generateDeleteLink($ajax);
     }
 
     public static function truncate($text,$num=100,$end="")

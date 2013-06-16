@@ -505,6 +505,8 @@ abstract class Controller {
     {
         if($param == null)
             return $this->urlParams;
+        else if(!array_key_exists($param,$this->urlParams))
+            return null;
         return $this->urlParams[$param];
     }
 
@@ -558,6 +560,11 @@ abstract class Controller {
     protected function rejectAccess($why="Access Denied")
     {
         throw new MemberAccessException($why);        
+    }
+
+    public function isAccessGranted()
+    {
+        return $this->grantAccess();
     }
 
     final public function render() 

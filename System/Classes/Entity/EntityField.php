@@ -69,7 +69,7 @@ class EntityField {
             $target = explode('.',$this->foreignTarget);
             $table = $target[0];
             $attr = $target[1];
-            $values = Core::getBdd()->getAttributeFrom($attr, $table);
+            $values = Core::getBdd()->getAttributeFrom($attr, $table, $attr);
             if(isNull($this->foreignDisplayTarget))
             {
                 $displayValues = $values;
@@ -87,7 +87,7 @@ class EntityField {
                 }
                 
                 $displayValues = Core::getBdd()->getAttributeFrom(
-                    $displayAttr, $displayTable);
+                    $displayAttr, $displayTable, $attr);
             }
 
             if(count($displayValues) != count($values))

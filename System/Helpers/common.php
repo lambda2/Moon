@@ -448,7 +448,12 @@ function dbQuote($string, $separator = " ") {
  */
 function truncate($text, $num=100, $end="...")
 {
-    return substr($text,0,$num).$end;
+    if(strlen($text) > $num)
+    {
+        $text = preg_replace('/\s+?(\S+)?$/', '', substr($text, 0, $num));
+        $text .= $end;
+    }
+    return $text;
 }
 
 /**

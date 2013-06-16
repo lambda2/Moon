@@ -955,17 +955,7 @@ abstract class Entity implements JsonSerializable {
         return $form;
     }
 
-    /**
-     * Will return a hidden field wich will
-     * contain the current context.
-     * @return Input the hidden field.
-     */
-    protected function getContextField()
-    {
-        $context = new Input('moon-context','hidden');
-        $context->setValue(Core::getContext());
-        return $context;
-    }
+
 
     /**
      * Génere un champ de supression en HTML.
@@ -986,14 +976,14 @@ abstract class Entity implements JsonSerializable {
     /**
      * Génere une url de supression en HTML.
      */
-    public function generateDeleteLink()
+    public function generateDeleteLink($ajax=False)
     {
-
+        $aj = '';
+        if($ajax){$aj='&ajax=true';}
         $keysList = $this->getDefinedPrimaryFields();
         $href = Core::opts()->system->siteroot
             .'index.php?moon-action=delete&target='
-            .strtolower($this->table).'&ids='.arr2param($keysList,',');
-
+            .strtolower($this->table).$aj.'&ids='.arr2param($keysList,',');
         return $href;
     }
 
@@ -1093,14 +1083,22 @@ abstract class Entity implements JsonSerializable {
 
     }
 
-    public function initProcess($data=array())
+    /**
+     * Procède à la supression de la data fournie en parametre
+     * dans la base de données.
+     */
+    public function processDeleteForm($data=array())
     {
-        $this->happyFields->setFields($data);
-        if(isset($_GET['formName']))
-            $rulesExists = $this->searchForDefinedRules($_GET['formName']);
+        $fields = $this->parseDataForAction($data);
+        if(Core::getBdd()->delete(
+            $this->table,
+            $fields
+            ))
+        {
+            return true;
+        }
         else
-            $rulesExists = false;
-        return $rulesExists;
+            return false;
     }
 
     /**
@@ -1155,21 +1153,7 @@ abstract class Entity implements JsonSerializable {
     }
 
 
-    /**
-     * Procède à la supression de la data fournie en parametre
-     * dans la base de données.
-     */
-    public function processDeleteForm($data=array())
-    {
-        $fields = $this->parseDataForAction($data);
-        if(Core::getBdd()->delete(
-            $this->table,
-            $fields
-            ))
-            return true;
-        else
-            return false;
-    }
+
 
     /**
      * Will search in the form files for a rules set
@@ -1196,6 +1180,27 @@ abstract class Entity implements JsonSerializable {
         return $return;
     }
 
+    public function initProcess($data=array())
+    {
+        $this->happyFields->setFields($data);
+        if(isset($_GET['formName']))
+            $rulesExists = $this->searchForDefinedRules($_GET['formName']);
+        else
+            $rulesExists = false;
+        return $rulesExists;
+    }
+
+    /**
+     * Will return a hidden field wich will
+     * contain the current context.
+     * @return Input the hidden field.
+     */
+    protected function getContextField()
+    {
+        $context = new Input('moon-context','hidden');
+        $context->setValue(Core::getContext());
+        return $context;
+    }
 
     /*********************************************************
      *                  Database CRUD methods                *

@@ -349,11 +349,14 @@ abstract class Orm {
     }
 
 
-    public function getAttributeFrom($attr, $table)
+    public function getAttributeFrom($attr, $table, $order=null)
     {
         $t = array();
+        $orders = '';
+        if($order != null)
+            $orders = ' ORDER BY '.$order;
         try {
-            $Req = self::$db->prepare("select $attr from $table");
+            $Req = self::$db->prepare("select $attr from $table $orders");
             $Req->execute();
         } catch (Exception $e) { //interception de l'erreur
             throw new OrmException(
