@@ -327,6 +327,8 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     protected function removeFromArrayWhere($element,$value,$predicate)
     {
+        var_dump($element);
+        var_dump($value);
         $locationMarker = 0;
         if($value == "null")
             $value = null;
@@ -351,7 +353,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
             $value = $val[0];
             unset($val[0]);
             $val = array_values($val);
-            $entity = $entity->__get($value);
+            $entity = $entity->table($value);
             return $this->getEntityValue($entity,$val);
         }
         else
@@ -361,7 +363,14 @@ class Entities implements Iterator, Countable, JsonSerializable {
                 $val = array_values($val);
                 $value = $val[0];
             }
-            return $entity->__get($value);
+            if(is_a($entity,'Entity') or is_a($entity,'Entities'))
+            {
+                return $entity->__get($value);
+            }
+            else
+            {
+                return $entity;
+            }
         }
     }
 

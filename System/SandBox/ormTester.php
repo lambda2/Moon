@@ -10,25 +10,33 @@
  */
 try 
 {
-    $classe = Moon::getEntities('project');
+    $classe = Moon::getEntities('contrat');
+    
     echo '<p>-------------------------------------<p>';
+    echo '<p>After id_projet="null"]</p>';
+    foreach($classe->project as $cl)
+        echo ' @ '.$cl->id_projet.'<br>';
+    echo "valeur de projet : <br>";
+    var_dump($classe->projet->id_projet);
+    $classe->filter('[project.id_projet="null"]');
     foreach($classe as $cl)
-        echo ' - '.$cl->nom.'<br>';
+        echo ' @ '.$cl->id_contrat.'<br>';
     echo '<h2> COUNT : '.count($classe).'</h2>';
+    
     echo '<p>-------------------------------------<p>';
-    echo '<p>After [nom!="Moon"]</p>';
-    $classe->filter('[nom!="Moon"]');
+    echo '<p>After [projet.nom!="Moon"]</p>';
+    $classe->filter('[projet.nom!="Moon"]');
     foreach($classe as $cl)
-        echo ' @ '.$cl->nom.'<br>';
+        echo ' @ '.$cl->id_contrat.'<br>';
     echo '<h2> COUNT : '.count($classe).'</h2>';
 
     echo '<p>-------------------------------------<p>';
-    echo '<p>After [id_projet>="2"]</p>';
-    $classe->filter('[id_projet>="2"][id_projet!=10]');
+    echo '<p>After [projet.id_projet>="2"]</p>';
+    $classe->filter('[projet.id_projet>="2"][projet.id_projet!=10]');
     foreach($classe as $cl)
-        echo ' @ '.$cl->nom.'<br>';
+        echo ' @ '.$cl->id_contrat.'<br>';
     echo '<h2> COUNT : '.count($classe).'</h2>';
- /*
+     /*
     echo '<p>-------------------------------------<p>';
     echo '<p>After [id_projet<"10"]</p>';
     $classe->filter('[id_projet<"20"]');

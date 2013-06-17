@@ -127,7 +127,7 @@ abstract class Entity implements JsonSerializable {
             }
         }
 
-        return false;
+        return null;
 
     }
 
@@ -172,7 +172,7 @@ abstract class Entity implements JsonSerializable {
         if (Core::getInstance()->debug()) {
             throw new AlertException("The attribute $name doesn't exists.",1);
         }
-        return false;
+        return null;
     }
 
     /**
@@ -207,7 +207,7 @@ abstract class Entity implements JsonSerializable {
                     return $this->linkedClasses[$property];
                 }
                 else {
-                    return false;
+                    return null;
                 }
             }
         }
