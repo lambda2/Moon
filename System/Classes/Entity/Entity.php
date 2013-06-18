@@ -94,6 +94,14 @@ abstract class Entity implements JsonSerializable {
         }
     }
 
+    /**
+     * Return the table with the given name.
+     * Use this method when there is a ambiguity between
+     * a table name and an attribute (same name) to explicitely
+     * ask for the table object, so the linked Entities.
+     * @param String $name the name of the table to return.
+     * @return Entities the corresponding entities.
+     */
     public function table($name)
     {
         $iTable = $this->getExternalTables($name,$this);
@@ -104,17 +112,14 @@ abstract class Entity implements JsonSerializable {
         else // Sinon on regarde si c'est un attribut de la classe
         {
             // Et enfin, on regarde si quelque chose référence cet attribut
-            
             $externals = Core::getBdd()->getMoonLinksFrom($this->table,true,true);
             $t = array();
             if(!isNull($externals)){
                 foreach ($externals as $moonLinkKey => $moonLinkValue)
                 {
-                    //echo 'searching for '.$name.' into '.$moonLinkValue.'<br>';
                     if($moonLinkValue->table == $name)
                     {
                         $res = EntityLoader::getClass($moonLinkValue->table);
-                        //echo 'class born : '.$res.'<br>';
                         if($res != null) {
                             $t = Entity::loadAllEntitiesBy(
                                 $moonLinkValue->table,
@@ -126,9 +131,7 @@ abstract class Entity implements JsonSerializable {
                 }
             }
         }
-
         return null;
-
     }
 
     /**

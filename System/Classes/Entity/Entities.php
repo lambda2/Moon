@@ -113,34 +113,16 @@ class Entities implements Iterator, Countable, JsonSerializable {
         return $ret;
     }
 
-
     /**
-     * Surcharge de la méthode magique __get().
-     * On va d'abord regarder si l'attribut demandé est une classe liée.
-     * On délegue ensuite a la méthode __call()
+     * Return the table with the given name.
+     * Use this method when there is a ambiguity between 
+     * a table name and an attribute (same name) to explicitely
+     * ask for the table object, so the linked Entities.
+     * @param String $name the name of the table to return.
+     * @return Entities the corresponding entities.
      */
-    public function __get($name) {
-        
-        if(count($this->entities) == 0)
-            return false;
-        
-        /**
-         * On regarde si c'est pas un attribut et non une table,
-         * et si c'est le cas, on renvoie un tableau contenant la
-         * valeur de cet attribut pour chaque élément.
-         */
-        $efields = $this->entities[0]->getFields();
-        if(array_key_exists($name,$efields))
-        {
-            $return = array();
-            foreach($this->entities as $entity)
-            {
-                if($entity->getFields()[$name] != null)
-                    $return[] = $entity->getFields()[$name]->getValue();
-            }
-            return $return;
-        }
-
+    public function table($name)
+    {
         $nextEntities = array();
         $direct = False;
 
@@ -210,6 +192,37 @@ class Entities implements Iterator, Countable, JsonSerializable {
         // Si on ne référence pas la table demandée, et qu'aucune table ne nous référence
         // On renvoie faux.
         return null;
+    }
+
+    /**
+     * Surcharge de la méthode magique __get().
+     * On va d'abord regarder si l'attribut demandé est une classe liée.
+     * On délegue ensuite a la méthode __call()
+     */
+    public function __get($name) {
+
+        if(count($this->entities) == 0)
+            return false;
+        /**
+         * On regarde si c'est pas un attribut et non une table,
+         * et si c'est le cas, on renvoie un tableau contenant la
+         * valeur de cet attribut pour chaque élément.
+         */
+        $efields = $this->entities[0]->getFields();
+        if(array_key_exists($name,$efields))
+        {
+            $return = array();
+            foreach($this->entities as $entity)
+            {
+                if($entity->getFields()[$name] != null)
+                    $return[] = $entity->getFields()[$name]->getValue();
+            }
+            return $return;
+        }
+        else
+        {
+            return $this->table($name);
+        }
     }
 
 
