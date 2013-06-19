@@ -146,8 +146,41 @@ class EntityLoader {
     public static function loadAllEntities($classe) {
         $c = EntityLoader::getClass($classe);
         $request = "SELECT * FROM {$c->getTable()}";
-        return EntityLoader::loadEntitiesFromRequest($request,$c->getTable()); 
+        return EntityLoader::loadEntitiesFromRequest($request,$c->getTable());
     }
+
+    /**
+     * Charge tous les objets en fonction d'un ou plusieurs parametres
+     * et renvoie l'ensemble sous forme d'un groupe d'entitées.
+     * @return Entities le groupe d'entitées.
+     */
+    public static function loadAllEntitiesBy($classe,$field, $value) {
+        $c = self::getClass($classe);
+        $request = "";
+
+        /**
+         * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
+         * par exemple...) on ajoute les contraintes dans la requete.
+         */
+        if(is_array($field)
+            and is_array($value)
+            and count($field) == count($value))
+        {
+            $request = "SELECT * FROM {$c->getTable()} WHERE ";
+            $args = array();
+            foreach ($field as $key=>$cle)
+            {
+                $args[] = $cle." = ".$value[$key];
+            }
+            $request .= implode(' AND ', $args);
+        }
+        else
+        {
+            $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
+        }
+        return self::loadEntitiesFromRequest($request,$c->getTable()); 
+    }
+
 
 
 }

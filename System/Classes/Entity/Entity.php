@@ -121,7 +121,7 @@ abstract class Entity implements JsonSerializable {
                     {
                         $res = EntityLoader::getClass($moonLinkValue->table);
                         if($res != null) {
-                            $t = Entity::loadAllEntitiesBy(
+                            $t = EntityLoader::loadAllEntitiesBy(
                                 $moonLinkValue->table,
                                 $moonLinkValue->attribute,
                                 $this->fields[$moonLinkValue->destinationColumn]->getValue());
@@ -395,96 +395,7 @@ abstract class Entity implements JsonSerializable {
         }
     }
 
-     /**
-     * Charge tous les objets en fonction d'un ou plusieurs parametres
-     * et renvoie l'ensemble sous forme d'un groupe d'entitées.
-     * @return Entities le groupe d'entitées.
-     */
-    public static function loadAllEntitiesBy($classe,$field, $value) {
-        $c = EntityLoader::getClass($classe);
-        $request = "";
-
-        /**
-         * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
-         * par exemple...) on ajoute les contraintes dans la requete.
-         */
-        if(is_array($field)
-            and is_array($value)
-            and count($field) == count($value))
-        {
-            $request = "SELECT * FROM {$c->getTable()} WHERE ";
-            $args = array();
-            foreach ($field as $key=>$cle)
-            {
-                $args[] = $cle." = ".$value[$key];
-            }
-            $request .= implode(' AND ', $args);
-        }
-        else
-        {
-            $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
-        }
-        return EntityLoader::loadEntitiesFromRequest($request,$c->getTable()); 
-    }
-
-    /**
-     * Charge tous les objets en fonction d'un ou plusieurs parametres
-     * et renvoie l'ensemble sous forme de tableau.
-     */
-    public static function loadAllBy($classe,$field, $value) {
-        $c = EntityLoader::getClass($classe);
-        $request = "";
-
-        /**
-         * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
-         * par exemple...) on ajoute les contraintes dans la requete.
-         */
-        if(is_array($field)
-            and is_array($value)
-            and count($field) == count($value))
-        {
-            $request = "SELECT * FROM {$c->getTable()} WHERE ";
-            $args = array();
-            foreach ($field as $key=>$cle)
-            {
-                $args[] = $cle." = ".$value[$key];
-            }
-            $request .= implode(' AND ', $args);
-        }
-        else
-        {
-            $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
-        }
-
-        try
-        {
-            $Req = Core::getBdd()->getDb()->prepare($request);
-            $Req->execute(array());
-        }
-        catch (Exception $e) //interception de l'erreur
-        {
-            throw new OrmException("Error Processing Request");
-        }
-        $t = array();
-        // Si on récupère quelque chose :
-        if ($Req->rowCount() != 0)
-        {
-            while ($res = $Req->fetch(PDO::FETCH_OBJ))
-            {
-                $f          = EntityLoader::getClass($classe);
-                $pri        = $f->getValuedPrimaryFields($res);
-                if (!isNull($pri))
-                {
-                    $f->loadByArray($pri);
-                    $f->autoLoadLinkedClasses();
-                    $t[] = $f;
-                }
-
-            }
-        }
-        return $t;
-    }
-
+ 
     /**
      * @return True if the instance exists
      */

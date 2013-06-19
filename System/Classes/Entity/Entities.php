@@ -8,33 +8,21 @@ class Entities implements Iterator, Countable, JsonSerializable {
     protected $table;
     protected $bdd;
 
-    /* --- Iterator attributes --- */
+    /* -- Iterator attributes - */
     protected $position = 0;
     protected $entities = array();
 
+    /* ------- Filters -------- */
+    protected $filter = null;
+
+    /* ------------------------ */
 
     public function __construct($table) {
         $this->table = $table;
         // echo 'entity created ! (table = '.$table.')<br>';
         $this->bdd = Core::getBdd()->getDb();
+        $this->filter = new QueryFilter();
     }
-
-    /**
-     * @deprecated
-     */
-   /* public function getValuesList($columnName){
-        $list = array();
-        try {
-            $Req = $this->bdd->prepare("SELECT {$columnName} FROM {$this->table}");
-            $Req->execute(array());
-        } catch (Exception $e) { //interception de l'erreur
-            MoonChecker::showHtmlReport($e);
-        }
-        while ($res = $Req->fetch(PDO::FETCH_NUM)) {
-            $list[] = $res[0];
-        }
-        return $list;
-    } */
 
     public function __toString()
     {
@@ -113,6 +101,11 @@ class Entities implements Iterator, Countable, JsonSerializable {
         return $ret;
     }
 
+    protected function applyFilters()
+    {
+        
+    }
+
     /**
      * Return the table with the given name.
      * Use this method when there is a ambiguity between 
@@ -175,10 +168,11 @@ class Entities implements Iterator, Countable, JsonSerializable {
                         foreach ($this->entities as $entity)
                         {
                             // Et on ajoute a ce paquet chaque entitée qu'on arrive a créer.
+                            /* @TODO : Ci dessous, une aberration. Refactoring necessaire. */
                             $res = EntityLoader::getClass($moonLinkValue->table);
                             if($res != null)
                             {
-                                $nextEntities->addEntitiesObject(Entity::loadAllEntitiesBy(
+                                $nextEntities->addEntitiesObject(EntityLoader::loadAllEntitiesBy(
                                         $moonLinkValue->table,
                                         $moonLinkValue->attribute,
                                         $entity->getFields()[$moonLinkValue->destinationColumn]->getValue()));
@@ -190,9 +184,68 @@ class Entities implements Iterator, Countable, JsonSerializable {
             }
         }
         // Si on ne référence pas la table demandée, et qu'aucune table ne nous référence
-        // On renvoie faux.
+        // On renvoie null.
         return null;
     }
+
+    /**
+     * Charge tous les objets en fonction d'un ou plusieurs parametres
+     * et renvoie l'ensemble sous forme de tableau.
+     */
+    public static function loadAllBy($classe,$field, $value) {
+        $c = self::getClass($classe);
+        $request = "";
+
+        /**
+         * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
+         * par exemple...) on ajoute les contraintes dans la requete.
+         */
+        if(is_array($field)
+            and is_array($value)
+            and count($field) == count($value))
+        {
+            $request = "SELECT * FROM {$c->getTable()} WHERE ";
+            $args = array();
+            foreach ($field as $key=>$cle)
+            {
+                $args[] = $cle." = ".$value[$key];
+            }
+            $request .= implode(' AND ', $args);
+        }
+        else
+        {
+            $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
+        }
+
+        try
+        {
+            $Req = Core::getBdd()->getDb()->prepare($request);
+            $Req->execute(array());
+        }
+        catch (Exception $e) //interception de l'erreur
+        {
+            throw new OrmException("Error Processing Request");
+        }
+        $t = array();
+        // Si on récupère quelque chose :
+        if ($Req->rowCount() != 0)
+        {
+            while ($res = $Req->fetch(PDO::FETCH_OBJ))
+            {
+                $f          = self::getClass($classe);
+                $pri        = $f->getValuedPrimaryFields($res);
+                if (!isNull($pri))
+                {
+                    $f->loadByArray($pri);
+                    $f->autoLoadLinkedClasses();
+                    $t[] = $f;
+                }
+
+            }
+        }
+        return $t;
+    }
+
 
     /**
      * Surcharge de la méthode magique __get().
@@ -239,6 +292,70 @@ class Entities implements Iterator, Countable, JsonSerializable {
             return false;
         }
         return true;
+    }
+
+    /* 
+     *  ------------------------------------------------
+     *  |   Real database query filtering methods      |
+     *  ------------------------------------------------ 
+     */
+
+    /**
+     * Defines a limit of items for the result set.
+     * @param $limit integer the limit to set
+     * @return $this Entities self
+     */
+    public function setLimit($limit)
+    {
+        $this->filter->setLimit($limit);
+        return $this;
+    }
+
+    /**
+     * Defines an offset to begin for the result set.
+     * @param $offset integer the offset to set
+     * @return $this Entities self
+     */
+    public function setOffset($offset)
+    {
+        $this->filter->setOffset($offset);
+        return $this;
+    }
+
+    /**
+     * Defines an order to sort the result set.
+     * @param $columns String the column(s) to sort by
+     * @param $sort String the direction of sort (ASC or DESC)
+     * @return $this Entities self
+     * @see Entitites#setOrderSort
+     */
+    public function setOrder($columns,$sort=null)
+    {
+        $this->filter->setOrder($columns,$sort);
+        return $this;
+    }
+
+    /**
+     * Defines a direction to sort the result set.
+     * @param $sort String the direction of sort (ASC or DESC)
+     * @return $this Entities self
+     * @see Entitites#setOrder
+     */
+    public function setOrderSort($sort)
+    {
+        $this->filter->setOrderSort($sort);
+        return $this;
+    }
+
+    /**
+     * All the results will be distinct on the given column name.
+     * @param $column String the columns who have to be distinct.
+     * @return $this Entities self
+     */
+    public function distinct($column=null)
+    {
+        $this->filter->distinct($column);
+        return $this;
     }
 
     /* -------- Database query filtering methods -------*/

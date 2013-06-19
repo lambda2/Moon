@@ -132,14 +132,14 @@ class OrmMysql extends Orm {
      * @throws OrmException si une erreur survient
      */
     public function getMoonLinksFrom($tableName, $external=false,$d=False) {
-        $relations = $this->getAllRelationsFrom($tableName);
         if($external)
         {
             $relations = $this->getAllRelationsWith($tableName);
         }
+        else
+            $relations = $this->getAllRelationsFrom($tableName);
+
         $links     = array();
-
-
 
         foreach ($relations as $relation) {
             $urls        = explode('@', $relation);

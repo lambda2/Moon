@@ -43,3 +43,14 @@ executables/*
 System/Configuration/configuration.yml
 System/one
 Templates/lambdaweb-template/three
+webgrind/
+webgrind/config.php
+webgrind/img
+webgrind/index.php
+webgrind/js
+webgrind/library
+webgrind/license.txt
+webgrind/package.sh
+webgrind/README.md
+webgrind/styles
+webgrind/templates

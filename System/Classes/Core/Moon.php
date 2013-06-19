@@ -52,7 +52,7 @@ class Moon {
      * @return Array un tableau d'instances de la classe correspondant aux champs.
      */
     public static function getAllWhere($class, $field, $value){
-        $cl = Entity::loadAllBy($class,$field,$value);
+        $cl = EntityLoader::loadAllBy($class,$field,$value);
         return $cl;
     }
     
