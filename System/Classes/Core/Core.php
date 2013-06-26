@@ -107,7 +107,6 @@ class Core {
 
         try {
 
-            Profiler::startTimer();
 
             //MoonChecker::runTests();
             self::loadOptions();

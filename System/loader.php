@@ -11,7 +11,8 @@ $rpath = __DIR__.'/../';
  * La configuration (c'est à dire les logins de la base de données, un éventuel
  * préfixe de table et les modes de développement).
  */
-
+include_once(__DIR__.'/../'.'System/Classes/Profiler/Profiler.php');
+Profiler::startTimer();
 /**
  * Le pathFinder, qui va nous permettre d'avoir un autoloader intelligent.
  */

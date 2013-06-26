@@ -5,26 +5,54 @@ class PathFinder {
     private static $res = array();
 
     public static function getClasses($dir) {
+
+        if(apc_exists('get_classes_'.$dir))
+        {
+            return apc_fetch('get_classes_'.$dir);
+        }
+
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Classes');
+        apc_store('get_classes_'.$dir,self::$res);
         return self::$res;
     }
 
     public static function getHelpers($dir) {
+
+        if(apc_exists('get_helpers_'.$dir))
+        {
+            return apc_fetch('get_helpers_'.$dir);
+        }
+
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Helpers');
+        apc_store('get_helpers_'.$dir,self::$res);
         return self::$res;
     }
 
     public static function getControllers($dir) {
+
+        if(apc_exists('get_controllers_'.$dir))
+        {
+            return apc_fetch('get_controllers_'.$dir);
+        }
+
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Controllers');
+        apc_store('get_controllers_'.$dir,self::$res);
         return self::$res;
     }
 
     public static function getModeles($dir) {
+
+        if(apc_exists('get_models_'.$dir))
+        {
+            return apc_fetch('get_models_'.$dir);
+        }
+
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Modeles');
+        apc_store('get_models_'.$dir,self::$res);
         return self::$res;
     }
 
