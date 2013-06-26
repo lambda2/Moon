@@ -32,6 +32,37 @@ class OrmMysql extends Orm {
         return $t;
     }
 
+    public function getAllRelationsBetween($origin,$destination)
+    {
+        $dbname = Core::opts()->database->dbname;
+        $t      = array();
+        try {
+            $Req = self::$db->prepare("
+                SELECT CONCAT( table_name, '.',
+                column_name, '@',
+                referenced_table_name, '.',
+                referenced_column_name ) AS f_keys
+                FROM information_schema.KEY_COLUMN_USAGE
+                WHERE REFERENCED_TABLE_SCHEMA = '{$dbname}'
+                AND 
+                (REFERENCED_TABLE_NAME = '{$origin}'
+                 AND TABLE_NAME = '{$destination}')
+                OR
+                (REFERENCED_TABLE_NAME = '{$destination}'
+                 AND TABLE_NAME = '{$origin}')
+                ORDER BY TABLE_NAME, COLUMN_NAME;");
+            $Req->execute(array());
+        } catch (Exception $e) { //interception de l'erreur
+            throw new OrmException(
+            "Unable to get external relations referencing table '{$tableName}': ["
+            . $e->getMessage() . ']');
+        }
+        while ($res = $Req->fetch(PDO::FETCH_COLUMN)) {
+            $t[] = $res;
+        }
+        return $t;
+    }
+
     public function getAllRelationsWith($tableName) {
         $dbname = Core::opts()->database->dbname;
         $t      = array();

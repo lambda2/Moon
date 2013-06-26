@@ -14,11 +14,13 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     /* ------- Filters -------- */
     protected $filter = null;
+    protected $history = null;
 
     /* ------------------------ */
 
     public function __construct($table) {
         $this->table = $table;
+        $this->history = $table;
         // echo 'entity created ! (table = '.$table.')<br>';
         $this->bdd = Core::getBdd()->getDb();
         $this->filter = new QueryFilter();
@@ -88,6 +90,11 @@ class Entities implements Iterator, Countable, JsonSerializable {
         }
     }
 
+    public function addToHistory($hist)
+    {
+        $this->history = $hist.'.'.$this->table;
+    }
+
     /**
      * Explain how the php engine have to serialize an
      * Entities object to json.
@@ -107,6 +114,119 @@ class Entities implements Iterator, Countable, JsonSerializable {
     }
 
     /**
+     * Va rechercher les relation directes ou indirectes entre les deux tables
+     * fournies en parametre, et retourner la relation la plus pertinente.
+     */
+    protected function getGoodRelationBetweenTables($origin, $destination)
+    {
+        $relation = Core::getBdd()->getAllRelationsBetween($origin,$destination);
+        if(count($relation) == 1)
+        {
+           return $relation[0];
+        }
+        else
+            return null;
+    }
+
+    public function loadFromDatabase()
+    {
+        // On récupère toutes les tables demandées
+        $tables = $this->getTablesFromHistory();
+
+        // On récupère leur nombre pour la boucle
+        $len = count($tables);
+
+        // On met le flag a true, ce qui signifie que on est sur la table courante
+        $firstTable = false;
+        $lastTable = true;
+
+        // On récupère l'instance de l'ORM
+        $orm = Core::getBdd();
+
+        $baseQuery = new Query();
+        $nextTable = null;
+        $previousTable = null;
+        $relation = null;
+
+        // Et on parcours les tables dans le sens inverse
+        for($i=0; $i<$len; $i++)
+        {
+            $q = new Query();
+            $originTable = $tables[$i];
+            
+            if($i > 0)
+            {
+                $previousTable = $tables[$i-1];
+                $lastTable = false;
+            }
+            if($i < $len-1)
+            {
+                $nextTable = $tables[$i+1];
+            }
+
+            if($i == $len-1)
+                $firstTable = true;
+            
+            // Si on n'est pas sur la derniere table, on suggère qu'il y a 
+            // une relation explicite définie entre les deux tables demandées.
+
+            $relation = $this->getGoodRelationBetweenTables($originTable,$previousTable);
+            $nrelation = $this->getGoodRelationBetweenTables($originTable,$nextTable);
+
+            if($firstTable)
+            {
+                $q->select('*')
+                ->from($originTable);
+                if($len > 1)
+                {
+                    $linker = $this->getGoodFieldFromTableName($relation, $originTable);
+                    $q->in($linker,$baseQuery);
+                }
+                $baseQuery = $q;
+            }
+            else
+            {
+                if(!$lastTable)
+                {
+                    $linker = $this->getGoodFieldFromTableName($nrelation, $originTable);
+                    if($linker == '')
+                        $linker = $this->getGoodFieldFromTableName($nrelation, $originTable);
+                    $q->select($linker)->from($originTable);
+                    $linker_in = $this->getGoodFieldFromTableName($relation, $originTable);
+                    $q->in($linker_in,$baseQuery);
+                    $baseQuery = $q;
+                }
+                else
+                {
+                    $linker = $this->getGoodFieldFromTableName($relation, $originTable);
+                    if($linker == '')
+                        $linker = $this->getGoodFieldFromTableName($nrelation, $originTable);
+
+                    $baseQuery->select($linker)->from($originTable);
+                }
+            }
+            
+        }
+        return $baseQuery;
+    }
+
+    protected function getGoodFieldFromTableName($scheme,$tableName)
+    {
+        $expScheme = explode('@',$scheme);
+        if($tableName == explode('.',$expScheme[0])[0])
+        {
+            return $expScheme[0];
+        }
+        else
+            return $expScheme[1];
+    }
+
+    protected function getTablesFromHistory()
+    {
+        return explode('.',$this->history);
+    }
+
+    /**
      * Return the table with the given name.
      * Use this method when there is a ambiguity between 
      * a table name and an attribute (same name) to explicitely
@@ -116,6 +236,13 @@ class Entities implements Iterator, Countable, JsonSerializable {
      */
     public function table($name)
     {
+
+        $c = EntityLoader::getClass($name);
+        $next = new Entities($c->getTable());
+        $next->addToHistory($this->history);
+        return $next;
+
+        /* ### old code */
         $nextEntities = array();
         $direct = False;
 
@@ -255,14 +382,12 @@ class Entities implements Iterator, Countable, JsonSerializable {
      */
     public function __get($name) {
 
-        if(count($this->entities) == 0)
-            return false;
         /**
          * On regarde si c'est pas un attribut et non une table,
          * et si c'est le cas, on renvoie un tableau contenant la
          * valeur de cet attribut pour chaque élément.
          */
-        $efields = $this->entities[0]->getFields();
+        $efields = EntityLoader::getClass($this->table)->getFields();
         if(array_key_exists($name,$efields))
         {
             $return = array();

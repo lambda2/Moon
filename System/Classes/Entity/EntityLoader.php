@@ -145,9 +145,14 @@ class EntityLoader {
      * @return Entities le groupe d'entitées.
      */
     public static function loadAllEntities($classe) {
+
         $c = EntityLoader::getClass($classe);
+        return new Entities($c->getTable());
+
+        /* ### old code
         $request = "SELECT * FROM {$c->getTable()}";
         return EntityLoader::loadEntitiesFromRequest($request,$c->getTable());
+        */
     }
 
     /**

@@ -26,22 +26,14 @@ abstract class Orm {
     // Constraints
 
     /** @var $wcontraints contains all the [where] contraints */
-    protected $wconstraints = array();
-
-    /** @var $fcontraints contains all the [from] contraints */
-    protected $fconstraints = array();
-
-    /** @var $ficontraints contains all the [select] contraints */
-    protected $ficonstraints = array();
-
-    /** @var $endconstraints contains all the ending contraints like [LIMIT] */
-    protected $endconstraints = array();
+    protected $currentQuery = null;
 
     
     /* ----------------- Common methods ------------------- */
     
     public function __construct($driver) {
         $this->driver = $driver;
+        $this->currentQuery = new Query();
         /** @TODO : Peut etre peut on enlever la respondsabilitée de la base
          * de données a la classe Core, et faire en sorte que l'ORM gere seul 
          * la base de données...
@@ -73,10 +65,7 @@ abstract class Orm {
 
     public function clearQuery()
     {
-        $this->wconstraints = array();
-        $this->fconstraints = array();
-        $this->ficonstraints = array();
-        $this->endconstraints = array();
+        $this->currentQuery = new Query();
     }
 
     public static function checkConnexion($p) {
@@ -110,12 +99,6 @@ abstract class Orm {
     public function getDb() {
         return self::$db;
     }
-
-/*
-    public function setDb($db) {
-        self::$db = $db;
-        return $this;
-    }*/
 
     public function getDriver() {
         return $this->driver;
@@ -388,12 +371,7 @@ abstract class Orm {
      */
     public function select($fields)
     {
-        $fields = explode(',',$fields);
-        foreach ($fields as $f)
-        {
-            if(!in_array($f,$this->ficonstraints))
-                $this->ficonstraints[] = $f;
-        }
+        $this->currentQuery->select($fields);
         return $this;
     }
 
@@ -410,9 +388,7 @@ abstract class Orm {
      */
     public function where($field, $value, $arg='=', $assoc='AND')
     {
-        $elt = $field.' '.$arg.' '.$value.'::'.$assoc;
-            if(!in_array($elt,$this->wconstraints))
-        $this->wconstraints[] = $elt;
+        $this->currentQuery->where($field, $value, $arg, $assoc);
         return $this;
     }
 
@@ -424,8 +400,7 @@ abstract class Orm {
      */
     public function from($table)
     {
-        if(!in_array($table,$this->fconstraints))
-            $this->fconstraints[] = $table;
+        $this->currentQuery->from($table);
         return $this;
     }
 
@@ -437,7 +412,7 @@ abstract class Orm {
      */
     public function limit($limit)
     {
-        $this->endconstraints['limit'] = $limit;
+        $this->currentQuery->limit($limit);
         return $this;
     }
 
@@ -450,9 +425,7 @@ abstract class Orm {
      */
     public function orderBy($columns,$order = 'asc')
     {
-        $this->endconstraints['orderBy'] = array();
-        $this->endconstraints['orderBy']['columns'] = $columns;
-        $this->endconstraints['orderBy']['order'] = $order;
+        $this->currentQuery->orderBy($columns,$order);
         return $this;
     }
 
@@ -464,7 +437,7 @@ abstract class Orm {
      */
      public function fetchArray()
      {
-        $query = $this->getQuerySql();
+        $query = $this->currentQuery->getQuerySql();
         $this->clearQuery();
         Profiler::addRequest($query);
         return $this->arrayQuery($query);
@@ -478,111 +451,12 @@ abstract class Orm {
      */
      public function fetchEntities()
      {
-        $query = $this->getQuerySql();
+        $query = $this->currentQuery->getQuerySql();
         Profiler::addRequest($query);
-        $table = $this->fconstraints[count($this->fconstraints)-1];
+        $table = $this->currentQuery->getLastTable();
         $this->clearQuery();
         return EntityLoader::loadEntitiesFromRequest($query, $table);
      }
-
-
-     /* -------------- protected methods for query selectors ---------------- */
-
-     protected function getQuerySql()
-     {
-        if(!$this->checkContraintsForQuery())
-            return false;
-
-        $sql = $this->getSelectSql();
-        $sql .= $this->getFromSql();
-        $sql .= $this->getWhereSql();
-        $sql .= $this->getEndingSql();
-        return $sql;
-     }
-
-    /**
-     * @return the [select] part of the defined sql request
-     */
-     protected function getSelectSql()
-     {
-        return ' SELECT '.implode(', ',$this->ficonstraints);
-     }
-    
-    /**
-     * @return the [from] part of the defined sql request
-     */
-     protected function getFromSql()
-     {
-        return ' FROM '.implode(', ',$this->fconstraints);
-     }
-
-    /**
-     * @return the [where] part of the defined sql request
-     */
-     protected function getWhereSql()
-     {
-        if(count($this->wconstraints) == 0)
-            return '';
-
-        $req = ' WHERE ';
-        $first = True;
-        foreach($this->wconstraints as $w)
-        {
-            $assoc = explode('::',$w);
-            if($first)
-            {
-                $req .= $assoc[0];
-                $first = false;
-            }
-            else
-            {
-                $req .= ' '.$assoc[1].' '.$assoc[0];
-            }
-        }
-        return $req;
-     }
-
-     protected function getEndingSql()
-     {
-        $rending = '';
-        if(array_key_exists('orderBy',$this->endconstraints))
-        {
-            $rending .= ' ORDER BY '.$this->endconstraints['orderBy']['columns'];
-            $rending .= ' '.$this->endconstraints['orderBy']['order'];
-        }
-
-        if(array_key_exists('limit',$this->endconstraints))
-        {
-            $rending .= ' LIMIT '.$this->endconstraints['limit'];
-        }
-        return $rending;
-     }
-
-    /**
-     * Will check if all the constraints are defined 
-     * in order to execute a query. For example, if
-     * no table has been defined with [from()] method,
-     * will return an horrible exception who will change
-     * the little world where you're living now.
-     * @return Boolean False if all constraints aren't set, true otherwise.
-     * @throw OrmException if all constraints aren't set.
-     */
-     protected function checkContraintsForQuery()
-     {
-        $valide = True;
-        if(count($this->ficonstraints) == 0)
-        {
-            $valide = False;
-            throw new OrmException("At least one field must be selected to perform the request");
-        }
-        else if(count($this->fconstraints) == 0)
-        {
-            $valide = False;
-            throw new OrmException("At least one table must be defined in order to execute the query");
-        }
-        return $valide;
-     }
-
 
     /* --------------- To be defined in lower classes ---------- */
 
@@ -595,6 +469,8 @@ abstract class Orm {
     public abstract function getAllRelationsFrom($tableName);
 
     public abstract function getAllRelationsWith($tableName);
+
+    public abstract function getAllRelationsBetween($origin,$destination);
     
     public abstract function getAllRelations();
 
