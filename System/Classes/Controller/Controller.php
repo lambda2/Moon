@@ -421,6 +421,7 @@ abstract class Controller {
         $this->webdata['post'] = $_POST;
         $this->webdata['session'] = $_SESSION;
         $this->webdata['logged'] = Core::getUser() != null;
+        $this->webdata['duration'] = Profiler::getElapsedTime();
     }
 
     /**
@@ -590,6 +591,7 @@ abstract class Controller {
         $this->addTemplateUserIncludes();
         $this->addDebugIncludes();
 
+        Profiler::endTimer();
         // And try to render
         $this->tryToRender();
     }

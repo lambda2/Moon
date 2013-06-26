@@ -118,6 +118,8 @@ class Debug {
 
         $report = $style.'log.l(\'%cMoon Framework\',head_style);';
         $report .= $style_sub.'log.l(\'%cDebug content for the current running application\',sub_style);';
+        $report .= $style_sub.'log.l(\'%cPerformed in '.(Profiler::getElapsedTime()*1000).'ms\',sub_style);';
+        $report .= $style_sub.'log.l(\'%cWith '.Profiler::getRequestCount().' request(s)\',sub_style);';
 
         if (count(self::$content) > 0) {
             foreach (self::$content as $erreur) {

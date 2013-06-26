@@ -110,6 +110,7 @@ class EntityLoader {
     {
         $t = array();
         try {
+            Profiler::addRequest($query);
             $Req = Core::getBdd()->getDb()->prepare($request);
             $Req->execute(array());
         } catch (Exception $e) {
@@ -154,31 +155,34 @@ class EntityLoader {
      * et renvoie l'ensemble sous forme d'un groupe d'entitées.
      * @return Entities le groupe d'entitées.
      */
-    public static function loadAllEntitiesBy($classe,$field, $value) {
+    public static function loadAllEntitiesBy($classe,$field, $value, $filter=null) {
         $c = self::getClass($classe);
+        $tab = $c->getTable();
         $request = "";
-
+        $orm = Core::getBdd();
+        $fi = array();
+        foreach(array_keys($c->getFields()) as $v) { $fi[] = $tab.'.'.$v; }
+        $selection = implode(',',$fi);
         /**
          * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
          * par exemple...) on ajoute les contraintes dans la requete.
          */
+
+        $orm->select($selection)->from($tab);
         if(is_array($field)
             and is_array($value)
             and count($field) == count($value))
         {
-            $request = "SELECT * FROM {$c->getTable()} WHERE ";
-            $args = array();
             foreach ($field as $key=>$cle)
             {
-                $args[] = $cle." = ".$value[$key];
+                $orm->where($tab.'.'.$cle,$value[$key]);
             }
-            $request .= implode(' AND ', $args);
         }
         else
         {
-            $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
+            $orm->where($tab.'.'.$field,$value);
         }
-        return self::loadEntitiesFromRequest($request,$c->getTable()); 
+        return $orm->fetchEntities();
     }
 
 

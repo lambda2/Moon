@@ -21,6 +21,8 @@ require_once(__DIR__.'/../'.'System' . sep . 'pathfinder.php');
  * L'autoloader, qui se sert du pathfinder
  */
 function __autoload($nomClasse) {
+    if(strlen($nomClasse) <= 1)
+        return false;
     
     /**
     * Le moteur de template
@@ -31,28 +33,37 @@ function __autoload($nomClasse) {
         require $file;
     }
 
-
     /**
      * Et on laisse la main à notre PathFinder
      */
     $foundClasses = PathFinder::getClasses(__DIR__.'/../'.'System');
-    $foundControllers = PathFinder::getControllers('.');
-    $foundModels = PathFinder::getModeles('.');
-    //var_dump($foundControllers);
     $pos          = strrpos($nomClasse, '\\');
     if ($pos > 0) {
         $nomClasse = substr($nomClasse, $pos + 1);
     }
-    if (array_key_exists($nomClasse, $foundClasses)) {
+
+    if (array_key_exists($nomClasse, $foundClasses)) 
+    {
         require_once($foundClasses[$nomClasse]);
     }
-    else if (array_key_exists($nomClasse, $foundControllers)) {
-        require_once($foundControllers[$nomClasse]);
-    }
-    else if (array_key_exists($nomClasse, $foundModels)) {
-        require_once($foundModels[$nomClasse]);
-    }
+    else 
+    {
+        $foundControllers = PathFinder::getControllers('.');
+        if (array_key_exists($nomClasse, $foundControllers)) 
+        {
+            require_once($foundControllers[$nomClasse]);
+        }
+        else 
+        {
+            $foundModels = PathFinder::getModeles('.');
+            if (array_key_exists($nomClasse, $foundModels)) 
+            {
+                require_once($foundModels[$nomClasse]);
+            }
 
+        }
+    }
+    
     if(!class_exists('Annotation_Target'))
     {
         require __DIR__.'/../'.'System/Addendum/annotations.php';
@@ -74,20 +85,4 @@ foreach ($helpers as $class => $url) {
 mb_internal_encoding("UTF-8");
 session_start();
 
-/**
- * Ci dessous, des aspects vus un peu trop tot. Le framework n'est pas
- * encore pret pour ça. Allons y doucement.
- */
-/*
-  // on charge le fichier de langue
-  require_once('Langs/' . chargerLangue());
-
-  require_once('System/pagination.php');
-
-  if (isset($_GET['p']) && Page::pageExiste(htmlentities($_GET['p']), $GLOBALS['bdd']))
-  $page = $_GET['p'];
-  $page = new Page(Page::getIdPage($page, $GLOBALS['bdd']),$GLOBALS['bdd']);
-
-  gererAcces($role, $page->getDroit());
- */
 ?>

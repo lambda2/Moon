@@ -71,6 +71,14 @@ abstract class Orm {
         }
     }
 
+    public function clearQuery()
+    {
+        $this->wconstraints = array();
+        $this->fconstraints = array();
+        $this->ficonstraints = array();
+        $this->endconstraints = array();
+    }
+
     public static function checkConnexion($p) {
 
         try {
@@ -457,6 +465,8 @@ abstract class Orm {
      public function fetchArray()
      {
         $query = $this->getQuerySql();
+        $this->clearQuery();
+        Profiler::addRequest($query);
         return $this->arrayQuery($query);
      }
 
@@ -469,7 +479,9 @@ abstract class Orm {
      public function fetchEntities()
      {
         $query = $this->getQuerySql();
+        Profiler::addRequest($query);
         $table = $this->fconstraints[count($this->fconstraints)-1];
+        $this->clearQuery();
         return EntityLoader::loadEntitiesFromRequest($query, $table);
      }
 

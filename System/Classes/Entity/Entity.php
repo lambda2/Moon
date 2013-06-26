@@ -302,6 +302,7 @@ abstract class Entity implements JsonSerializable {
         }
         try
         {
+            Profiler::addRequest($request);
             $Req = $this->bdd->prepare($request);
             $Req->execute(array());
         }
@@ -364,6 +365,7 @@ abstract class Entity implements JsonSerializable {
 
         try
         {
+            Profiler::addRequest($request);
             $Req = $this->bdd->prepare($request);
             $Req->execute(array());
         }
@@ -444,6 +446,7 @@ abstract class Entity implements JsonSerializable {
 
         try {
             $Req = Core::getBdd()->getDb()->prepare("SELECT * FROM {$c->getTable()}");
+            Profiler::addRequest("SELECT * FROM {$c->getTable()}");
             $Req->execute(array());
         } catch (Exception $e) { //interception de l'erreur
             MoonChecker::showHtmlReport($e);
@@ -469,6 +472,7 @@ abstract class Entity implements JsonSerializable {
         $t = array();
         try {
             $Req = $this->bdd->prepare("SELECT * FROM {$this->table}");
+            Profiler::addRequest("SELECT * FROM {$this->getTable()}");
             $Req->execute(array());
             } catch (Exception $e) { //interception de l'erreur
                 MoonChecker::showHtmlReport($e);

@@ -175,7 +175,8 @@ class Entities implements Iterator, Countable, JsonSerializable {
                                 $nextEntities->addEntitiesObject(EntityLoader::loadAllEntitiesBy(
                                         $moonLinkValue->table,
                                         $moonLinkValue->attribute,
-                                        $entity->getFields()[$moonLinkValue->destinationColumn]->getValue()));
+                                        $entity->getFields()[$moonLinkValue->destinationColumn]->getValue(),
+                                        $this->filter));
                             }
                         }
                         return $nextEntities; // On le renvoie !

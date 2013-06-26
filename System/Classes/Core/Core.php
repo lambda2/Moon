@@ -107,6 +107,8 @@ class Core {
 
         try {
 
+            Profiler::startTimer();
+
             //MoonChecker::runTests();
             self::loadOptions();
             self::loadRoutes();
@@ -151,7 +153,7 @@ class Core {
         $this->context = '';
         $this->db_prefix = $dbPrefix;
         if($dev_mode == 'DEBUG')
-            $this->debug = Debug::getInstance($this);
+            $this->debug = Debug::getInstance();
         else
             $this->debug = null;
 
@@ -240,7 +242,6 @@ class Core {
     public static function route(){
         try {
             $tpl = self::$router->route();
-
         } catch (Exception $exc) {
             MoonChecker::showHtmlReport($exc);
         }
