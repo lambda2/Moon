@@ -78,8 +78,12 @@ class Entities implements Iterator, Countable, JsonSerializable {
         return false;
     }
 
-    public function getEntities():w
-
+    /**
+     * Return the entity objects contained in
+     * the current object.
+     * @return array an array of the entities in the object.
+     */
+    public function getEntities()
     {
         return $this->entities;
     }
@@ -99,6 +103,14 @@ class Entities implements Iterator, Countable, JsonSerializable {
     public function addToHistory($hist)
     {
         $this->history = $hist.'.'.$this->table;
+    }
+
+    /**
+     * @return String the current object history
+     */
+    public function getHistory()
+    {
+        return $this->history;
     }
 
     /**
@@ -156,14 +168,12 @@ class Entities implements Iterator, Countable, JsonSerializable {
     public function loadFromDatabase()
     {
         $query = $this->generateQueryFromHistory();
-        var_dump($this->history);
-        var_dump($query->getQuerySql());
 
         // On récupère l'instance de l'ORM
+        $this->loaded = true;
         $orm = Core::getBdd();
         $orm->setQuery($query);
         $this->addEntitiesObject($orm->fetchEntities());
-        $this->loaded = true;
         return true;
     }
 
@@ -182,7 +192,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
      * @return Query the query object corresponding to the generated request.
      * @since v0.5
      */
-    protected function generateQueryFromHistory()
+    public function generateQueryFromHistory()
     {
         // On récupère toutes les tables demandées
         $tables = $this->getTablesFromHistory();
@@ -203,16 +213,19 @@ class Entities implements Iterator, Countable, JsonSerializable {
         for($i=0; $i<$len; $i++)
         {
             $q = new Query();
-            $originTable = $tables[$i];
+            $originTable = $tables[$i]['table'];
+            $originConstraints = $tables[$i]['constraints'];
+
+            $q->convertConstraint($originConstraints);
 
             if($i > 0)
             {
-                $previousTable = $tables[$i-1];
+                $previousTable = $tables[$i-1]['table'];
                 $lastTable = false;
             }
             if($i < $len-1)
             {
-                $nextTable = $tables[$i+1];
+                $nextTable = $tables[$i+1]['table'];
             }
 
             if($i == $len-1)
@@ -275,13 +288,18 @@ class Entities implements Iterator, Countable, JsonSerializable {
      */
     protected function getGoodFieldFromTableName($scheme,$tableName)
     {
+        if(isNull($scheme))
+            return null;
+
         $expScheme = explode('@',$scheme);
         if($tableName == explode('.',$expScheme[0])[0])
         {
             return $expScheme[0];
         }
         else
+        {
             return $expScheme[1];
+        }
     }
 
     /**
@@ -290,7 +308,16 @@ class Entities implements Iterator, Countable, JsonSerializable {
      */
     protected function getTablesFromHistory()
     {
-        return explode('.',$this->history);
+        $tbls = explode('.',$this->history);
+        $res = array();
+        foreach($tbls as $tb)
+        {
+            $res[] = array(
+                'table' => $this->clearAttributesFromHistory($tb),
+                'constraints' => $tb
+            );
+        }
+        return $res;
     }
 
     /**
@@ -303,144 +330,11 @@ class Entities implements Iterator, Countable, JsonSerializable {
      */
     public function table($name)
     {
-
         $c = EntityLoader::getClass($name);
         $next = new Entities($c->getTable());
         $next->addToHistory($this->history);
         return $next;
-
-        /* ### old code */
-        $nextEntities = array();
-        $direct = False;
-
-        /*
-         * On regarde si on demande une instance liée directement.
-         * On va donc voir quelles tables la notre référence et chercher
-         * une correspondance avec la table demandée.
-         */
-        foreach($this->entities as $entity)
-        {
-            if($entity->isLinkedClassesLoaded() == false)
-            {
-                $entity->autoLoadLinkedClasses();
-            }
-
-            $i = $this->getExternalTables($name,$entity);
-            if ($i != false)
-            {
-                $nextEntities[] = $i;
-                $direct = True;
-            }
-        }
-        if($direct) // Si on a trouvé une correspondance
-        {
-            // On crée un nouveau lot d'entitées et on le retourne.
-            $entities = new Entities($name);
-            $entities->addEntityFromArray($nextEntities);
-            return $entities;
-        }
-        else
-        {
-            /*
-             * Sinon, c'est qu'on demande une classe liée indirectement.
-             * On va donc récuperer la table qui référence la notre par une clé étrangère.
-             */
-
-            // On récupère toute les tables qui nous référencent
-            $externals = Core::getBdd()->getMoonLinksFrom($this->table,true,true);
-
-            // Et si on a des résultats
-            if(!isNull($externals))
-            {
-                foreach ($externals as $moonLinkKey => $moonLinkValue)
-                {
-                    // Et qu'un des résultats est la table que nous voulons
-                    if($moonLinkValue->table == $name)
-                    {
-                        // On crée un paquet d'entitiées vides
-                        $nextEntities = new Entities($moonLinkValue->table);
-                        foreach ($this->entities as $entity)
-                        {
-                            // Et on ajoute a ce paquet chaque entitée qu'on arrive a créer.
-                            /* @TODO : Ci dessous, une aberration. Refactoring necessaire. */
-                            $res = EntityLoader::getClass($moonLinkValue->table);
-                            if($res != null)
-                            {
-                                $nextEntities->addEntitiesObject(EntityLoader::loadAllEntitiesBy(
-                                        $moonLinkValue->table,
-                                        $moonLinkValue->attribute,
-                                        $entity->getFields()[$moonLinkValue->destinationColumn]->getValue(),
-                                        $this->filter));
-                            }
-                        }
-                        return $nextEntities; // On le renvoie !
-                    }
-                }
-            }
-        }
-        // Si on ne référence pas la table demandée, et qu'aucune table ne nous référence
-        // On renvoie null.
-        return null;
     }
-
-    /**
-     * Charge tous les objets en fonction d'un ou plusieurs parametres
-     * et renvoie l'ensemble sous forme de tableau.
-     */
-    public static function loadAllBy($classe,$field, $value) {
-        $c = self::getClass($classe);
-        $request = "";
-
-        /**
-         * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
-         * par exemple...) on ajoute les contraintes dans la requete.
-         */
-        if(is_array($field)
-            and is_array($value)
-            and count($field) == count($value))
-        {
-            $request = "SELECT * FROM {$c->getTable()} WHERE ";
-            $args = array();
-            foreach ($field as $key=>$cle)
-            {
-                $args[] = $cle." = ".$value[$key];
-            }
-            $request .= implode(' AND ', $args);
-        }
-        else
-        {
-            $request = "SELECT * FROM {$c->getTable()} WHERE {$field} = '{$value}'";
-        }
-
-        try
-        {
-            $Req = Core::getBdd()->getDb()->prepare($request);
-            $Req->execute(array());
-        }
-        catch (Exception $e) //interception de l'erreur
-        {
-            throw new OrmException("Error Processing Request");
-        }
-        $t = array();
-        // Si on récupère quelque chose :
-        if ($Req->rowCount() != 0)
-        {
-            while ($res = $Req->fetch(PDO::FETCH_OBJ))
-            {
-                $f          = self::getClass($classe);
-                $pri        = $f->getValuedPrimaryFields($res);
-                if (!isNull($pri))
-                {
-                    $f->loadByArray($pri);
-                    $f->autoLoadLinkedClasses();
-                    $t[] = $f;
-                }
-
-            }
-        }
-        return $t;
-    }
-
 
     /**
      * Surcharge de la méthode magique __get().
@@ -551,14 +445,35 @@ class Entities implements Iterator, Countable, JsonSerializable {
         return $this;
     }
 
+    public function where($field,$value,$operator='=')
+    {
+        $this->history .= '['.$field.$operator.$value.']';
+        return $this;
+    }
+
     /* -------- Database query filtering methods -------*/
+
+    public static function getFilter()
+    {
+        return "/\[(?P<attribute>([A-Za-z_]*))(?P<operator>\=|!\=|<|>|<\=|>\=)(?P<value>([\d]*)|(\"[\w\.]*\"))\]/";
+    }
+
+    public function clearAttributesFromHistory($str)
+    {
+        return preg_replace($this->getFilter(),'',$str);
+    }
+
+    public function getAttributesFromString($str)
+    {
+        $res = array();
+        $result = preg_match_all($this->getFilter(),$str,$res);
+        return $res;
+    }
 
     public function filter($filter)
     {
-        $res = array();
-        $regex = "/\[([\w\.]*)+(\=|!\=|<|>|<\=|>\=)?(([\d]*)|(\"[\w\.]*\"))\]/";
-        $result = preg_match_all($regex,$filter,$res);
-        if($result > 0 and isset($res[0]))
+        $res = $this->getAttributesFromString($filter);
+        if(isset($res[0]))
         {
             foreach($res[0] as $match)
             {

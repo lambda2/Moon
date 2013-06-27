@@ -34,9 +34,9 @@ class Query {
     /** @var $subQueries contain subqueries to be executed */
     protected $subQueries = array();
 
-    
+
     /* ----------------- Common methods ------------------- */
-    
+
     public function __construct() {
 
     }
@@ -92,9 +92,11 @@ class Query {
      */
     public function where($field, $value, $arg='=', $assoc='AND')
     {
+        $filed = explode('.',$field);
+        $field = '`'.implode('`.`',$filed).'`';
         $elt = $field.' '.$arg.' '.$value.'::'.$assoc;
-            if(!in_array($elt,$this->wconstraints))
-        $this->wconstraints[] = $elt;
+        if(!in_array($elt,$this->wconstraints))
+            $this->wconstraints[] = $elt;
         return $this;
     }
 
@@ -113,11 +115,11 @@ class Query {
 
     public function in($field,$query, $clause = 'IN')
     {
-       $this->inconstraints[] = array(
-        'field' => $field,
-        'query' => $query,
-        'clause' => $clause
-        );
+        $this->inconstraints[] = array(
+                'field' => $field,
+                'query' => $query,
+                'clause' => $clause
+                );
     }
 
     /**
@@ -148,10 +150,10 @@ class Query {
     }
 
 
-     /* -------------- protected methods for query selectors ---------------- */
+    /* -------------- protected methods for query selectors ---------------- */
 
-     public function getQuerySql()
-     {
+    public function getQuerySql()
+    {
         if(!$this->checkContraintsForQuery())
             return false;
 
@@ -160,29 +162,29 @@ class Query {
         $sql .= $this->getWhereSql();
         $sql .= $this->getEndingSql();
         return $sql;
-     }
+    }
 
     /**
      * @return the [select] part of the defined sql request
      */
-     protected function getSelectSql()
-     {
+    protected function getSelectSql()
+    {
         return ' SELECT '.implode(', ',$this->ficonstraints);
-     }
-    
+    }
+
     /**
      * @return the [from] part of the defined sql request
      */
-     protected function getFromSql()
-     {
+    protected function getFromSql()
+    {
         return ' FROM '.implode(', ',$this->fconstraints);
-     }
+    }
 
     /**
      * @return the [where] part of the defined sql request
      */
-     protected function getWhereSql()
-     {
+    protected function getWhereSql()
+    {
         if(count($this->wconstraints) == 0 and count($this->inconstraints) == 0)
             return '';
 
@@ -212,10 +214,10 @@ class Query {
             $req .= $inConst['field'].' '.$inConst['clause'].' ('.$inConst['query']->getQuerySql().' )';
         }
         return $req;
-     }
+    }
 
-     protected function getEndingSql()
-     {
+    protected function getEndingSql()
+    {
         $rending = '';
         if(array_key_exists('orderBy',$this->endconstraints))
         {
@@ -228,7 +230,23 @@ class Query {
             $rending .= ' LIMIT '.$this->endconstraints['limit'];
         }
         return $rending;
-     }
+    }
+
+    public function convertConstraint($constraint)
+    {
+        var_dump($constraint);
+        $table = preg_replace(Entities::getFilter(),'',$constraint);
+        $res = array();
+        $isConstr = preg_match_all(Entities::getFilter(),$constraint,$res,PREG_SET_ORDER);
+        if($isConstr > 0)
+        {
+            foreach($res as $aConstraint)
+            {
+                $this->where($table.'.'.$aConstraint['attribute'],$aConstraint['value'],$aConstraint['operator']);
+            }
+        }
+        return $this;
+    }
 
     /**
      * Will check if all the constraints are defined 
@@ -239,8 +257,8 @@ class Query {
      * @return Boolean False if all constraints aren't set, true otherwise.
      * @throw OrmException if all constraints aren't set.
      */
-     protected function checkContraintsForQuery()
-     {
+    protected function checkContraintsForQuery()
+    {
         return true;
         $valide = True;
         if(count($this->ficonstraints) == 0)
@@ -254,7 +272,7 @@ class Query {
             throw new OrmException("At least one table must be defined in order to execute the query");
         }
         return $valide;
-     }
+    }
 }
 
 ?>
