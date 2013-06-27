@@ -40,6 +40,12 @@ abstract class Orm {
          */
     }
 
+    public function setQuery($query)
+    {
+        $this->currentQuery = $query;
+        return $this;
+    }
+
     /**
      * Méthode necessaire pour démarrer le moteur.
      * Elle ne doit (normalement) etre exécutée qu'une seule fois à 

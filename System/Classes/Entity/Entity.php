@@ -546,13 +546,13 @@ abstract class Entity implements JsonSerializable {
             }
             $r .= '</ul>';
         }
-        return $r;
+        return $r.'<br>';
     }
 
     public function isLinkedClassesLoaded() { return $this->linkedClassesLoaded; }
 
     public function __toString() {
-        return $this->toShortString();
+        return $this->toShortString(false);
     }
 
     protected function checkArguments(array $args, $min, $max, $methodName) {

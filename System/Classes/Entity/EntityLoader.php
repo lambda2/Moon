@@ -110,7 +110,7 @@ class EntityLoader {
     {
         $t = array();
         try {
-            Profiler::addRequest($query);
+            Profiler::addRequest($request);
             $Req = Core::getBdd()->getDb()->prepare($request);
             $Req->execute(array());
         } catch (Exception $e) {

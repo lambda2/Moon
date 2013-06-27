@@ -11,7 +11,7 @@
 
 /**
  * Le glu entre nos classes.
- * Cette classe va permettre de définir les liaisons entre les attributs des 
+ * Cette classe va permettre de définir les liaisons entre les attributs des
  * classes
  * @author lambda2
  */
@@ -21,7 +21,7 @@ class MoonLink {
     public $destinationTable;
     public $destinationColumn;
     public $instance = null;
-    
+
     public function __construct($source, $destination, $instance = null){
 
 
@@ -34,7 +34,7 @@ class MoonLink {
             $this->attribute = $source;
             $this->table = null;
         }
-        else 
+        else
         {
             $this->table = $org[0];
             $this->attribute = $org[1];
@@ -44,30 +44,30 @@ class MoonLink {
         $this->destinationColumn = $s[1];
         $this->instance = $instance;
     }
-    
+
     public function getLinkedInstance($value){
         return EntityLoader::loadInstance(
                 $this->destinationTable.'.'.$this->destinationColumn, $value);
     }
-    
+
     public function loadLinkedInstance($value){
         $this->instance = $this->getLinkedInstance($value);
     }
-    
+
     public function getTargetAdress(){
         return $this->destinationTable.'.'.$this->destinationColumn;
     }
-    
+
     public function get(){
         return $this->instance;
     }
-    
+
     public function __toString(){
         return 'le champ '.$this->attribute
                 .' reference le champ '.$this->destinationColumn
                 .' de la table '.$this->destinationTable;
     }
-    
+
 }
 
 ?>

@@ -7,6 +7,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     protected $table;
     protected $bdd;
+    protected $loaded = false;
 
     /* -- Iterator attributes - */
     protected $position = 0;
@@ -77,7 +78,8 @@ class Entities implements Iterator, Countable, JsonSerializable {
         return false;
     }
 
-    public function getEntities()
+    public function getEntities():w
+
     {
         return $this->entities;
     }
@@ -90,6 +92,10 @@ class Entities implements Iterator, Countable, JsonSerializable {
         }
     }
 
+    /**
+     * Add the given string to the history.
+     * @param string $hist the history to add.
+     */
     public function addToHistory($hist)
     {
         $this->history = $hist.'.'.$this->table;
@@ -108,11 +114,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
         return $ret;
     }
 
-    protected function applyFilters()
-    {
-        
-    }
-
     /**
      * Va rechercher les relation directes ou indirectes entre les deux tables
      * fournies en parametre, et retourner la relation la plus pertinente.
@@ -128,7 +129,60 @@ class Entities implements Iterator, Countable, JsonSerializable {
             return null;
     }
 
+    /**
+     * Will load all the entitiy object corresponding to the history query
+     * from the database only if they are not already loaded.
+     *
+     * @see Entities#loadFromDatabase
+     */
+    public function loadIfNotLoadedFromDatabase()
+    {
+        if(!$this->loaded)
+        {
+            $this->loadFromDatabase();
+        }
+    }
+
+    /**
+     * Will load all the entitiy object corresponding to the history query
+     * from the database, even if they are already loaded.
+     * Use with caution, because consumes a lot of ressources.
+     * The [loadIfNotLoadedFromDatabase] method can load the entities
+     * from the dtabase only if they are not loaded.
+     *
+     * @return true if all's right.
+     * @see Entities#loadIfNotLoadedFromDatabase
+     */
     public function loadFromDatabase()
+    {
+        $query = $this->generateQueryFromHistory();
+        var_dump($this->history);
+        var_dump($query->getQuerySql());
+
+        // On récupère l'instance de l'ORM
+        $orm = Core::getBdd();
+        $orm->setQuery($query);
+        $this->addEntitiesObject($orm->fetchEntities());
+        $this->loaded = true;
+        return true;
+    }
+
+    /**
+     * Will transform the history to a single SQL query.
+     * For example, the history 'team_member.team.project' will be
+     * converted to :
+     * -------------------------------------------------------------------
+     * | SELECT * FROM project WHERE project.id_team IN (
+     * |  SELECT team.id_team FROM team WHERE team.id_team IN (
+     * |   SELECT team_member.id_team FROM team_member
+     * |  )
+     * | )
+     * ------------------------------------------------------------------
+     *
+     * @return Query the query object corresponding to the generated request.
+     * @since v0.5
+     */
+    protected function generateQueryFromHistory()
     {
         // On récupère toutes les tables demandées
         $tables = $this->getTablesFromHistory();
@@ -140,9 +194,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
         $firstTable = false;
         $lastTable = true;
 
-        // On récupère l'instance de l'ORM
-        $orm = Core::getBdd();
-
         $baseQuery = new Query();
         $nextTable = null;
         $previousTable = null;
@@ -153,7 +204,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
         {
             $q = new Query();
             $originTable = $tables[$i];
-            
+
             if($i > 0)
             {
                 $previousTable = $tables[$i-1];
@@ -166,19 +217,22 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
             if($i == $len-1)
                 $firstTable = true;
-            
-            // Si on n'est pas sur la derniere table, on suggère qu'il y a 
+
+            // Si on n'est pas sur la derniere table, on suggère qu'il y a
             // une relation explicite définie entre les deux tables demandées.
 
             $relation = $this->getGoodRelationBetweenTables($originTable,$previousTable);
             $nrelation = $this->getGoodRelationBetweenTables($originTable,$nextTable);
 
+            // If we are on the first table (the asked table)
             if($firstTable)
             {
+                // We select all the fields
                 $q->select('*')
                 ->from($originTable);
                 if($len > 1)
                 {
+                    // An we link ourself to the other queries
                     $linker = $this->getGoodFieldFromTableName($relation, $originTable);
                     $q->in($linker,$baseQuery);
                 }
@@ -198,6 +252,8 @@ class Entities implements Iterator, Countable, JsonSerializable {
                 }
                 else
                 {
+                    // If we are on the last table, we juste have to select the next
+                    // query field, without any linked query.
                     $linker = $this->getGoodFieldFromTableName($relation, $originTable);
                     if($linker == '')
                         $linker = $this->getGoodFieldFromTableName($nrelation, $originTable);
@@ -205,11 +261,18 @@ class Entities implements Iterator, Countable, JsonSerializable {
                     $baseQuery->select($linker)->from($originTable);
                 }
             }
-            
+
         }
         return $baseQuery;
     }
 
+    /**
+     * Will return the good relation field for the given tablename
+     * and scheme.
+     * @param $scheme String the scheme to read, like 'user.id_role@role.id_role'
+     * @param $tableName String the name of the table to search, like 'user'
+     * @return String the good relation, like 'role.id_role'
+     */
     protected function getGoodFieldFromTableName($scheme,$tableName)
     {
         $expScheme = explode('@',$scheme);
@@ -221,6 +284,10 @@ class Entities implements Iterator, Countable, JsonSerializable {
             return $expScheme[1];
     }
 
+    /**
+     * Will return the good table names from the history string
+     * @return Array an array containing the table names.
+     */
     protected function getTablesFromHistory()
     {
         return explode('.',$this->history);
@@ -228,7 +295,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     /**
      * Return the table with the given name.
-     * Use this method when there is a ambiguity between 
+     * Use this method when there is a ambiguity between
      * a table name and an attribute (same name) to explicitely
      * ask for the table object, so the linked Entities.
      * @param String $name the name of the table to return.
@@ -420,10 +487,10 @@ class Entities implements Iterator, Countable, JsonSerializable {
         return true;
     }
 
-    /* 
+    /*
      *  ------------------------------------------------
      *  |   Real database query filtering methods      |
-     *  ------------------------------------------------ 
+     *  ------------------------------------------------
      */
 
     /**
@@ -634,6 +701,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
     /* -------------- Iterator methods ---------------- */
 
     public function rewind() {
+        $this->loadIfNotLoadedFromDatabase();
         $this->position = 0;
     }
 
@@ -655,6 +723,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     public function count()
     {
+        $this->loadIfNotLoadedFromDatabase();
         return count($this->entities);
     }
 
