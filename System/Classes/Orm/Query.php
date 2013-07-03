@@ -255,7 +255,7 @@ class Query {
     {
         $escapes = array('.','[',']');
         $repl = array('#dot#','#obra#','#ebra');
-            $string = str_replace($repl,$escapes,$string);
+        $string = str_replace($repl,$escapes,$str);
         return $string;
     }
 

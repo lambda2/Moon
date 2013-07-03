@@ -321,7 +321,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
                 'constraints' => $tb
             );
         }
-        var_dump($res);
         return $res;
     }
 
@@ -356,6 +355,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
         $efields = EntityLoader::getClass($this->table)->getFields();
         if(array_key_exists($name,$efields))
         {
+            $this->loadIfNotLoadedFromDatabase();
             $return = array();
             foreach($this->entities as $entity)
             {
@@ -467,7 +467,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     public static function getFilter()
     {
-        return "/\[(?P<attribute>([A-Za-z_]*))(?P<operator>\=|!\=|<|>|<\=|>\=)(?P<value>([\d]*)|(\"[éèà\w\s:,@\#-]*\"))\]/";
+        return "/\[(?P<attribute>([A-Za-z_]*))(?P<operator>\=|!\=|<|>|<\=|>\=)(?P<value>([\d]*)|(\"[^\.\]\[]*\"))\]/";
     }
 
     public function clearAttributesFromHistory($str)
@@ -577,8 +577,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     protected function removeFromArrayWhere($element,$value,$predicate)
     {
-        var_dump($element);
-        var_dump($value);
         $locationMarker = 0;
         if($value == "null")
             $value = null;

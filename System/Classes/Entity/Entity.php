@@ -104,20 +104,20 @@ abstract class Entity implements JsonSerializable {
      */
     public function table($name)
     {
+        /*
         $a = $this->constraintEntities(new Entities($this->table));
         $a = $a->table($name);
         return $a;
+        */
         $iTable = $this->getExternalTables($name,$this);
-        if (false)//$iTable != false)
+        if ($iTable != false)
         {
-            echo 'ext table ! ';
-            var_dump($iTable);
             return $iTable;
         }
         else // Sinon on regarde si c'est un attribut de la classe
         {
             // Et enfin, on regarde si quelque chose référence cet attribut
-            $externals = Core::getBdd()->getMoonLinksFrom($this->table,true,true);
+            $externals = Core::getBdd()->getMoonLinksFrom($this->table,true);
             $t = array();
             if(!isNull($externals)){
                 foreach ($externals as $moonLinkKey => $moonLinkValue)
@@ -126,10 +126,10 @@ abstract class Entity implements JsonSerializable {
                     {
                         $res = EntityLoader::getClass($moonLinkValue->table);
                         if($res != null) {
-                            $t = new Entities($moonLinkValue->table);
+                            $t = new Entities($this->table);
                             $t = $this->constraintEntities($t);
                         }
-                        return $t;
+                        return $t->table($name);
                     }
                 }
             }
