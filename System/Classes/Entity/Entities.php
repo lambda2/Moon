@@ -257,9 +257,11 @@ class Entities implements Iterator, Countable, JsonSerializable {
                 {
                     $linker = $this->getGoodFieldFromTableName($nrelation, $originTable);
                     if($linker == '')
-                        $linker = $this->getGoodFieldFromTableName($nrelation, $originTable);
+                        $linker = $this->getGoodFieldFromTableName($relation, $originTable);
                     $q->select($linker)->from($originTable);
                     $linker_in = $this->getGoodFieldFromTableName($relation, $originTable);
+                    if($linker_in == '')
+                        $linker_in = $this->getGoodFieldFromTableName($nrelation, $originTable);
                     $q->in($linker_in,$baseQuery);
                     $baseQuery = $q;
                 }
@@ -271,7 +273,8 @@ class Entities implements Iterator, Countable, JsonSerializable {
                     if($linker == '')
                         $linker = $this->getGoodFieldFromTableName($nrelation, $originTable);
 
-                    $baseQuery->select($linker)->from($originTable);
+                    $q->select($linker)->from($originTable);
+                    $baseQuery = $q;
                 }
             }
 
@@ -308,6 +311,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
      */
     protected function getTablesFromHistory()
     {
+
         $tbls = explode('.',$this->history);
         $res = array();
         foreach($tbls as $tb)
@@ -317,6 +321,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
                 'constraints' => $tb
             );
         }
+        var_dump($res);
         return $res;
     }
 
@@ -364,7 +369,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
             return $this->table($name);
         }
     }
-
 
     /**
      * Implémentation nécessaire pour que twig accepte d'apeller __get()
@@ -445,9 +449,17 @@ class Entities implements Iterator, Countable, JsonSerializable {
         return $this;
     }
 
+    public function escapeString($string)
+    {
+        $escapes = array('.','[',']');
+        $repl = array('#dot#','#obra#','#ebra');
+            $string = str_replace($escapes,$repl,$string);
+        return $string;
+    }
+
     public function where($field,$value,$operator='=')
     {
-        $this->history .= '['.$field.$operator.$value.']';
+        $this->history .= '['.$field.$operator.'"'.$this->escapeString($value).'"]';
         return $this;
     }
 
@@ -455,7 +467,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     public static function getFilter()
     {
-        return "/\[(?P<attribute>([A-Za-z_]*))(?P<operator>\=|!\=|<|>|<\=|>\=)(?P<value>([\d]*)|(\"[\w\.]*\"))\]/";
+        return "/\[(?P<attribute>([A-Za-z_]*))(?P<operator>\=|!\=|<|>|<\=|>\=)(?P<value>([\d]*)|(\"[éèà\w\s:,@\#-]*\"))\]/";
     }
 
     public function clearAttributesFromHistory($str)
@@ -641,8 +653,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
         $this->loadIfNotLoadedFromDatabase();
         return count($this->entities);
     }
-
-
 }
 
 ?>

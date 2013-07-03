@@ -59,6 +59,24 @@ class Query {
         $this->subQueries = array();
     }
 
+    public function cleanQ($field)
+    {
+        return $field;
+        $pdo = Core::getBdd()->getDb();
+        if(is_array($field))
+        {
+            $newArr = array();
+            foreach($field as $k => $f)
+            {
+                $newArr[$k] = $pdo->quote($f);
+            }
+            return $newArr;
+        }
+        else {
+            return $pdo->quote($field);
+        }
+    }
+
     /* ---------------- Query selectors ------------------ */
 
 
@@ -70,7 +88,7 @@ class Query {
      */
     public function select($fields)
     {
-        $fields = explode(',',$fields);
+        $fields = explode(',',$this->cleanQ($fields));
         foreach ($fields as $f)
         {
             if(!in_array($f,$this->ficonstraints))
@@ -92,7 +110,7 @@ class Query {
      */
     public function where($field, $value, $arg='=', $assoc='AND')
     {
-        $filed = explode('.',$field);
+        $filed = explode('.',$this->cleanQ($field));
         $field = '`'.implode('`.`',$filed).'`';
         $elt = $field.' '.$arg.' '.$value.'::'.$assoc;
         if(!in_array($elt,$this->wconstraints))
@@ -108,6 +126,7 @@ class Query {
      */
     public function from($table)
     {
+        $table = $this->cleanQ($table);
         if(!in_array($table,$this->fconstraints))
             $this->fconstraints[] = $table;
         return $this;
@@ -116,7 +135,7 @@ class Query {
     public function in($field,$query, $clause = 'IN')
     {
         $this->inconstraints[] = array(
-                'field' => $field,
+                'field' => $this->cleanQ($field),
                 'query' => $query,
                 'clause' => $clause
                 );
@@ -232,9 +251,16 @@ class Query {
         return $rending;
     }
 
+    protected function decodeString($str)
+    {
+        $escapes = array('.','[',']');
+        $repl = array('#dot#','#obra#','#ebra');
+            $string = str_replace($repl,$escapes,$string);
+        return $string;
+    }
+
     public function convertConstraint($constraint)
     {
-        var_dump($constraint);
         $table = preg_replace(Entities::getFilter(),'',$constraint);
         $res = array();
         $isConstr = preg_match_all(Entities::getFilter(),$constraint,$res,PREG_SET_ORDER);
@@ -242,7 +268,7 @@ class Query {
         {
             foreach($res as $aConstraint)
             {
-                $this->where($table.'.'.$aConstraint['attribute'],$aConstraint['value'],$aConstraint['operator']);
+                $this->where($table.'.'.$aConstraint['attribute'],$this->decodeString($aConstraint['value']),$aConstraint['operator']);
             }
         }
         return $this;
