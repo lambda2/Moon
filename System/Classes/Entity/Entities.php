@@ -467,7 +467,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     public static function getFilter()
     {
-        return "/\[(?P<attribute>([A-Za-z_]*))(?P<operator>\=|!\=|<|>|<\=|>\=)(?P<value>([\d]*)|(\"[^\.\]\[]*\"))\]/";
+        return "/\[(?P<attribute>([A-Za-z_]*))(\s)?(?P<operator>\=|!\=|is|<|>|<\=|>\=)(\s)?(?P<value>(?P<num>[\d]*)|(?P<expr>[\w]*(\([^\.\]\[]*\))?)|\"(?P<text>[^\.\]\[]*)\")\]/";
     }
 
     public function clearAttributesFromHistory($str)
@@ -484,6 +484,8 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     public function filter($filter)
     {
+        $this->history .= $filter;
+        /*
         $res = $this->getAttributesFromString($filter);
         if(isset($res[0]))
         {
@@ -492,6 +494,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
                 $this->digestConstraint($match);
             }
         }
+        */
     }
 
     /**
@@ -631,18 +634,22 @@ class Entities implements Iterator, Countable, JsonSerializable {
     }
 
     public function current() {
+        $this->loadIfNotLoadedFromDatabase();
         return $this->entities[$this->position];
     }
 
     public function key() {
+        $this->loadIfNotLoadedFromDatabase();
         return $this->position;
     }
 
     public function next() {
+        $this->loadIfNotLoadedFromDatabase();
         ++$this->position;
     }
 
     public function valid() {
+        $this->loadIfNotLoadedFromDatabase();
         return isset($this->entities[$this->position]);
     }
 

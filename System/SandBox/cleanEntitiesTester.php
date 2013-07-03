@@ -14,7 +14,7 @@ try
     $filter = "/\[(?P<attribute>([A-Za-z_]*))(?P<operator>\=|!\=|<|>|<\=|>\=)(?P<value>([\d]*)|(\"[\w\.]*\"))\]/";
     $filter = Entities::getFilter();
     echo $filter;
-    $a = 'membre[id_membre=2][id_groupe="lol"][texte="Bonjour ! Je suis un papa ? Papa Noeeeel ! /lol "hello!" #kikooo"]';
+    $a = 'membre[id_membre=2][id_groupe="lol"][texte="Bonjour ! Je suis un papa ? Papa Noeeeel ! /lol "hello!" #kikooo"][date_fin>now()][id_projet is null]';
     preg_match_all($filter,$a,$matches,PREG_SET_ORDER);
     var_dump($matches);
     echo "<h3>Step One : Création d'un nouveau lot d'entitiées (contrat)</h3>";
@@ -24,7 +24,7 @@ try
     echo '<p>-------------------------------------<p>';
 
     echo "<h3>Prenons les projets associés a ces contrats</h3>";
-    $projets = $classe->membre_equipe->equipe->project;
+    $projets = $classe->membre_equipe->equipe->project->contrat;
     echo '<p>-------------------------------------<p>';
     
     echo "<h3>Prenons les equipes associées a ces projets</h3>";
@@ -36,7 +36,8 @@ try
     }
 
     echo "<h3>Prenons les membre_equipes associées a ces equipes</h3>";
-    var_dump($projets->generateQueryFromHistory()->getQuerySql());
+    $projets->filter('[date_fin>now()]');
+    echo '<pre>'.$projets->generateQueryFromHistory()->getQuerySql().'</pre>';
     var_dump($projets->generateQueryFromHistory());
     var_dump($projets);
     foreach($projets as $elt)

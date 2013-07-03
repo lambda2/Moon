@@ -61,7 +61,6 @@ class Query {
 
     public function cleanQ($field)
     {
-        return $field;
         $pdo = Core::getBdd()->getDb();
         if(is_array($field))
         {
@@ -88,9 +87,10 @@ class Query {
      */
     public function select($fields)
     {
-        $fields = explode(',',$this->cleanQ($fields));
+        $fields = explode(',',$fields);
         foreach ($fields as $f)
         {
+
             if(!in_array($f,$this->ficonstraints))
                 $this->ficonstraints[] = $f;
         }
@@ -108,14 +108,19 @@ class Query {
      * @TODO set a betted system to manipulate logical operands.
      * Currently, we can't.
      */
-    public function where($field, $value, $arg='=', $assoc='AND')
+    public function where($field, $value, $arg='=', $assoc='AND',$escape=true)
     {
-        $filed = explode('.',$this->cleanQ($field));
-        $field = '`'.implode('`.`',$filed).'`';
-        $elt = $field.' '.$arg.' '.$value.'::'.$assoc;
+        if($escape)
+            $value = $this->cleanQ($value);
+        $elt = $this->tableQuote($field).' '.$arg.' '.$value.'::'.$assoc;
         if(!in_array($elt,$this->wconstraints))
             $this->wconstraints[] = $elt;
         return $this;
+    }
+
+    protected function tableQuote($field)
+    {
+        return '`'.implode('`.`',explode('.',$field)).'`';
     }
 
     /**
@@ -126,7 +131,6 @@ class Query {
      */
     public function from($table)
     {
-        $table = $this->cleanQ($table);
         if(!in_array($table,$this->fconstraints))
             $this->fconstraints[] = $table;
         return $this;
@@ -135,7 +139,7 @@ class Query {
     public function in($field,$query, $clause = 'IN')
     {
         $this->inconstraints[] = array(
-                'field' => $this->cleanQ($field),
+                'field' => $field,
                 'query' => $query,
                 'clause' => $clause
                 );
@@ -206,7 +210,6 @@ class Query {
     {
         if(count($this->wconstraints) == 0 and count($this->inconstraints) == 0)
             return '';
-
         $req = ' WHERE ';
         $first = True;
         foreach($this->wconstraints as $w)
@@ -268,7 +271,24 @@ class Query {
         {
             foreach($res as $aConstraint)
             {
-                $this->where($table.'.'.$aConstraint['attribute'],$this->decodeString($aConstraint['value']),$aConstraint['operator']);
+                if($this->decodeString($aConstraint['expr']) != '')
+                {
+                    $this->where(
+                        $table.'.'.$aConstraint['attribute'],
+                        $this->decodeString($aConstraint['expr']),
+                        $aConstraint['operator'],
+                        'AND',
+                        false);
+                }
+                else
+                {
+                    $txt = $this->decodeString($aConstraint['num']);
+                    if($txt == '')
+                    {
+                        $txt = $this->decodeString($aConstraint['text']); 
+                    }
+                    $this->where($table.'.'.$aConstraint['attribute'],$txt,$aConstraint['operator']);
+                }
             }
         }
         return $this;
