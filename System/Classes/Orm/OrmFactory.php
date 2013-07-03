@@ -20,18 +20,19 @@ abstract class OrmFactory {
     /**
      * Retourne l'ORM adapté au driver spécifié dans la configuration.
      */
-    public static function getOrm(){
+    public static function getOrm()
+    {
         $driver = Core::opts()->database->driver;
         $instance = null;
         
-        switch ($driver) {
+        switch ($driver)
+        {
             case 'mysql':
                 $instance = new OrmMysql('mysql');
                 break;
 
             default:
                 throw new OrmException("Unable to recognize your sql driver");
-                
                 break;
         }
         
