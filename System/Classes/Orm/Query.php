@@ -271,7 +271,7 @@ class Query {
         {
             foreach($res as $aConstraint)
             {
-                if($this->decodeString($aConstraint['expr']) != '')
+                if(array_key_exists('expr',$aConstraint) and $this->decodeString($aConstraint['expr']) != '')
                 {
                     $this->where(
                         $table.'.'.$aConstraint['attribute'],

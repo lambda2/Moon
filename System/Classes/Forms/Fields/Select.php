@@ -128,6 +128,25 @@ class Select extends Field {
     }
 
     /**
+     * Will select the option which have 
+     * the given value
+     * @param string $option the value of the option
+     * to select
+     * @return Select $this
+     */
+    public function selectOption($option)
+    {
+        foreach($this->options as $opt)
+        {
+            if($opt->getValue() == $option)
+            { 
+                $opt->setSelected(true);
+            }
+        }
+        return $this;
+    }
+
+    /**
      * Va retourner le code Html du bouton
      */
     public function getHtml() {

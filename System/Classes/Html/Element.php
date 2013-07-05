@@ -90,12 +90,25 @@ abstract class Element {
         return $this;
     }
 
+    public function isHidden() {
+        return $this->hidden;
+    }
+
+    public function setHidden($hidden) {
+        $this->hidden = $hidden;
+        return $this;
+    }
+
+    public function hide(){return $this->setHidden(true);}
+    public function show(){return $this->setHidden(false);}
+
     public function getId() {
         return $this->id;
     }
 
     public function setId($id) {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -103,6 +116,7 @@ abstract class Element {
      */
     public function clearClasses() {
         $this->classes = array();
+        return $this;
     }
 
     /**
@@ -235,6 +249,8 @@ abstract class Element {
             if (!isNull($this->classes))
                 $s .= 'class=' . dbQuote($this->classes) . ' ';
             
+            if ($this->hidden)
+                $s .= 'style=display:none;';
         }
         else if(Core::getInstance()->getDevMode() == 'DEBUG'){
             $s .= '<!--- Element de formulaire masqué : '.$this->name.' ('.$this->type.') -->';

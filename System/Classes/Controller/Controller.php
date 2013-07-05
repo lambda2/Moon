@@ -16,6 +16,7 @@ abstract class Controller {
 
     protected $loader;
     protected $twig;
+    protected $ajax = false;
 
     /**
      * @var string template la template qui va etre affichée. 
@@ -68,6 +69,25 @@ abstract class Controller {
                 $this->addData($key,$value);
             }
         }
+    }
+
+    /**
+     * set the view to be displayed as an ajax page.
+     * @param boolean $ajax true or false
+     * @return $this
+     */
+    public function setAjax($ajax=true)
+    {
+        $this->ajax = $ajax;
+        return $this;
+    }
+
+    /**
+     * @return true if the current controller is for ajax request, false otherwise
+     */
+    public function isAjax()
+    {
+        return $this->ajax;
     }
 
 
@@ -186,7 +206,10 @@ abstract class Controller {
 
 
         $this->template = strtolower(get_class($this)) . '.twig';
-
+        if(isset($_GET['ajax']))
+        {
+            $this->ajax=true;
+        }
 
         $this->getMainTwigEngine();
 
@@ -422,6 +445,7 @@ abstract class Controller {
         $this->webdata['session'] = $_SESSION;
         $this->webdata['logged'] = Core::getUser() != null;
         $this->webdata['duration'] = Profiler::getElapsedTime();
+        $this->webdata['ajax'] = $this->ajax;
     }
 
     /**
