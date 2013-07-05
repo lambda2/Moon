@@ -38,6 +38,20 @@ class Input extends Field
     }
 
     /**
+     * Will set the type of the input element.
+     * @param string $type the type of the input field.
+     * @return Input $this
+     */
+    public function setType($type)
+    {
+        if(!in_array($type, $this->allowed_types)){
+            throw new AlertException("Le type $type ne semble pas etre un type de champ valide...");
+        }
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
      * will enable or disable the autocompletion of 
      * the current input.
      * @return Input self

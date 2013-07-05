@@ -35,6 +35,7 @@ class MoonTwig extends Twig_Extension
             new Twig_SimpleFunction('truncate','MoonTwig::truncate'),
             new Twig_SimpleFunction('gravatar','MoonTwig::getGravatar'),
             new Twig_SimpleFunction('plu','MoonTwig::plural'),
+            new Twig_SimpleFunction('fetch','MoonTwig::fetch'),
             new Twig_SimpleFunction('len','MoonTwig::getCount')
             );
     }
@@ -198,6 +199,15 @@ class MoonTwig extends Twig_Extension
     {
         $entity = self::convertStringToEntity($entity);
         return $entity->generateFormFor($action)->getFormFieldList();
+    }
+
+    /**
+     * Will fetch entities for the given query
+     */
+    public static function fetch($query)
+    {
+        $entities = new Entities($query);
+        return $entities;
     }
 
     protected static function convertStringToEntity($str)

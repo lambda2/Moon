@@ -20,9 +20,8 @@ class Entities implements Iterator, Countable, JsonSerializable {
     /* ------------------------ */
 
     public function __construct($table) {
-        $this->table = $table;
+        $this->table = preg_replace(Entities::getFilter(),'',$table);
         $this->history = $table;
-        // echo 'entity created ! (table = '.$table.')<br>';
         $this->bdd = Core::getBdd()->getDb();
         $this->filter = new QueryFilter();
     }

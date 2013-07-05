@@ -244,6 +244,8 @@ class Router {
                     if(is_a($c,'Controller'))
                     {
                         $annotParams = $this->parseUrlParams($c,$method,$options);
+                        if($this->isAjax($classe,$method))
+                            $c->setAjax();
                         $c->setUrlParams($annotParams);
                     }
                     $c->$method();
@@ -254,20 +256,6 @@ class Router {
                 }
             }
             else if (isset($params['sandbox'])) {
-                if (Core::opts()->system->mode == 'DEBUG' && 
-                        file_exists(
-                                '../System/SandBox/' . $params['sandbox'] . '.php'))
-                {
-                    include_once '../System/SandBox/' . $params['sandbox'] . '.php';
-                }
-                else {
-                    // Sinon, page introuvable
-                    echo '4o4 :S';
-                    include_once('WebRoot/404.php'); //TODO : faire une page 404 respectable
-                }
-            }
-            else if (isset($params['from-moon'])) {
-                // Et que cette page existe
                 if (Core::opts()->system->mode == 'DEBUG' && 
                         file_exists(
                                 '../System/SandBox/' . $params['sandbox'] . '.php'))
@@ -332,6 +320,15 @@ class Router {
             }
             return $return;
         }
+    }
+
+    protected function isAjax($className, $method)
+    {
+        $reflectedClass = new ReflectionAnnotatedMethod($className,$method);
+        if($reflectedClass->hasAnnotation('Ajax'))
+            return true;
+        else
+            return false;
     }
 
     protected function checkAccess($action, $target)
