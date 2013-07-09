@@ -56,6 +56,20 @@ class PathFinder {
         return self::$res;
     }
 
+    public static function getLibs($dir) {
+
+        if(apc_exists('get_libs_'.$dir))
+        {
+            return apc_fetch('get_libs_'.$dir);
+        }
+
+        self::$res = array();
+        self::listDir($dir. DIRECTORY_SEPARATOR .'Libs');
+        apc_store('get_libs_'.$dir,self::$res);
+        return self::$res;
+    }
+
+
     private static function removeExt($string, $ext = '.php') {
         return substr($string, 0, strpos($string, $ext));
     }

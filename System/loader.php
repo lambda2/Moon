@@ -61,6 +61,15 @@ function __autoload($nomClasse) {
             {
                 require_once($foundModels[$nomClasse]);
             }
+            else 
+            {
+                $foundLibs = PathFinder::getLibs('.');
+                if (array_key_exists($nomClasse, $foundLibs)) 
+                {
+                    require_once($foundLibs[$nomClasse]);
+                }
+
+            }
 
         }
     }
