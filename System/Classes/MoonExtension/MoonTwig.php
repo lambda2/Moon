@@ -36,6 +36,7 @@ class MoonTwig extends Twig_Extension
             new Twig_SimpleFunction('gravatar','MoonTwig::getGravatar'),
             new Twig_SimpleFunction('plu','MoonTwig::plural'),
             new Twig_SimpleFunction('fetch','MoonTwig::fetch'),
+            new Twig_SimpleFunction('sum','MoonTwig::sum'),
             new Twig_SimpleFunction('len','MoonTwig::getCount')
             );
     }
@@ -112,6 +113,14 @@ class MoonTwig extends Twig_Extension
 
         return $entity->generateInsertForm('',$label);
             
+    }
+
+    /**
+     * Retourne la somme des éléments du tableau
+     */
+    public static function sum($array)
+    {
+        return array_sum($array);            
     }
 
     public static function getGravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
