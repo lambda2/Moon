@@ -592,13 +592,29 @@ abstract class Controller {
         return $this->grantAccess();
     }
 
+    protected function getRenderedHtml()
+    {
+        // Check if the user have enought permissions
+    	if(!$this->grantAccess())
+            throw new MemberAccessException("Access Denied");
+	
+        $this->template .= '.twig';
+
+        // Add the includes
+        $this->addTemplateBaseIncludes();
+        $this->addTemplateUserIncludes();
+        $this->addDebugIncludes();
+
+        Profiler::endTimer();
+        // And return the rendered html
+        return $this->twig->render($this->template, $this->mergeData());
+    }
+
     final public function render() 
     {
     	// Check if the user have enought permissions
     	if(!$this->grantAccess())
             throw new MemberAccessException("Access Denied");
-        else
-            echo "<!-- access granted -->";
 	
         $this->template = $this->getTemplateFileName();
         
