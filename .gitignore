@@ -54,3 +54,8 @@ webgrind/package.sh
 webgrind/README.md
 webgrind/styles
 webgrind/templates
+*.heb
+world/Config/access.yml
+world/Config/configuration.yml
+world/Config/routes.yml
+world/Config/configuration.yml.heb

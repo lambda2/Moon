@@ -3,69 +3,85 @@
 class PathFinder {
 
     private static $res = array();
+    private static $cache = true;
+
+    public static function enableCache()
+    {
+        self::$cache = true;
+    }
+
+    public static function disableCache()
+    {
+        self::$cache = false;
+    }
+
+    public static function setCache($bool)
+    {
+        self::$cache = $bool;
+    }
 
     public static function getClasses($dir) {
 
-        if(apc_exists('get_classes_'.$dir))
+        if(self::$cache and apc_exists('get_classes_'.$dir))
         {
             return apc_fetch('get_classes_'.$dir);
         }
 
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Classes');
-        apc_store('get_classes_'.$dir,self::$res);
+        if(self::$cache) apc_store('get_classes_'.$dir,self::$res);
         return self::$res;
     }
 
     public static function getHelpers($dir) {
 
-        if(apc_exists('get_helpers_'.$dir))
+        if(self::$cache and apc_exists('get_helpers_'.$dir))
         {
             return apc_fetch('get_helpers_'.$dir);
         }
 
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Helpers');
-        apc_store('get_helpers_'.$dir,self::$res);
+        if(self::$cache) apc_store('get_helpers_'.$dir,self::$res);
         return self::$res;
     }
 
     public static function getControllers($dir) {
 
-        if(apc_exists('get_controllers_'.$dir))
+        if(self::$cache and apc_exists('get_controllers_'.$dir))
         {
             return apc_fetch('get_controllers_'.$dir);
         }
 
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Controllers');
-        apc_store('get_controllers_'.$dir,self::$res);
+        if(self::$cache) apc_store('get_controllers_'.$dir,self::$res);
         return self::$res;
     }
 
     public static function getModeles($dir) {
 
-        if(apc_exists('get_models_'.$dir))
+        if(self::$cache and apc_exists('get_models_'.$dir))
         {
             return apc_fetch('get_models_'.$dir);
         }
 
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Modeles');
-        apc_store('get_models_'.$dir,self::$res);
+        if(self::$cache) apc_store('get_models_'.$dir,self::$res);
         return self::$res;
     }
 
     public static function getLibs($dir) {
 
-        if(apc_exists('get_libs_'.$dir))
+        if(self::$cache and apc_exists('get_libs_'.$dir))
         {
             return apc_fetch('get_libs_'.$dir);
         }
 
         self::$res = array();
         self::listDir($dir. DIRECTORY_SEPARATOR .'Libs');
-        apc_store('get_libs_'.$dir,self::$res);
+        if(self::$cache) apc_store('get_libs_'.$dir,self::$res);
         return self::$res;
     }
 

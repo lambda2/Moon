@@ -21,7 +21,7 @@ abstract class Controller {
     /**
      * @var string template la template qui va etre affichée. 
      */
-    protected $template;
+    protected $template = false;
 
     /**
      * @var string the folder for all the templates 
@@ -573,7 +573,7 @@ abstract class Controller {
             try {
                 echo $this->twig->render(strtolower($this->template), $this->mergeData());
             } catch (Twig_Error_Loader $excTwo) {
-                Debug::log($excTwo->getMessage()
+                dbg($excTwo->getMessage()
                         . "<p>La template {$this->template} n'a pas pu etre chargée ! Le fichier existe t'il ?</p>"
                         . "<p><b>Chargement de la template de base du controlleur</b></p>", 2);
                 $this->template = strtolower(get_class($this)) . '.twig';
@@ -597,7 +597,11 @@ abstract class Controller {
         // Check if the user have enought permissions
     	if(!$this->grantAccess())
             throw new MemberAccessException("Access Denied");
-	
+
+        if ($this->template == false) {
+            $this->template = $this->getTemplateFileName();
+        }
+
         $this->template .= '.twig';
 
         // Add the includes

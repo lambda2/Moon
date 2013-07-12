@@ -17,11 +17,13 @@ Profiler::startTimer();
  * Le pathFinder, qui va nous permettre d'avoir un autoloader intelligent.
  */
 require_once(__DIR__.'/../'.'System' . sep . 'pathfinder.php');
+extension_loaded('apc') ? Pathfinder::enableCache() : Pathfinder::disableCache();
 
 /**
  * L'autoloader, qui se sert du pathfinder
  */
 function __autoload($nomClasse) {
+    $found = false;
     if(strlen($nomClasse) <= 1)
         return false;
     
@@ -46,6 +48,7 @@ function __autoload($nomClasse) {
     if (array_key_exists($nomClasse, $foundClasses)) 
     {
         require_once($foundClasses[$nomClasse]);
+        $found = true;
     }
     else 
     {
@@ -53,6 +56,7 @@ function __autoload($nomClasse) {
         if (array_key_exists($nomClasse, $foundControllers)) 
         {
             require_once($foundControllers[$nomClasse]);
+            $found = true;
         }
         else 
         {
@@ -60,6 +64,7 @@ function __autoload($nomClasse) {
             if (array_key_exists($nomClasse, $foundModels)) 
             {
                 require_once($foundModels[$nomClasse]);
+                $found = true;
             }
             else 
             {
@@ -67,6 +72,7 @@ function __autoload($nomClasse) {
                 if (array_key_exists($nomClasse, $foundLibs)) 
                 {
                     require_once($foundLibs[$nomClasse]);
+                    $found = true;
                 }
 
             }
@@ -77,6 +83,11 @@ function __autoload($nomClasse) {
     if(!class_exists('Annotation_Target'))
     {
         require __DIR__.'/../'.'System/Addendum/annotations.php';
+    }
+    
+    if(!$found)
+    {
+       /** @Todo : trouver un moyen d'actualiser le cache dans ce cas. */ 
     }
 }
 

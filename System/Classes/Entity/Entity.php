@@ -493,10 +493,10 @@ abstract class Entity implements JsonSerializable {
                 MoonChecker::showHtmlReport($e);
         }
         while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
-            $newTab = [];
-            foreach ($res as $key => $value) {
-                $newTab[str_replace('_' . $this->table, '', $key)] = $value;
-            }
+                $newTab = array();
+                foreach ($res as $key => $value) {
+                    $newTab[str_replace('_' . $this->table, '', $key)] = $value;
+                }
             $t[] = $newTab;
         }
 
