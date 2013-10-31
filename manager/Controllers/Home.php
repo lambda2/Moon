@@ -18,19 +18,7 @@ class Home extends Controller {
     
     public function index($params=array())
     {
-        //var_dump(apache_get_modules());
-        $this->render();
-    }
-    
-    public function compterLesAstres()
-    {
-        $membres = Moon::getAllHeavy('membre');
-        $this->addData('membres', $membres);
-        $membre = Moon::create('membre');
-        
-        $membreForm = $membre->generateInsertForm();
-        $this->addData('membreForm', $membreForm->getHtml());
-
+        $this->registerParams($params);
         $this->render();
     }
 }
