@@ -30,11 +30,7 @@ world/Forms/*
 world/Modeles/*
 world/Vues/*
 world
-Templates/lambdaweb-template
-Templates/moon-template
 world/*
-Templates/lambdaweb-template/*
-Templates/moon-template/*
 executables
 executables/*
 *.swp
@@ -42,7 +38,6 @@ executables/*
 *.swo
 System/Configuration/configuration.yml
 System/one
-Templates/lambdaweb-template/three
 webgrind/
 webgrind/config.php
 webgrind/img
