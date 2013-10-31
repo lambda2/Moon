@@ -25,6 +25,7 @@ class Core {
     protected static $instance;
     protected static $user;
     protected static $host_tables = array();
+    protected static $capabilities;
 
     protected function __construct($dev_mode = "DEBUG", $dbPrefix = '')
     {
@@ -109,6 +110,7 @@ class Core {
 
 
             //MoonChecker::runTests();
+            self::$capabilities = CapabilitiesFacory::getCapabilities();
             self::loadOptions();
             self::loadRoutes();
 
@@ -137,6 +139,17 @@ class Core {
         } catch (Exception $e) {
             MoonChecker::showHtmlReport($e);
         }
+    }
+
+    /**
+     * Returns true if the given capability is on the server (ex : apc_cache),
+     * false otherwise.
+     * @param String $capability the capability to check
+     * @return Bool true or false
+     */
+    public static function haveCapability($capability)
+    {
+        return self::$capabilities->havePower($capability);
     }
 
     public static function getUser(){

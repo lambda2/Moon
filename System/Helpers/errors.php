@@ -120,7 +120,7 @@ function displayMoonException($exc) {
 }
 
 function dbg($msg, $severity = 0) {
-    if (Core::getInstance()->debug()) {
+    if (Core::isStarted() && Core::getInstance()->debug()) {
         Core::getInstance()->debug()->addReport($msg, $severity);
         //echo $report;
     }

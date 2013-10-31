@@ -260,16 +260,6 @@ abstract class Controller {
         }
     }
 
-    /*
-      public static function moonlink($str, $text='') {
-      $pl = explode('.',$str);
-      if(strcmp($text,'') == 0){
-      $text = $pl[0];
-      }
-      $str = Core::opts()->system->siteroot.implode(DIRECTORY_SEPARATOR, $pl);
-      return '<a href="'.$str.'">' . $text . '</a>';
-      } */
-
     /**
      * Crée la webdata de base et supprime les anciennes webdatas enregistrées.
      */
@@ -573,9 +563,9 @@ abstract class Controller {
             try {
                 echo $this->twig->render(strtolower($this->template), $this->mergeData());
             } catch (Twig_Error_Loader $excTwo) {
-                dbg($excTwo->getMessage()
-                        . "<p>La template {$this->template} n'a pas pu etre chargée ! Le fichier existe t'il ?</p>"
-                        . "<p><b>Chargement de la template de base du controlleur</b></p>", 2);
+                dbg($excTwo->getMessage(),2);
+                dbg("La template {$this->template} n'a pas pu etre chargée ! Le fichier existe t'il ?",1);
+                dbg("Chargement de la template de base du controlleur", 0);
                 $this->template = strtolower(get_class($this)) . '.twig';
                 echo $this->twig->render(strtolower($this->template), $this->mergeData());
             }

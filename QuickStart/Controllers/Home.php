@@ -16,8 +16,9 @@
  */
 class Home extends Controller {
     
-    public function index()
+    public function index($params)
     {
+        var_dump(apache_get_modules());
         $this->render();
     }
     

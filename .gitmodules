@@ -1,9 +1,3 @@
-[submodule "moon-template"]
-	path = moon-template
-	url = git@github.com:lambda2/moon-template.git
-[submodule "Templates/moon-template"]
-	path = Templates/moon-template
-	url = git@github.com:lambda2/moon-template.git
 [submodule "System/Classes/Forms/HappyField"]
 	path = System/Classes/Forms/HappyField
 	url = git@github.com:lambda2/Happy-Field.git
