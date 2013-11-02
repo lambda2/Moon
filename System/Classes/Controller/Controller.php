@@ -18,6 +18,7 @@ abstract class Controller
     protected $loader;
     protected $twig;
     protected $ajax = false;
+    protected $fromAjax = false;
 
     /**
      * @var string template la template qui va etre affichée. 
@@ -92,6 +93,26 @@ abstract class Controller
         return $this->ajax;
     }
 
+    /**
+     * set the view called by an ajax request.
+     * @param boolean $ajax true or false
+     * @return $this
+     */
+    public function setFromAjax ($ajax = true)
+    {
+        $this->fromAjax = $ajax;
+        return $this;
+    }
+
+    /**
+     * @return true if the current controller is called by an ajax request, 
+     * false otherwise
+     */
+    public function isFromAjax ()
+    {
+        return $this->fromAjax;
+    }
+    
     public function useCustomTemplate ($template)
     {
         $this->setTemplateFolder ($template);
@@ -457,6 +478,7 @@ abstract class Controller
         $this->webdata['logged'] = Core::getUser () != null;
         $this->webdata['duration'] = Profiler::getElapsedTime ();
         $this->webdata['ajax'] = $this->ajax;
+        $this->webdata['fromAjax'] = $this->fromAjax;
     }
 
     /**

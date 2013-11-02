@@ -89,7 +89,7 @@ class RadioGroup extends Field
         if ( !$this->isVisible () )
             return '';
 
-        $s = '';
+        $s = '<div class="radio-group-main">';
         foreach ($this->radioItems as $radio)
         {
             $s .= "<div class='radio-group'>";
@@ -97,6 +97,7 @@ class RadioGroup extends Field
             $s .= $radio->getHtml ();
             $s .= "</div>";
         }
+        $s .= '</div>';
         return ($s);
     }
 
