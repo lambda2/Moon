@@ -413,9 +413,15 @@ class Router {
                 ("Accès non autorisé pour faire un $action sur $target");
             return false;
         }
+        
+        echo("<h1>params :</h1>");
+        var_dump($params);
 
         $class->initProcess($params);
 
+        echo("<h1>classe :</h1>");
+        var_dump($class);
+        
         $ajaxOutput = "ok";
 
         switch ($action) {
@@ -428,7 +434,14 @@ class Router {
                 $identifiers = $params['ids'];
 
                 $values = param2arr($identifiers);
+                
+        echo("<h1>values :</h1>");
+        var_dump($values);
+        
                 $class->loadByArray($values);
+        echo("<h1>class loaded :</h1>");
+        var_dump($class);
+        
                 $sucess = $class->processUpdateForm($params);
                 break;
 
@@ -448,6 +461,7 @@ class Router {
         
         if($sucess)
         {
+        //die("petite pause... :)");
             if($ajax)
             {
                 echo $ajaxOutput;
