@@ -133,6 +133,19 @@ class EntityField {
             $field->setPlaceholder($this->placeHolder);
             $field->setVisible(!$this->isAuto);
             $field->setValue($this->value);
+            
+            if($this->type == 'tinyint')
+            {
+                $its = $field->getRadioItems();
+                $its['false']->setValue('0');
+                $its['true']->setValue('1');
+                $its['false']->setId($its['false']->getName().'-no');
+                $its['false']->addClass('radio-label');
+                $its['true']->setId($its['true']->getName().'-yes');
+                $its['true']->addClass('radio-label');
+                $its['false']->setPlaceholder('No');
+                $its['true']->setPlaceholder('Yes');
+            }
 
             if($this->type == 'enum'){
                 foreach ($this->optionsValues as $key => $value) {

@@ -29,7 +29,7 @@ class FieldFactory {
                 break;
 
             case 'tinyint':
-                $field = new CheckBox($name,$name);
+                $field = new RadioBoolGroup($name);
                 break;
 
             case 'decimal':

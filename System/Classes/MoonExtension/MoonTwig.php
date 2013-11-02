@@ -51,6 +51,8 @@ class MoonTwig extends Twig_Extension
      * 
      * @TODO : Ajouter une petite gestion des exceptions. Il est par exemple
      * invraisemblable de mettre un lien avec des nombres ou du genre...
+     * @TODO : Utiliser le serverCapabilities pour checker le module [mod_rewrite]
+     * et voir si on ne doit pas générer un lien du type index.php?p=Class->Method
      */
     public static function moonLink ($str, $text = '')
     {

@@ -19,10 +19,10 @@
  * et qui ne peut pas contenir deux clés de meme valeur, donc pas deux fois
  * la meme table... Pas de parrains pour les filleuls quoi...
  */
-abstract class Entity implements JsonSerializable {
+abstract class Entity implements JsonSerializable
+{
 
     protected $table;
-
     protected $bdd;
     protected $fields;
     protected $linkedClasses;
@@ -30,29 +30,31 @@ abstract class Entity implements JsonSerializable {
     protected $access;
     protected $linkedClassesLoaded = false;
     protected $instance = false;
+    protected $customButtons = array ();
 
-    protected $customButtons = array();
-
-    public function __construct() {
-        $this->table    = strtolower(get_class($this)) . Core::getInstance()->getDbPrefix();
-        $this->bdd      = Core::getInstance()->bdd()->getDb();
-        $this->clearLinkedClasses();
+    public function __construct ()
+    {
+        $this->table = strtolower (get_class ($this)) . Core::getInstance ()->getDbPrefix ();
+        $this->bdd = Core::getInstance ()->bdd ()->getDb ();
+        $this->clearLinkedClasses ();
         $this->happyFields = new Happy\HappyField();
 
-        if (get_class($this) != 'TableEntity') {
-            $this->generateProperties();
-            $this->generateFields();
+        if ( get_class ($this) != 'TableEntity' )
+        {
+            $this->generateProperties ();
+            $this->generateFields ();
         }
     }
 
-    protected function reload($table) {
-        $this->table    = strtolower($table) . Core::getInstance()->getDbPrefix();
-        $this->bdd      = Core::getInstance()->bdd()->getDb();
-        $this->generateProperties();
-        $this->generateFields();
+    protected function reload ($table)
+    {
+        $this->table = strtolower ($table) . Core::getInstance ()->getDbPrefix ();
+        $this->bdd = Core::getInstance ()->bdd ()->getDb ();
+        $this->generateProperties ();
+        $this->generateFields ();
     }
 
-    protected function setupFields()
+    protected function setupFields ()
     {
         // Reimplement for define custom properties in fields.
     }
@@ -60,16 +62,18 @@ abstract class Entity implements JsonSerializable {
     /**
      * Va tenter d'instancier les classes liées a l'instance courante.
      */
-    public function autoLoadLinkedClasses($force = false) {
-        if($this->linkedClassesLoaded == false or $force == true)
+    public function autoLoadLinkedClasses ($force = false)
+    {
+        if ( $this->linkedClassesLoaded == false or $force == true )
         {
-            $this->clearLinkedClasses();
-            $this->linkedClasses = Core::getBdd()->getMoonLinksFrom($this->table);
-            foreach ($this->linkedClasses as $linked) {
-                if (!isNull($this->fields[$linked->attribute]->getValue()))
+            $this->clearLinkedClasses ();
+            $this->linkedClasses = Core::getBdd ()->getMoonLinksFrom ($this->table);
+            foreach ($this->linkedClasses as $linked)
+            {
+                if ( !isNull ($this->fields[$linked->attribute]->getValue ()) )
                 {
-                    $linked->loadLinkedInstance(
-                        $this->fields[$linked->attribute]->getValue());
+                    $linked->loadLinkedInstance (
+                            $this->fields[$linked->attribute]->getValue ());
                 }
             }
             $this->linkedClassesLoaded = true;
@@ -79,18 +83,19 @@ abstract class Entity implements JsonSerializable {
     /**
      * Va effectuer un rechargement de force des instances liées.
      */
-    public function reloadLinkedClasses(){
-        $this->autoLoadLinkedClasses(true);
+    public function reloadLinkedClasses ()
+    {
+        $this->autoLoadLinkedClasses (true);
     }
 
     /**
      * Permet d'attribuer une valeur a nos champs
      */
-    public function __set($name,$value)
+    public function __set ($name, $value)
     {
-        if(array_key_exists($name,$this->fields))
+        if ( array_key_exists ($name, $this->fields) )
         {
-            $this->fields[$name]->setValue($value);
+            $this->fields[$name]->setValue ($value);
         }
     }
 
@@ -102,34 +107,36 @@ abstract class Entity implements JsonSerializable {
      * @param String $name the name of the table to return.
      * @return Entities the corresponding entities.
      */
-    public function table($name)
+    public function table ($name)
     {
         /*
-        $a = $this->constraintEntities(new Entities($this->table));
-        $a = $a->table($name);
-        return $a;
-        */
-        $iTable = $this->getExternalTables($name,$this);
-        if ($iTable != false)
+          $a = $this->constraintEntities(new Entities($this->table));
+          $a = $a->table($name);
+          return $a;
+         */
+        $iTable = $this->getExternalTables ($name, $this);
+        if ( $iTable != false )
         {
             return $iTable;
         }
         else // Sinon on regarde si c'est un attribut de la classe
         {
             // Et enfin, on regarde si quelque chose référence cet attribut
-            $externals = Core::getBdd()->getMoonLinksFrom($this->table,true);
-            $t = array();
-            if(!isNull($externals)){
+            $externals = Core::getBdd ()->getMoonLinksFrom ($this->table, true);
+            $t = array ();
+            if ( !isNull ($externals) )
+            {
                 foreach ($externals as $moonLinkKey => $moonLinkValue)
                 {
-                    if($moonLinkValue->table == $name)
+                    if ( $moonLinkValue->table == $name )
                     {
-                        $res = EntityLoader::getClass($moonLinkValue->table);
-                        if($res != null) {
-                            $t = new Entities($this->table);
-                            $t = $this->constraintEntities($t);
+                        $res = EntityLoader::getClass ($moonLinkValue->table);
+                        if ( $res != null )
+                        {
+                            $t = new Entities ($this->table);
+                            $t = $this->constraintEntities ($t);
                         }
-                        return $t->table($name);
+                        return $t->table ($name);
                     }
                 }
             }
@@ -137,13 +144,13 @@ abstract class Entity implements JsonSerializable {
         return null;
     }
 
-    protected function constraintEntities($entity)
+    protected function constraintEntities ($entity)
     {
-        foreach($this->fields as $field)
+        foreach ($this->fields as $field)
         {
-            if($field->getValue() != null)
+            if ( $field->getValue () != null )
             {
-                $entity->where($field->getName(),$field->getValue());
+                $entity->where ($field->getName (), $field->getValue ());
             }
         }
         return $entity;
@@ -154,41 +161,43 @@ abstract class Entity implements JsonSerializable {
      * On va d'abord regarder si l'attribut demandé est une classe liée.
      * On délegue ensuite a la méthode __call()
      */
-    public function __get($name) {
+    public function __get ($name)
+    {
 
-        if(array_key_exists($name,$this->fields))
+        if ( array_key_exists ($name, $this->fields) )
         {
-            return $this->fields[$name]->getValue();
+            return $this->fields[$name]->getValue ();
         }
 
-        $meth = 'get' . ucfirst($name);
-        $methodResult = $this->$meth();
+        $meth = 'get' . ucfirst ($name);
+        $methodResult = $this->$meth ();
 
-        if($methodResult != false)
+        if ( $methodResult != false )
         {
             return $methodResult;
         }
 
         // On charge les classes liées
-        if($this->linkedClassesLoaded == false)
+        if ( $this->linkedClassesLoaded == false )
         {
-            $this->autoLoadLinkedClasses();
+            $this->autoLoadLinkedClasses ();
         }
 
         // On regarde si on demande une instance liée
-        $i = $this->getExternalInstance($name);
+        $i = $this->getExternalInstance ($name);
 
-        if ($i != false)
+        if ( $i != false )
         {
             return $i;
         }
-        
-        $ext =  $this->table($name);
-        if($ext !== false)
+
+        $ext = $this->table ($name);
+        if ( $ext !== false )
             return $ext;
 
-        if (Core::getInstance()->debug()) {
-            throw new AlertException("The attribute $name doesn't exists.",1);
+        if ( Core::getInstance ()->debug () )
+        {
+            throw new AlertException ("The attribute $name doesn't exists.", 1);
         }
         return null;
     }
@@ -198,11 +207,15 @@ abstract class Entity implements JsonSerializable {
      * @param type $name
      * @return boolean
      */
-    public function __isset($name) {
-        try {
+    public function __isset ($name)
+    {
+        try
+        {
             $e = $this->$name;
-        } catch (Exception $exc) {
-            dbg($exc->getMessage(), 20);
+        }
+        catch (Exception $exc)
+        {
+            dbg ($exc->getMessage (), 20);
             return false;
         }
         return true;
@@ -217,31 +230,37 @@ abstract class Entity implements JsonSerializable {
      * ou se limite on [strictement] à getNom ?
      * -> regex ([A-Za-z]) ou ([A-Z]) ? (ci dessous)
      */
-    public function __call($methodName, $args) {
-        if (preg_match('~^(set|get)([A-Za-z])(.*)$~', $methodName, $matches)) {
-            $property = strtolower($matches[2]) . $matches[3];
-            if (!isset($this->fields[$property])) {
-                if ($this->checkExternalRelation($property)) {
+    public function __call ($methodName, $args)
+    {
+        if ( preg_match ('~^(set|get)([A-Za-z])(.*)$~', $methodName, $matches) )
+        {
+            $property = strtolower ($matches[2]) . $matches[3];
+            if ( !isset ($this->fields[$property]) )
+            {
+                if ( $this->checkExternalRelation ($property) )
+                {
                     return $this->linkedClasses[$property];
                 }
-                else {
+                else
+                {
                     return null;
                 }
             }
         }
 
-        if(count($matches) < 2)
+        if ( count ($matches) < 2 )
             return false;
 
-        switch ($matches[1]) {
+        switch ($matches[1])
+        {
             case 'set':
-            $this->checkArguments($args, 1, 1, $methodName);
-            return $this->set($property, $args[0]);
+                $this->checkArguments ($args, 1, 1, $methodName);
+                return $this->set ($property, $args[0]);
             case 'get':
-            $this->checkArguments($args, 0, 0, $methodName);
-            return $this->get($property);
+                $this->checkArguments ($args, 0, 0, $methodName);
+                return $this->get ($property);
             case 'default':
-            return false;
+                return false;
         }
     }
 
@@ -252,9 +271,9 @@ abstract class Entity implements JsonSerializable {
      * @since v0.0.3 Les propriétés deviennent des classes.
      * -> source potentielle de bugs... be awake !
      */
-    protected function generateProperties()
+    protected function generateProperties ()
     {
-        $prop = Core::getBdd()->getAllEntityFields($this->table);
+        $prop = Core::getBdd ()->getAllEntityFields ($this->table);
         $this->fields = $prop;
     }
 
@@ -264,12 +283,15 @@ abstract class Entity implements JsonSerializable {
      * @param type $table la table ciblée
      * @return mixed l'instance de la classe distante, false sinon
      */
-    public function getExternalInstance($table) {
+    public function getExternalInstance ($table)
+    {
 
-        foreach ($this->linkedClasses as $key => $value) {
+        foreach ($this->linkedClasses as $key => $value)
+        {
             // Nouvelle version, basée sur le nom du champ local.
-            if (strcasecmp($value->attribute, $table) == 0) {
-                if (!isNull($value->instance))
+            if ( strcasecmp ($value->attribute, $table) == 0 )
+            {
+                if ( !isNull ($value->instance) )
                     return $value->instance;
             }
         }
@@ -282,62 +304,69 @@ abstract class Entity implements JsonSerializable {
      * @param type $table la table ciblée
      * @return mixed l'instance de la classe distante, false sinon
      */
-    public function getExternalTables($table, $entity) {
-        foreach ($entity->getLinkedClasses() as $key => $value) {
-            if(strcasecmp($value->destinationTable,$table) == 0)
+    public function getExternalTables ($table, $entity)
+    {
+        foreach ($entity->getLinkedClasses () as $key => $value)
+        {
+            if ( strcasecmp ($value->destinationTable, $table) == 0 )
             {
-                if (!isNull($value->instance))
+                if ( !isNull ($value->instance) )
                     return $value->instance;
             }
         }
         return false;
     }
 
-    public function loadByArray($array)
+    public function loadByArray ($array)
     {
         $request = "";
         /**
          * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
          * par exemple...) on ajoute les contraintes dans la requete.
          */
-        if(is_array($array))
+        if ( is_array ($array) )
         {
             $request = "SELECT * FROM {$this->table} WHERE ";
-            $args = array();
-            foreach ($array as $key=>$val)
+            $args = array ();
+            foreach ($array as $key => $val)
             {
-                $args[] = $key." = ".dbQuote($val);
+                $args[] = $key . " = " . dbQuote ($val);
             }
-            $request .= implode(' AND ', $args);
+            $request .= implode (' AND ', $args);
         }
         else
         {
-            throw new CriticalException(
-                "Invalid parameters to load an object with array !", 1);
+            throw new CriticalException (
+            "Invalid parameters to load an object with array !", 1);
         }
         try
         {
-            Profiler::addRequest($request);
-            $Req = $this->bdd->prepare($request);
-            $Req->execute(array());
+            Profiler::addRequest ($request);
+            $Req = $this->bdd->prepare ($request);
+            $Req->execute (array ());
         }
         catch (Exception $e) //interception de l'erreur
         {
-            throw new OrmException("Error Processing Request");
+            throw new OrmException ("Error Processing Request");
         }
 
         // Si on récupère quelque chose :
-        if ($Req->rowCount() != 0) {
-            while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
-                if (count($this->fields) >= count($res)) {
-                    foreach ($res as $champ => $valeur) {
+        if ( $Req->rowCount () != 0 )
+        {
+            while ($res = $Req->fetch (PDO::FETCH_ASSOC))
+            {
+                if ( count ($this->fields) >= count ($res) )
+                {
+                    foreach ($res as $champ => $valeur)
+                    {
                         // Pour chaque champ, on met à jour sa valeur
                         // avec celle qu'on vient de récupérer dans la bdd.
-                        $this->fields[$champ]->setValue($valeur);
+                        $this->fields[$champ]->setValue ($valeur);
                     }
                 }
-                else {
-                    throw new OrmException('Les champs récupérés ne correspondent pas !');
+                else
+                {
+                    throw new OrmException ('Les champs récupérés ne correspondent pas !');
                 }
             }
             $this->instance = true;
@@ -354,24 +383,23 @@ abstract class Entity implements JsonSerializable {
      * @since 0.0.3, c'est la merde. L'introduction de EntityField
      * dans le système a un peu perturbé.
      */
-    public function loadBy($field, $value) {
+    public function loadBy ($field, $value)
+    {
 
         $request = "";
         /**
          * Dans le cas ou on a plusieurs champs contraints (plusieurs clés primaires
          * par exemple...) on ajoute les contraintes dans la requete.
          */
-        if(is_array($field)
-            and is_array($value)
-            and count($field) == count($value))
+        if ( is_array ($field) and is_array ($value) and count ($field) == count ($value) )
         {
             $request = "SELECT * FROM {$this->table} WHERE ";
-            $args = array();
-            foreach ($field as $key=>$cle)
+            $args = array ();
+            foreach ($field as $key => $cle)
             {
-                $args[] = $cle." = ".$value[$key];
+                $args[] = $cle . " = " . $value[$key];
             }
-            $request .= implode(' AND ', $args);
+            $request .= implode (' AND ', $args);
         }
         else
         {
@@ -380,27 +408,32 @@ abstract class Entity implements JsonSerializable {
 
         try
         {
-            Profiler::addRequest($request);
-            $Req = $this->bdd->prepare($request);
-            $Req->execute(array());
+            Profiler::addRequest ($request);
+            $Req = $this->bdd->prepare ($request);
+            $Req->execute (array ());
         }
         catch (Exception $e) //interception de l'erreur
         {
-            throw new OrmException("Error Processing Request");
+            throw new OrmException ("Error Processing Request");
         }
 
         // Si on récupère quelque chose :
-        if ($Req->rowCount() != 0) {
-            while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
-                if (count($this->fields) >= count($res)) {
-                    foreach ($res as $champ => $valeur) {
+        if ( $Req->rowCount () != 0 )
+        {
+            while ($res = $Req->fetch (PDO::FETCH_ASSOC))
+            {
+                if ( count ($this->fields) >= count ($res) )
+                {
+                    foreach ($res as $champ => $valeur)
+                    {
                         // Pour chaque champ, on met à jour sa valeur
                         // avec celle qu'on vient de récupérer dans la bdd.
-                        $this->fields[$champ]->setValue($valeur);
+                        $this->fields[$champ]->setValue ($valeur);
                     }
                 }
-                else {
-                    throw new OrmException('Les champs récupérés ne correspondent pas !');
+                else
+                {
+                    throw new OrmException ('Les champs récupérés ne correspondent pas !');
                 }
             }
             $this->instance = true;
@@ -412,11 +445,10 @@ abstract class Entity implements JsonSerializable {
         }
     }
 
- 
     /**
      * @return True if the instance exists
      */
-    public function exists()
+    public function exists ()
     {
         return $this->instance;
     }
@@ -425,11 +457,12 @@ abstract class Entity implements JsonSerializable {
      * Explain how the php engine have to serialize an
      * Entity object to json.
      */
-    public function jsonSerialize() {
-        $ret = array();
-        foreach($this->fields as $field)
+    public function jsonSerialize ()
+    {
+        $ret = array ();
+        foreach ($this->fields as $field)
         {
-            $ret[$field->getName()] = $field->getValue();
+            $ret[$field->getName ()] = $field->getValue ();
         }
         return $ret;
     }
@@ -439,13 +472,15 @@ abstract class Entity implements JsonSerializable {
      * @param String $rowName le nom du champ (ex : 'id_client_contrat' )
      * @return String la table et le nom de la colonne ciblée (ex : 'client.id_client')
      */
-    protected function getForeignLink($rowName) {
+    protected function getForeignLink ($rowName)
+    {
         $foreignTable = "";
-        $foreignRow   = "";
-        $split        = split('_', $rowName);
-        if (count($split) > 2) {
-            $foreignTable = join('_', array_slice($split, 1, -1)) . Core::getInstance()->getDbPrefix();
-            $foreignRow   = join('_', array_slice($split, 0, -1));
+        $foreignRow = "";
+        $split = split ('_', $rowName);
+        if ( count ($split) > 2 )
+        {
+            $foreignTable = join ('_', array_slice ($split, 1, -1)) . Core::getInstance ()->getDbPrefix ();
+            $foreignRow = join ('_', array_slice ($split, 0, -1));
         }
         return $foreignTable . '.' . $foreignRow;
     }
@@ -455,59 +490,73 @@ abstract class Entity implements JsonSerializable {
      * dans un tableau.
      * @return array toutes les instances de l'objet dans la bdd
      */
-    public static function getAllObjects($classe) {
-        $c = EntityLoader::getClass($classe);
-        $t = array();
+    public static function getAllObjects ($classe)
+    {
+        $c = EntityLoader::getClass ($classe);
+        $t = array ();
 
-        try {
-            $Req = Core::getBdd()->getDb()->prepare("SELECT * FROM {$c->getTable()}");
-            Profiler::addRequest("SELECT * FROM {$c->getTable()}");
-            $Req->execute(array());
-        } catch (Exception $e) { //interception de l'erreur
-            MoonChecker::showHtmlReport($e);
+        try
+        {
+            $Req = Core::getBdd ()->getDb ()->prepare ("SELECT * FROM {$c->getTable ()}");
+            Profiler::addRequest ("SELECT * FROM {$c->getTable ()}");
+            $Req->execute (array ());
         }
-        while ($res = $Req->fetch(PDO::FETCH_OBJ)) {
-            $f          = EntityLoader::getClass($classe);
-            $pri        = $f->getValuedPrimaryFields($res);
-            if (!isNull($pri)) {
-                $f->loadByArray($pri);
-                $f->autoLoadLinkedClasses();
+        catch (Exception $e)
+        { //interception de l'erreur
+            MoonChecker::showHtmlReport ($e);
+        }
+        while ($res = $Req->fetch (PDO::FETCH_OBJ))
+        {
+            $f = EntityLoader::getClass ($classe);
+            $pri = $f->getValuedPrimaryFields ($res);
+            if ( !isNull ($pri) )
+            {
+                $f->loadByArray ($pri);
+                $f->autoLoadLinkedClasses ();
                 $t[] = $f;
             }
         }
 
-    return $t;
+        return $t;
     }
 
     /**
      * A checker... Elle semble identique à celle du dessus...
      * @TODO : Voir au dessus...
      */
-    public function getAll() {
-        $t = array();
-        try {
-            $Req = $this->bdd->prepare("SELECT * FROM {$this->table}");
-            Profiler::addRequest("SELECT * FROM {$this->getTable()}");
-            $Req->execute(array());
-            } catch (Exception $e) { //interception de l'erreur
-                MoonChecker::showHtmlReport($e);
+    public function getAll ()
+    {
+        $t = array ();
+        try
+        {
+            $Req = $this->bdd->prepare ("SELECT * FROM {$this->table}");
+            Profiler::addRequest ("SELECT * FROM {$this->getTable ()}");
+            $Req->execute (array ());
         }
-        while ($res = $Req->fetch(PDO::FETCH_ASSOC)) {
-                $newTab = array();
-                foreach ($res as $key => $value) {
-                    $newTab[str_replace('_' . $this->table, '', $key)] = $value;
-                }
+        catch (Exception $e)
+        { //interception de l'erreur
+            MoonChecker::showHtmlReport ($e);
+        }
+        while ($res = $Req->fetch (PDO::FETCH_ASSOC))
+        {
+            $newTab = array ();
+            foreach ($res as $key => $value)
+            {
+                $newTab[str_replace ('_' . $this->table, '', $key)] = $value;
+            }
             $t[] = $newTab;
         }
 
         return $t;
     }
 
-    public function get($property) {
+    public function get ($property)
+    {
         return $this->fields[$property];
     }
 
-    public function set($property, $value) {
+    public function set ($property, $value)
+    {
         $this->fields[$property];
         return $this;
     }
@@ -516,19 +565,24 @@ abstract class Entity implements JsonSerializable {
      * Va retourner une longue description de la classe.
      * @return string
      */
-    public function toLongString() {
-        $s = '<div><h4>Classe ' . get_class($this) . ' :</h4>';
+    public function toLongString ()
+    {
+        $s = '<div><h4>Classe ' . get_class ($this) . ' :</h4>';
         $s .= '<h5>Référencée par la table ' . $this->table . '.</h5>';
-        foreach ($this as $key => $value) {
-            if (!is_a($value, "PDO")) {
-                if (is_array($value)) {
+        foreach ($this as $key => $value)
+        {
+            if ( !is_a ($value, "PDO") )
+            {
+                if ( is_array ($value) )
+                {
                     $s .= "<h5>$key : </h5>";
                     $s .= '<table class="table">';
 
-                    foreach ($value as $k => $v) {
+                    foreach ($value as $k => $v)
+                    {
                         $s .= '<tr><td></td><td>' . $k . '</td><td> ==> </td><td>' . $v . '</td></tr>';
                     }
-                    if (count($value) == 0)
+                    if ( count ($value) == 0 )
                         $s .= '<tr><td></td><td>Aucune valeur enregistrée</td><td></td><td></td></tr>';
                     $s .= "</table>";
                 }
@@ -545,67 +599,81 @@ abstract class Entity implements JsonSerializable {
      * @param boolean true pour afficher les relations (directes) exterieures.
      * @return string
      */
-    public function toShortString($showExternalRelations = true) {
-        $r = get_class($this)
-            .'@'.$this->table.' ('
-            .($this->linkedClassesLoaded ? 'loaded' : 'not loaded').')';
-        if($showExternalRelations and !isNull($this->linkedClasses))
+    public function toShortString ($showExternalRelations = true)
+    {
+        $r = get_class ($this)
+                . '@' . $this->table . ' ('
+                . ($this->linkedClassesLoaded ? 'loaded' : 'not loaded') . ')';
+        if ( $showExternalRelations and !isNull ($this->linkedClasses) )
         {
             $r .= '<ul>';
-            foreach ($this->linkedClasses as $key => $value) {
-                $r .= '<li>'.$value->attribute;
-                if(!isNull($value->instance))
-                    $r .= ' -> '.$value->getTargetAdress().' ['.$value->instance.']';
+            foreach ($this->linkedClasses as $key => $value)
+            {
+                $r .= '<li>' . $value->attribute;
+                if ( !isNull ($value->instance) )
+                    $r .= ' -> ' . $value->getTargetAdress () . ' [' . $value->instance . ']';
                 $r .= '</li>';
-
             }
             $r .= '</ul>';
         }
-        return $r.'<br>';
+        return $r . '<br>';
     }
 
-    public function isLinkedClassesLoaded() { return $this->linkedClassesLoaded; }
-
-    public function __toString() {
-        return $this->toShortString(false);
+    public function isLinkedClassesLoaded ()
+    {
+        return $this->linkedClassesLoaded;
     }
 
-    protected function checkArguments(array $args, $min, $max, $methodName) {
-        $argc = count($args);
-        if ($argc < $min or $argc > $max) {
-            throw new MemberAccessException('Method ' . $methodName . ' needs minimaly ' . $min . ' and maximaly ' . $max . ' arguments. ' . $argc . ' arguments given.');
+    public function __toString ()
+    {
+        return $this->toShortString (false);
+    }
+
+    protected function checkArguments (array $args, $min, $max, $methodName)
+    {
+        $argc = count ($args);
+        if ( $argc < $min or $argc > $max )
+        {
+            throw new MemberAccessException ('Method ' . $methodName . ' needs minimaly ' . $min . ' and maximaly ' . $max . ' arguments. ' . $argc . ' arguments given.');
         }
     }
 
-    public function getTable() {
+    public function getTable ()
+    {
         return $this->table;
     }
 
-    public function setTable($table) {
+    public function setTable ($table)
+    {
         $this->table = $table;
     }
 
-    public function getBdd() {
+    public function getBdd ()
+    {
         return $this->bdd;
     }
 
-    public function setBdd($bdd) {
+    public function setBdd ($bdd)
+    {
         $this->bdd = $bdd;
     }
 
-    public function getLinkedClasses() {
+    public function getLinkedClasses ()
+    {
         return $this->linkedClasses;
     }
 
-    protected function setLinkedClasses($linkedClasses) {
-        if (is_array($linkedClasses))
-            $this->linkedClasses   = $linkedClasses;
+    protected function setLinkedClasses ($linkedClasses)
+    {
+        if ( is_array ($linkedClasses) )
+            $this->linkedClasses = $linkedClasses;
         else
             $this->linkedClasses[] = $linkedClasses;
     }
 
-    protected function addLinkedClass($field, $class, $name) {
-        $this->linkedClasses[$field] = new MoonLink($field, $name, $class);
+    protected function addLinkedClass ($field, $class, $name)
+    {
+        $this->linkedClasses[$field] = new MoonLink ($field, $name, $class);
     }
 
     /**
@@ -613,41 +681,48 @@ abstract class Entity implements JsonSerializable {
      * d'une table exterieure et que cette dernière n'est pas nulle.
      * Renvoie FALSE sinon.
      */
-    protected function checkExternalRelation($query) {
+    protected function checkExternalRelation ($query)
+    {
         $f = false;
-        if (array_key_exists($query, $this->linkedClasses)) {
-            if ($this->linkedClasses[$query] != null)
+        if ( array_key_exists ($query, $this->linkedClasses) )
+        {
+            if ( $this->linkedClasses[$query] != null )
                 $f = true;
         }
         return $f;
     }
 
-    public function clearLinkedClasses() {
-        $this->linkedClasses = array();
+    public function clearLinkedClasses ()
+    {
+        $this->linkedClasses = array ();
     }
 
-    public function getFields() {
+    public function getFields ()
+    {
         return $this->fields;
     }
 
-    public function setFields($fields) {
+    public function setFields ($fields)
+    {
         $this->fields = $fields;
     }
 
-    public function editField($fieldName){
-        if(array_key_exists($fieldName, $this->fields))
+    public function editField ($fieldName)
+    {
+        if ( array_key_exists ($fieldName, $this->fields) )
             return $this->fields[$fieldName];
         else
-            throw new AlertException(
-                "The field $fieldName didn't exists in ".$this->table, 1);
+            throw new AlertException (
+            "The field $fieldName didn't exists in " . $this->table, 1);
     }
 
     /**
      * @deprecated on ne cherche plus a savoir si un champ
      * possède un id.
      */
-    public function hasAnId($field) {
-        if (strcmp(strtolower(substr($field, 0, 2)), 'id') == 0)
+    public function hasAnId ($field)
+    {
+        if ( strcmp (strtolower (substr ($field, 0, 2)), 'id') == 0 )
             return true;
         else
             return false;
@@ -657,80 +732,101 @@ abstract class Entity implements JsonSerializable {
      * @deprecated pour les memes raisons que hasAnId()
      * @see Entity::hasAnId($field)
      */
-    public function getNameWithoutId($field) {
-        return $this->getForeignLink($field);
+    public function getNameWithoutId ($field)
+    {
+        return $this->getForeignLink ($field);
     }
 
-    public function getRelationClassName($field) {
-        $cl = split('\.', $this->getForeignLink($field));
+    public function getRelationClassName ($field)
+    {
+        $cl = split ('\.', $this->getForeignLink ($field));
         $cl = $cl[0];
-        if (!Core::isValidClass($cl)) {
+        if ( !Core::isValidClass ($cl) )
+        {
             $cl = null;
         }
         return $cl;
     }
 
-    public function getRelationClassInstance($field, $target = null) {
+    public function getRelationClassInstance ($field, $target = null)
+    {
 
-        if(is_a($target, 'EntityField'))
-            $target = $target->getValue();
+        if ( is_a ($target, 'EntityField') )
+            $target = $target->getValue ();
         // Si on n'a pas spécifié de relation, on la cherche a la main
-        if ($target == null) {
-            $className = $this->getRelationClassName($field);
-            if ($className == null or $className == $this->table) {
+        if ( $target == null )
+        {
+            $className = $this->getRelationClassName ($field);
+            if ( $className == null or $className == $this->table )
+            {
                 return null;
             }
-            else {
-                try {
-                    $inst = EntityLoader::loadInstance($this->getForeignLink($field), $this->fields[$field]);
-                    if (strcmp($inst->getTable(), $this->getTable()) == 0) {
+            else
+            {
+                try
+                {
+                    $inst = EntityLoader::loadInstance ($this->getForeignLink ($field), $this->fields[$field]);
+                    if ( strcmp ($inst->getTable (), $this->getTable ()) == 0 )
+                    {
                         return null;
                     }
                     return $inst;
-                } catch (Exception $e) {
-                    MoonChecker::showHtmlReport($e);
+                }
+                catch (Exception $e)
+                {
+                    MoonChecker::showHtmlReport ($e);
                 }
             }
 
-        // Sinon on la charge directement
+            // Sinon on la charge directement
         }
-        else {
-            try {
-                $inst = EntityLoader::loadInstance($target, $this->fields[$field]);
-                if (strcmp($inst->getTable(), $this->getTable()) == 0) {
+        else
+        {
+            try
+            {
+                $inst = EntityLoader::loadInstance ($target, $this->fields[$field]);
+                if ( strcmp ($inst->getTable (), $this->getTable ()) == 0 )
+                {
                     return null;
                 }
                 return $inst;
-            } catch (Exception $e) {
-                MoonChecker::showHtmlReport($e);
+            }
+            catch (Exception $e)
+            {
+                MoonChecker::showHtmlReport ($e);
             }
         }
     }
 
-    public static function getProperName($name, $upper = false, $singularize = false) {
+    public static function getProperName ($name, $upper = false, $singularize = false)
+    {
         $reducClassName = $name;
-        if (Core::getInstance()->getDbPrefix() != '' and strstr($reducClassName, Core::getInstance()->getDbPrefix()) != FALSE) {
-            $reducClassName = substr_replace($reducClassName, '', -(strlen(Core::getInstance()->getDbPrefix())), strlen(Core::getInstance()->getDbPrefix()));
+        if ( Core::getInstance ()->getDbPrefix () != '' and strstr ($reducClassName, Core::getInstance ()->getDbPrefix ()) != FALSE )
+        {
+            $reducClassName = substr_replace ($reducClassName, '', -(strlen (Core::getInstance ()->getDbPrefix ())), strlen (Core::getInstance ()->getDbPrefix ()));
         }
-        if ($upper) {
-            $reducClassName = ucfirst($reducClassName);
+        if ( $upper )
+        {
+            $reducClassName = ucfirst ($reducClassName);
         }
-        else {
-            $reducClassName = strtolower($reducClassName);
+        else
+        {
+            $reducClassName = strtolower ($reducClassName);
         }
-        $reducClassName = str_replace('_', ' ', $reducClassName);
-          return $reducClassName;
+        $reducClassName = str_replace ('_', ' ', $reducClassName);
+        return $reducClassName;
     }
 
     /**
      * Retourne la liste du nom des champs
      * de la classe dans un tableau.
      */
-    public function getFieldsList()
+    public function getFieldsList ()
     {
-        $list = array();
-        foreach ($this->fields as $key => $value) {
-            $list[] = $value->getName();
+        $list = array ();
+        foreach ($this->fields as $key => $value)
+        {
+            $list[] = $value->getName ();
         }
         return $list;
     }
@@ -740,29 +836,30 @@ abstract class Entity implements JsonSerializable {
      * de la clé primaire et la valeur de cette clé
      * pour l'instance courante sous la forme clé=valeur.
      */
-    public function getDefinedPrimaryFields()
+    public function getDefinedPrimaryFields ()
     {
-        $list = array();
-        foreach ($this->fields as $key => $value) {
-            if($value->isPrimary() and !isNull($value->getValue()))
-                $list[$value->getName()] = $value->getValue();
+        $list = array ();
+        foreach ($this->fields as $key => $value)
+        {
+            if ( $value->isPrimary () and !isNull ($value->getValue ()) )
+                $list[$value->getName ()] = $value->getValue ();
         }
         return $list;
     }
-
 
     /**
      * Retourne un tableau contenant le nom du champ
      * de la clé primaire et la valeur de cette clé
      * fournie en parametre
      */
-    public function getValuedPrimaryFields($res)
+    public function getValuedPrimaryFields ($res)
     {
-        $list = array();
-        foreach ($this->fields as $key => $value) {
-            $n = $value->getName();
-            if($value->isPrimary() and !isNull($res->$n))
-                $list[$value->getName()] = $res->$n;
+        $list = array ();
+        foreach ($this->fields as $key => $value)
+        {
+            $n = $value->getName ();
+            if ( $value->isPrimary () and !isNull ($res->$n) )
+                $list[$value->getName ()] = $res->$n;
         }
         return $list;
     }
@@ -770,12 +867,13 @@ abstract class Entity implements JsonSerializable {
     /**
      * Retourne un tableau contenant la liste des clés primaires.
      */
-    public function getPrimaryFields()
+    public function getPrimaryFields ()
     {
-        $list = array();
-        foreach ($this->fields as $key => $value) {
-            if($value->isPrimary())
-                $list[] = $value->getName();
+        $list = array ();
+        foreach ($this->fields as $key => $value)
+        {
+            if ( $value->isPrimary () )
+                $list[] = $value->getName ();
         }
         return $list;
     }
@@ -787,31 +885,31 @@ abstract class Entity implements JsonSerializable {
      * @return boolean true if found, false otherwise
      * @TODO : replace this method by [getRulesForForm]
      */
-    public function searchForDefinedDatas($formName)
+    public function searchForDefinedDatas ($formName)
     {
-        return $this->getRulesForForm($formName);
+        return $this->getRulesForForm ($formName);
     }
 
-    protected function applyDataToEntityFields($data)
+    protected function applyDataToEntityFields ($data)
     {
-        if($data === false)
+        if ( $data === false )
             return false;
-        else 
+        else
         {
-            foreach ($data as $field => $datas) {
+            foreach ($data as $field => $datas)
+            {
 
-                if(array_key_exists($field, $this->fields))
+                if ( array_key_exists ($field, $this->fields) )
                 {
 
-                    if(array_key_exists('foreignLabel', $datas))
+                    if ( array_key_exists ('foreignLabel', $datas) )
                     {
-                        $this->fields[$field]->setForeignDisplayTarget($datas['foreignLabel']);
+                        $this->fields[$field]->setForeignDisplayTarget ($datas['foreignLabel']);
                     }
-
                 }
                 else
                 {
-                    Debug::log("Le champ $field n'existe pas...");
+                    Debug::log ("Le champ $field n'existe pas...");
                 }
             }
             return true;
@@ -821,41 +919,41 @@ abstract class Entity implements JsonSerializable {
     /**
      * Génere un champ pour l'action ciblée.
      */
-    public function generateFormFor($action,$name = '', $label='', $empty=false)
+    public function generateFormFor ($action, $name = '', $label = '', $empty = false)
     {
-        if(isNull($name))
+        if ( isNull ($name) )
         {
-            $name = $action.'-'.strtolower($this->table);
+            $name = $action . '-' . strtolower ($this->table);
         }
 
-        $this->setupFields();
+        $this->setupFields ();
 
-        if(isNull($name))
-            $formName = $action.'-'.strtolower($this->table);
+        if ( isNull ($name) )
+            $formName = $action . '-' . strtolower ($this->table);
         else
             $formName = $name;
 
-        $datas = $this->searchForDefinedDatas($name);
-        $this->applyDataToEntityFields($datas);
+        $datas = $this->searchForDefinedDatas ($name);
+        $this->applyDataToEntityFields ($datas);
 
-        $form = new Form($formName,
-            Core::opts()->system->siteroot
-            .'index.php?moon-action='.$action.'&target='
-            .strtolower($this->table).'&formName='
-            .$formName);
+        $form = new Form ($formName, Core::opts ()->system->siteroot
+                . 'index.php?moon-action=' . $action . '&target='
+                . strtolower ($this->table) . '&formName='
+                . $formName);
 
-        if(!isNull($label))
-            $form->setButtonLabel($label);
+        if ( !isNull ($label) )
+            $form->setButtonLabel ($label);
 
-        if(!$empty)
+        if ( !$empty )
         {
-            foreach ($this->fields as $champ => $valeur) {
-                $form->addField($valeur->getHtmlField());
+            foreach ($this->fields as $champ => $valeur)
+            {
+                $form->addField ($valeur->getHtmlField ());
             }
         }
 
-        $form->displayLabels(true);
-        $form->loadDataFromArray($datas);
+        $form->displayLabels (true);
+        $form->loadDataFromArray ($datas);
 
         return $form;
     }
@@ -863,60 +961,61 @@ abstract class Entity implements JsonSerializable {
     /**
      * Génere un champ d'insertion en HTML.
      */
-    public function generateInsertForm($name = '', $label='')
+    public function generateInsertForm ($name = '', $label = '')
     {
-        $form = $this->generateFormFor('insert',$name, $label);
-        $form->addField($this->getContextField());
-        $form->addData('type','smart-input');
+        $form = $this->generateFormFor ('insert', $name, $label);
+        $form->addField ($this->getContextField ());
+        $form->addData ('type', 'smart-input');
         return $form;
     }
 
     /**
      * Génere un champ de mise à jour en HTML.
      */
-    public function generateUpdateForm($name = '', $label='')
+    public function generateUpdateForm ($name = '', $label = '')
     {
-        $form = $this->generateFormFor('update',$name, $label);
+        $form = $this->generateFormFor ('update', $name, $label);
 
-        $keysList = $this->getDefinedPrimaryFields();
-        $destination = new Input('ids','hidden');
-        $destination->setValue(arr2param($keysList,','));
+        $keysList = $this->getDefinedPrimaryFields ();
+        $destination = new Input ('ids', 'hidden');
+        $destination->setValue (arr2param ($keysList, ','));
 
-        $form->addField($this->getContextField());
-        $form->addField($destination);
+        $form->addField ($this->getContextField ());
+        $form->addField ($destination);
 
         return $form;
     }
-
-
 
     /**
      * Génere un champ de supression en HTML.
      */
-    public function generateDeleteForm($name = '', $label='')
+    public function generateDeleteForm ($name = '', $label = '')
     {
 
-        $form = $this->generateFormFor('delete',$name, $label,true);
+        $form = $this->generateFormFor ('delete', $name, $label, true);
 
-        $keysList = $this->getDefinedPrimaryFields();
-        $destination = new Input('ids','hidden');
-        $destination->setValue(arr2param($keysList,','));
-        $form->addField($destination);
+        $keysList = $this->getDefinedPrimaryFields ();
+        $destination = new Input ('ids', 'hidden');
+        $destination->setValue (arr2param ($keysList, ','));
+        $form->addField ($destination);
 
         return $form;
     }
-    
+
     /**
      * Génere une url de supression en HTML.
      */
-    public function generateDeleteLink($ajax=False)
+    public function generateDeleteLink ($ajax = False)
     {
         $aj = '';
-        if($ajax){$aj='&ajax=true';}
-        $keysList = $this->getDefinedPrimaryFields();
-        $href = Core::opts()->system->siteroot
-            .'index.php?moon-action=delete&target='
-            .strtolower($this->table).$aj.'&ids='.arr2param($keysList,',');
+        if ( $ajax )
+        {
+            $aj = '&ajax=true';
+        }
+        $keysList = $this->getDefinedPrimaryFields ();
+        $href = Core::opts ()->system->siteroot
+                . 'index.php?moon-action=delete&target='
+                . strtolower ($this->table) . $aj . '&ids=' . arr2param ($keysList, ',');
         return $href;
     }
 
@@ -924,25 +1023,25 @@ abstract class Entity implements JsonSerializable {
      * will apply defined filters to the fields to 
      * insert / update.
      */
-    protected function applyDefinedFilters($data)
+    protected function applyDefinedFilters ($data)
     {
-        $rules = $this->getRulesForForm($_GET['formName']);
-        
-        if($rules !== false)
+        $rules = $this->getRulesForForm ($_GET['formName']);
+
+        if ( $rules !== false )
         {
-            if(isset($rules['form']))
-                unset($rules['form']);
+            if ( isset ($rules['form']) )
+                unset ($rules['form']);
             $filteredData = $data;
 
-            foreach($data as $key => $field)
+            foreach ($data as $key => $field)
             {
-                if(array_key_exists($key,$rules))
+                if ( array_key_exists ($key, $rules) )
                 {
-                    if(array_key_exists('filter',$rules[$key]))
+                    if ( array_key_exists ('filter', $rules[$key]) )
                     {
                         $toApply = $rules[$key]['filter'];
-                        $filter = new Filter($field,$toApply);
-                        $filteredData[$key] = $filter->execute();
+                        $filter = new Filter ($field, $toApply);
+                        $filteredData[$key] = $filter->execute ();
                     }
                 }
             }
@@ -952,11 +1051,11 @@ abstract class Entity implements JsonSerializable {
             return $data;
     }
 
-    protected function getRulesForForm($formName)
+    protected function getRulesForForm ($formName)
     {
         $return = false;
-        $rules = Core::getFormDefinitionArray();
-        if(array_key_exists($formName,$rules))
+        $rules = Core::getFormDefinitionArray ();
+        if ( array_key_exists ($formName, $rules) )
             $return = $rules[$formName];
         else
             return false;
@@ -969,12 +1068,13 @@ abstract class Entity implements JsonSerializable {
      * Cette méthode renvoie donc un tableau constitué
      * seuelement des champs appartenant a la classe.
      */
-    protected function parseDataForAction($data)
+    protected function parseDataForAction ($data)
     {
-        $results = array();
-        $fieldsList = $this->getFieldsList();
-        foreach ($data as $key => $value) {
-            if(in_array($key, $fieldsList))
+        $results = array ();
+        $fieldsList = $this->getFieldsList ();
+        foreach ($data as $key => $value)
+        {
+            if ( in_array ($key, $fieldsList) )
             {
                 $results[$key] = $value;
             }
@@ -986,18 +1086,17 @@ abstract class Entity implements JsonSerializable {
      * Procède à l'insertion de la data fournie en parametre
      * dans la base de données.
      */
-    public function processInsertForm($data=array())
+    public function processInsertForm ($data = array ())
     {
-        if($this->validateInsertForm($data)
-                and $this->happyFields->check())
+        if ( $this->validateInsertForm ($data) and $this->happyFields->check () )
         {
-            $data = $this->applyDefinedFilters($data);
-            $fields = $this->parseDataForAction($data);
-            $result = Core::getBdd()->insert($fields, $this->table);
-            if($result !== false)
+            $data = $this->applyDefinedFilters ($data);
+            $fields = $this->parseDataForAction ($data);
+            $result = Core::getBdd ()->insert ($fields, $this->table);
+            if ( $result !== false )
             {
                 $data['moon_id'] = $result;
-                return $this->insertCallback($data);
+                return $this->insertCallback ($data);
             }
             else
             {
@@ -1008,25 +1107,23 @@ abstract class Entity implements JsonSerializable {
         }
         else /** @TODO : Gestion des messages d'erreur */
         {
-	        var_dump($this->happyFields->getRulesErrors());
-	        var_dump($this->happyFields->getRulesErrors());
+            var_dump ($this->happyFields->getRulesErrors ());
+            var_dump ($this->happyFields->getRulesErrors ());
             echo '<span style="color: red">rules NOT validated !</span>';
             return false;
         }
-
     }
 
     /**
      * Procède à la supression de la data fournie en parametre
      * dans la base de données.
      */
-    public function processDeleteForm($data=array())
+    public function processDeleteForm ($data = array ())
     {
-        $fields = $this->parseDataForAction($data);
-        if(Core::getBdd()->delete(
-            $this->table,
-            $fields
-            ))
+        $fields = $this->parseDataForAction ($data);
+        if ( Core::getBdd ()->delete (
+                        $this->table, $fields
+                ) )
         {
             return true;
         }
@@ -1038,21 +1135,18 @@ abstract class Entity implements JsonSerializable {
      * Procède à la mise à jour de la data fournie en parametre
      * dans la base de données.
      */
-    public function processUpdateForm($data=array())
+    public function processUpdateForm ($data = array ())
     {
-        if($this->validateUpdateForm($data)
-            and $this->happyFields->check())
+        if ( $this->validateUpdateForm ($data) and $this->happyFields->check () )
         {
-            $data = $this->applyDefinedFilters($data);
-            $fields = $this->parseDataForAction($data);
+            $data = $this->applyDefinedFilters ($data);
+            $fields = $this->parseDataForAction ($data);
 
-            if(Core::getBdd()->update(
-                $fields,
-                $this->table,
-                $this->getDefinedPrimaryFields()))
-		    {
-                	return $this->updateCallback($data);
-		    }
+            if ( Core::getBdd ()->update (
+                            $fields, $this->table, $this->getDefinedPrimaryFields ()) )
+            {
+                return $this->updateCallback ($data);
+            }
             else
             {
                 echo 'Echec lors de la mise à jour...';
@@ -1061,32 +1155,28 @@ abstract class Entity implements JsonSerializable {
         }
         else /** @TODO : Gestion des messages d'erreur */
         {
-            var_dump($this->validateUpdateForm($data));
-            var_dump($this->happyFields->check());
-	        var_dump($this->happyFields->getRulesErrors());
+            var_dump ($this->validateUpdateForm ($data));
+            var_dump ($this->happyFields->check ());
+            var_dump ($this->happyFields->getRulesErrors ());
             echo '<span style="color: red">rules NOT validated !</span>';
             return false;
         }
     }
 
-    protected function updateCallback($data)
+    protected function updateCallback ($data)
     {
-	    return True;
+        return True;
     }
 
-    protected function insertCallback($data)
+    protected function insertCallback ($data)
     {
-	    return True;
+        return True;
     }
 
-
-    protected function deleteCallback($data)
+    protected function deleteCallback ($data)
     {
-	    return True;
+        return True;
     }
-
-
-
 
     /**
      * Will search in the form files for a rules set
@@ -1098,26 +1188,26 @@ abstract class Entity implements JsonSerializable {
      * Par exemple, le domain de Profile/Project est [Profile]
      * et doit etre set dans le Controlleur.
      */
-    protected function searchForDefinedRules($formName)
+    protected function searchForDefinedRules ($formName)
     {
         $return = false;
-        $rules = $this->getRulesForForm($formName);
-        if($rules !== false)
+        $rules = $this->getRulesForForm ($formName);
+        if ( $rules !== false )
         {
-            if(isset($rules['form']))
-                unset($rules['form']);
-            $this->happyFields->clearRules()->loadRulesFromArray($rules);
+            if ( isset ($rules['form']) )
+                unset ($rules['form']);
+            $this->happyFields->clearRules ()->loadRulesFromArray ($rules);
             $return = true;
         }
 
         return $return;
     }
 
-    public function initProcess($data=array())
+    public function initProcess ($data = array ())
     {
-        $this->happyFields->setFields($data);
-        if(isset($_GET['formName']))
-            $rulesExists = $this->searchForDefinedRules($_GET['formName']);
+        $this->happyFields->setFields ($data);
+        if ( isset ($_GET['formName']) )
+            $rulesExists = $this->searchForDefinedRules ($_GET['formName']);
         else
             $rulesExists = false;
         return $rulesExists;
@@ -1128,25 +1218,25 @@ abstract class Entity implements JsonSerializable {
      * contain the current context.
      * @return Input the hidden field.
      */
-    protected function getContextField()
+    protected function getContextField ()
     {
-        $context = new Input('moon-context','hidden');
-        $context->setValue(Core::getContext());
+        $context = new Input ('moon-context', 'hidden');
+        $context->setValue (Core::getContext ());
         return $context;
     }
 
-    /*********************************************************
+    /*     * *******************************************************
      *                  Database CRUD methods                *
-     *********************************************************/
+     * ******************************************************* */
 
-    public function insert()
+    public function insert ()
     {
-        return Core::getBdd()->insertEntity($this);
+        return Core::getBdd ()->insertEntity ($this);
     }
 
-    /*********************************************************
+    /*     * *******************************************************
      * All the user functions that must be redefined :       *
-     *********************************************************/
+     * ******************************************************* */
 
     /**
      * This method is called before each insertion
@@ -1160,7 +1250,7 @@ abstract class Entity implements JsonSerializable {
      *
      * @return boolean true if success, false otherwise.
      */
-    public function validateInsertForm($data)
+    public function validateInsertForm ($data)
     {
         return true;
     }
@@ -1177,15 +1267,12 @@ abstract class Entity implements JsonSerializable {
      *
      * @return boolean true if success, false otherwise.
      */
-    public function validateUpdateForm($data)
+    public function validateUpdateForm ($data)
     {
         return true;
     }
 
-
-
-
     // End of Entity class //
+}
 
-    }
 ?>

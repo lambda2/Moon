@@ -147,7 +147,7 @@ class Select extends Field {
     }
 
     /**
-     * Va retourner le code Html du bouton
+     * Va retourner le code Html du select
      */
     public function getHtml() {
 
