@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @todo Faire quelque chose de cette classe...
+ */
 class Access {
 
     protected $accessRules = array();

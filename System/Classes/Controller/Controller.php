@@ -10,18 +10,43 @@
  */
 
 /**
- * Classe controleur. 
+ * The main controller class.
+ * All controllers must inherit this class.s
+ * 
+ * @package Moon
+ * @subpackage Controller
  */
 abstract class Controller
 {
 
+    /**
+     * @var Twig_Loader_Filesystem The Twig loader
+     */
     protected $loader;
+    
+    /**
+     * @var Twig_Environment the Twig environment
+     */
     protected $twig;
+    
+    /**
+     *
+     * @var bool the Ajax flag.
+     * Set to true when the called method have an Ajax annotation. 
+     */
     protected $ajax = false;
+    
+    /**
+     *
+     * @var bool the fromAjax flag.
+     * Set to true when the method is called by an ajax request.
+     * 
+     * @deprecated Not used yet
+     */
     protected $fromAjax = false;
 
     /**
-     * @var string template la template qui va etre affichée. 
+     * @var string template the template wich will be showed
      */
     protected $template = false;
 
@@ -36,24 +61,27 @@ abstract class Controller
     protected $templatesConfig = null;
 
     /**
-     * @var array webdata le tableau contenant toutes les infos système
-     * a passer à la template (comme le debug, ou la template mere...) 
+     * @var array webdata the array wich contains all the template shared data,
+     * like css stylesheets, scripts, profiler informations...
      */
     protected $webdata = array ();
 
     /**
-     * @var array urlParams le tableau contenant tous les parametres passées
-     * à la template. (dans l'url, tout ce qu'il y a apres le "?"
+     * @var array urlParams the array that contains all the parameters 
+     * passed to the template. (in the url, all that was after the "?"
      */
     protected $urlParams = array ();
 
     /**
-     * @var array data le tableau contenant les données que le controleur doit
-     * passer à la vue.
+     * @var array data the array containing the data that the controller 
+     * must pass to the view.
      */
     protected $data = array ();
 
-    public function __construct ($request = '')
+    /**
+     * The Controller constructor.
+     */
+    public function __construct ()
     {
         $this->setTemplateFolder (Core::opts ()->templates->default_template);
         $this->initialize ();
@@ -62,6 +90,7 @@ abstract class Controller
     /**
      * Will add all the fields in the given array to the 
      * template data.
+     * @param array $params the data to add.
      */
     public function registerParams ($params = array ())
     {
@@ -112,14 +141,19 @@ abstract class Controller
     {
         return $this->fromAjax;
     }
-    
-    public function useCustomTemplate ($template)
+   
+    /**
+     * Will change de default template folder to a subdirectory of it,
+     * and all the next templates will be searched in this directory.
+     * @param string $templateFolder the subdirectory to search next templates
+     */
+    public function useCustomTemplateFolder ($templateFolder)
     {
-        $this->setTemplateFolder ($template);
+        $this->setTemplateFolder ($templateFolder);
         $this->loadTemplateConfiguration ();
 
         // We have to reload the engine to update the search paths.
-        // TODO : Trouver une autre solution que de tout recharger.
+        // @TODO : find an other solution than reload all the twig engine
         $this->reloadMainTwigEngine ();
     }
 
@@ -151,8 +185,10 @@ abstract class Controller
     protected function loadTemplateConfiguration ()
     {
         if ( isNull ($this->templatesFolder) )
+        {
             throw new AlertException (
             "No template folder have been specified with setTemplateFolder(folder)", 1);
+        }
 
         // The path to the template folder configuration file
         $templateConfigPath = $this->templatesFolder . 'template.yml';
@@ -172,13 +208,11 @@ abstract class Controller
     }
 
     /**
-     * Va generer un tableau contenant les options de configuration du 
-     * moteur de templates en fonction des options définies dans le fichier de 
-     * configuration.
-     * Ce tableau va ensuite etre passé au Twig_Environment lors de son
-     * instanciation.
+     * Will generate an array containing the configuration options of the 
+     * template engine, based on the options specified in the configuration file.
+     * This array will then be passed Twig_Environment during its instantiation.
      * 
-     * @return array les options de configuration du moteur de template
+     * @return array the configuration options of the template engine
      * 
      * @see Twig_Environment
      */
@@ -203,9 +237,8 @@ abstract class Controller
     }
 
     /**
-     * Va renvoyer un tableau contenant les chemins des dossiers contenant 
-     * les templates
-     * @return array les chemins des dossiers contenant les templates
+     * Will return an array containing the template(s) folder(s) path
+     * @return array the template(s) folder(s) path
      */
     final protected function getTemplatePathsArray ()
     {
@@ -224,18 +257,17 @@ abstract class Controller
     }
 
     /**
-     * Va initialiser le controleur, c'est à dire initialiser toutes les 
-     * propriétés du controleur à leur valeur par défaut.
+     * Will initialize the controller
      */
     final protected function initialize ()
     {
 
 
         $this->template = strtolower (get_class ($this)) . '.twig';
-        if ( isset ($_GET['ajax']) )
+        /*if ( isset ($_GET['ajax']) )
         {
             $this->ajax = true;
-        }
+        }*/
 
         $this->getMainTwigEngine ();
 
@@ -244,6 +276,9 @@ abstract class Controller
         // Le template par défaut à étendre est défini dans le fichier de conf
     }
 
+    /**
+     * Will initialize the main twig engine.
+     */
     final protected function getMainTwigEngine ()
     {
         $this->loader = new Twig_Loader_Filesystem (
@@ -290,13 +325,13 @@ abstract class Controller
     }
 
     /**
-     * Crée la webdata de base et supprime les anciennes webdatas enregistrées.
+     * Create basic webdata, containing all the scripts and stylesheets paths,
+     * the site root path, and some configuration informations (options.info).
+     * <b>Note that this method will override all previously defined webdata.</b>
      */
     final protected function initializeWebData ()
     {
-        // On nettoie tout ça...
         $this->webdata = array ();
-
         $this->webdata['info'] = Core::opts ()->info->childs ();
         $this->webdata['base'] = Core::opts ()->system->siteroot;
         $this->webdata['stylesheets'] = array ();
@@ -304,8 +339,8 @@ abstract class Controller
     }
 
     /**
-     * Ajoute la feuille de style spécifiée aux feuilles de style de la page.
-     * @param string $name le nom de la css
+     * Add the given stylesheet to the template
+     * @param string $name the stylesheet name, without the path.
      */
     final public function addCss ($name)
     {
@@ -363,8 +398,8 @@ abstract class Controller
     }
 
     /**
-     * Ajoute le script (javascript) spécifié aux scripts de la page.
-     * @param string $name le nom du script
+     * Add the given script to the template
+     * @param string $name the script name, without the path.
      */
     final public function addJs ($name)
     {
@@ -423,9 +458,10 @@ abstract class Controller
     }
 
     /**
-     * Va definir quels sont les fichiers css et js à charger en plus.
-     * --> <b>Surchargez la</b> dans vos controlleurs pour inclure 
-     * systématiquement les memes fichiers dans vos templates.
+     * Will define wich styleshhets and scripts will be added, in addition of
+     * all the template define resources.
+     * --> <b>Override it</b> in your controllers to include the sames files
+     * in your templates.
      */
     protected function addTemplateUserIncludes ()
     {
@@ -472,8 +508,8 @@ abstract class Controller
             $this->webdata['debug'] = Core::getInstance ()->debug ()->showReport ();
         }
         $this->webdata['user'] = Core::getUser ();
-        $this->webdata['get'] = $_GET;
-        $this->webdata['post'] = $_POST;
+        $this->webdata['get'] = $_GET; /** @todo Remove direct access to get superglobal */
+        $this->webdata['post'] = $_POST; /** @todo Remove direct access to post superglobal */
         $this->webdata['session'] = $_SESSION;
         $this->webdata['logged'] = Core::getUser () != null;
         $this->webdata['duration'] = Profiler::getElapsedTime ();
@@ -481,15 +517,23 @@ abstract class Controller
         $this->webdata['fromAjax'] = $this->fromAjax;
     }
 
-    /**
-     * Ajoute une donnée aux autres données qui seront transmises à la vue.
-     * @param string $key le nom de la donnée. Ce nom sera ensuite utilisé 
-     * dans la vue / template pour récuperer la valeur de la donnée.
-     * @param mixed $data la donnée à stocker.
-     * @param boolean $strict définit si oui ou non on ajoute la donnée si elle 
-     * est vide, nulle, ou égale à 0;
-     * @return Controller L'instance courante
+    /*
+     Ajoute une donnée aux autres données qui seront transmises à la vue.
+     @param string $key le nom de la donnée. Ce nom sera ensuite utilisé 
+     dans la vue / template pour récuperer la valeur de la donnée.
+     @param mixed $data la donnée à stocker.
+     @param boolean $strict définit si oui ou non on ajoute la donnée si elle 
+     est vide, nulle, ou égale à 0;
+     @return Controller L'instance courante
      */
+
+     /**
+     * Adds data to all the other data that will be passed to the view.
+     * @param string $key the name of the data. This name will then be used in the view / template to retrieve the value of the data.
+     * @param mixed $data the data to be stored.
+     * @param boolean $strict defines whether or not the data is added if it is empty, void, or equal to 0;
+     * @return Controller The current Controller instance
+      */
     final public function addData ($key, $data, $strict = True)
     {
         if ( $strict )
@@ -507,10 +551,8 @@ abstract class Controller
     }
 
     /**
-     * Ajoute les données Systeme et utilisateur ensemble et renvoie le tableau
-     * contenant toutes ces données.
-     * @return array le tableau contenant toutes les données système et 
-     * utilisateur.
+     * Merge the Data and the System ifnormations and return them into a single array.
+     * @return array the final array, containing data and webdata
      */
     final protected function mergeData ()
     {
@@ -522,9 +564,8 @@ abstract class Controller
     }
 
     /**
-     * Définit un template de base pour les pages du controleur.
-     * La liste des templates sont disponibles dans la documentation.
-     * @param string $template le nom du template a utiliser
+     * Defines a base template for the Controller methods.
+     * @param string $template the base template name
      */
     final public function setBaseTemplate ($template)
     {
@@ -532,15 +573,20 @@ abstract class Controller
     }
 
     /**
-     * Définit la template a afficher.
-     * Par défaut, la template est "[nom du controlleur].twig"
-     * @param string $template le nom de la template a afficher.
+     * Defines the template to use.
+     * @param string $template the name of the template to use, without
+     * folder path.
      */
     final protected function setTemplate ($template)
     {
         $this->template = $template;
     }
 
+    /**
+     * sets the Url params.
+     * @param mixed $params the params to set
+     * @return \Controller the current instance
+     */
     public function setUrlParams ($params)
     {
         $this->urlParams = $params;
