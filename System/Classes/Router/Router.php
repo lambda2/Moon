@@ -456,13 +456,7 @@ class Router
             return false;
         }
 
-        echo("<h1>params :</h1>");
-        var_dump ($params);
-
         $class->initProcess ($params);
-
-        echo("<h1>classe :</h1>");
-        var_dump ($class);
 
         $ajaxOutput = "ok";
 

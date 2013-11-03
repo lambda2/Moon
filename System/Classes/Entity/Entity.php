@@ -1120,15 +1120,17 @@ abstract class Entity implements JsonSerializable
      */
     public function processDeleteForm ($data = array ())
     {
-        $fields = $this->parseDataForAction ($data);
-        if ( Core::getBdd ()->delete (
-                        $this->table, $fields
-                ) )
+        if ( $this->beforeDelete( $data ))
         {
-            return true;
+        $fields = $this->parseDataForAction ($data);
+        if ( Core::getBdd ()->delete ($this->table, $fields) )
+        {
+            return $this->deleteCallback($data);
         }
         else
             return false;
+        }
+        return false;
     }
 
     /**
@@ -1137,7 +1139,8 @@ abstract class Entity implements JsonSerializable
      */
     public function processUpdateForm ($data = array ())
     {
-        if ( $this->validateUpdateForm ($data) and $this->happyFields->check () )
+        if ( $this->validateUpdateForm ($data) and $this->happyFields->check () 
+                and $this->beforeUpdate( $data ))
         {
             $data = $this->applyDefinedFilters ($data);
             $fields = $this->parseDataForAction ($data);
@@ -1174,6 +1177,21 @@ abstract class Entity implements JsonSerializable
     }
 
     protected function deleteCallback ($data)
+    {
+        return True;
+    }
+
+    protected function beforeUpdate ($data)
+    {
+        return True;
+    }
+
+    protected function beforeInsert ($data)
+    {
+        return True;
+    }
+
+    protected function beforeDelete ($data)
     {
         return True;
     }
