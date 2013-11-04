@@ -185,7 +185,6 @@ class Query {
         $sql .= $this->getWhereSql();
         $sql .= $this->getEndingSql();
         
-        var_dump($sql);
         return $sql;
     }
 
@@ -210,7 +209,6 @@ class Query {
      */
     protected function getWhereSql()
     {
-        var_dump($this->wconstraints);
         if(count($this->wconstraints) == 0 and count($this->inconstraints) == 0)
             return '';
         $req = ' WHERE ';
@@ -270,8 +268,6 @@ class Query {
         $table = preg_replace(Entities::getFilter(),'',$constraint);
         $res = array();
         $isConstr = preg_match_all(Entities::getFilter(),$constraint,$res,PREG_SET_ORDER);
-        echo('$isConstr : ');
-        var_dump($res);
         if($isConstr > 0)
         {
             foreach($res as $aConstraint)

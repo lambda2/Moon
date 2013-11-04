@@ -205,8 +205,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
     {
         // On récupère toutes les tables demandées
         $tables = $this->getTablesFromHistory();
-        echo('<h2>$tables</h2>');
-        var_dump($tables);
 
         // On récupère leur nombre pour la boucle
         $len = count($tables);
@@ -228,8 +226,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
             $originConstraints = $tables[$i]['constraints'];
 
             $q->convertConstraint($originConstraints);
-            echo "<p>convertConstraint($originConstraints):</p>";
-            var_dump($q);
             if($i > 0)
             {
                 $previousTable = $tables[$i-1]['table'];
@@ -328,7 +324,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
         $res = array();
         foreach($tbls as $tb)
         {
-            echo('<h2>$tb = '.$tb.'</h2>');
             $res[] = array(
                 'table' => $this->clearAttributesFromHistory($tb),
                 'constraints' => $tb
@@ -485,19 +480,13 @@ class Entities implements Iterator, Countable, JsonSerializable {
 
     public function clearAttributesFromHistory($str)
     {
-        echo("<p>clearAttributesFromHistory($str)</p>");
-        var_dump(preg_replace($this->getFilter(),'',$str));
-        echo("- - - - - - - ");
         return preg_replace($this->getFilter(),'',$str);
     }
 
     public function getAttributesFromString($str)
     {
         $res = array();
-        echo("<p>getAttributesFromStrings($str)</p>");
         $result = preg_match_all($this->getFilter(),$str,$res);
-        var_dump($result);
-        echo("- - - - - - - ");
         return $res;
     }
 
