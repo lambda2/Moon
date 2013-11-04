@@ -23,19 +23,19 @@ abstract class Controller
      * @var Twig_Loader_Filesystem The Twig loader
      */
     protected $loader;
-    
+
     /**
      * @var Twig_Environment the Twig environment
      */
     protected $twig;
-    
+
     /**
      *
      * @var bool the Ajax flag.
      * Set to true when the called method have an Ajax annotation. 
      */
     protected $ajax = false;
-    
+
     /**
      *
      * @var bool the fromAjax flag.
@@ -49,6 +49,13 @@ abstract class Controller
      * @var string template the template wich will be showed
      */
     protected $template = false;
+
+    /**
+     * @var bool true when the template is not default, but user defined
+     * with [setTemplate()]
+     * @see Controller#setTemplate
+     */
+    private $definedTemplate = false;
 
     /**
      * @var string the folder for all the templates 
@@ -141,7 +148,7 @@ abstract class Controller
     {
         return $this->fromAjax;
     }
-   
+
     /**
      * Will change de default template folder to a subdirectory of it,
      * and all the next templates will be searched in this directory.
@@ -264,10 +271,10 @@ abstract class Controller
 
 
         $this->template = strtolower (get_class ($this)) . '.twig';
-        /*if ( isset ($_GET['ajax']) )
-        {
-            $this->ajax = true;
-        }*/
+        /* if ( isset ($_GET['ajax']) )
+          {
+          $this->ajax = true;
+          } */
 
         $this->getMainTwigEngine ();
 
@@ -508,8 +515,8 @@ abstract class Controller
             $this->webdata['debug'] = Core::getInstance ()->debug ()->showReport ();
         }
         $this->webdata['user'] = Core::getUser ();
-        $this->webdata['get'] = $_GET; /** @todo Remove direct access to get superglobal */
-        $this->webdata['post'] = $_POST; /** @todo Remove direct access to post superglobal */
+        $this->webdata['get'] = $_GET;/** @todo Remove direct access to get superglobal */
+        $this->webdata['post'] = $_POST;/** @todo Remove direct access to post superglobal */
         $this->webdata['session'] = $_SESSION;
         $this->webdata['logged'] = Core::getUser () != null;
         $this->webdata['duration'] = Profiler::getElapsedTime ();
@@ -518,22 +525,22 @@ abstract class Controller
     }
 
     /*
-     Ajoute une donnée aux autres données qui seront transmises à la vue.
-     @param string $key le nom de la donnée. Ce nom sera ensuite utilisé 
-     dans la vue / template pour récuperer la valeur de la donnée.
-     @param mixed $data la donnée à stocker.
-     @param boolean $strict définit si oui ou non on ajoute la donnée si elle 
-     est vide, nulle, ou égale à 0;
-     @return Controller L'instance courante
+      Ajoute une donnée aux autres données qui seront transmises à la vue.
+      @param string $key le nom de la donnée. Ce nom sera ensuite utilisé
+      dans la vue / template pour récuperer la valeur de la donnée.
+      @param mixed $data la donnée à stocker.
+      @param boolean $strict définit si oui ou non on ajoute la donnée si elle
+      est vide, nulle, ou égale à 0;
+      @return Controller L'instance courante
      */
 
-     /**
+    /**
      * Adds data to all the other data that will be passed to the view.
      * @param string $key the name of the data. This name will then be used in the view / template to retrieve the value of the data.
      * @param mixed $data the data to be stored.
      * @param boolean $strict defines whether or not the data is added if it is empty, void, or equal to 0;
      * @return Controller The current Controller instance
-      */
+     */
     final public function addData ($key, $data, $strict = True)
     {
         if ( $strict )
@@ -579,6 +586,7 @@ abstract class Controller
      */
     final protected function setTemplate ($template)
     {
+        $this->definedTemplate = true;
         $this->template = $template;
     }
 
@@ -716,12 +724,19 @@ abstract class Controller
         if ( !$this->grantAccess () )
             throw new MemberAccessException ("Access Denied");
 
-        $this->template = $this->getTemplateFileName ();
-
-        if ( $this->template == false )
+        if ( $this->definedTemplate == false )
         {
-            dbg ("le template de destination n'a pas pu etre calcule...", 2);
-            $this->template = strtolower (get_class ($this)) . '.twig';
+            $this->template = $this->getTemplateFileName ();
+
+            if ( $this->template == false )
+            {
+                dbg ("le template de destination n'a pas pu etre calcule...", 2);
+                $this->template = strtolower (get_class ($this)) . '.twig';
+            }
+            else
+            {
+                $this->template .= '.twig';
+            }
         }
         else
         {
