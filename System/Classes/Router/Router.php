@@ -472,12 +472,7 @@ class Router
 
                 $values = param2arr ($identifiers);
 
-                echo("<h1>values :</h1>");
-                var_dump ($values);
-
                 $class->loadByArray ($values);
-                echo("<h1>class loaded :</h1>");
-                var_dump ($class);
 
                 $sucess = $class->processUpdateForm ($params);
                 break;
