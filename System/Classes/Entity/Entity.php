@@ -917,9 +917,16 @@ abstract class Entity implements JsonSerializable
     }
 
     /**
-     * Génere un champ pour l'action ciblée.
+     * Generate an Form object for the targeted action.
+     *
+     * @param string $action the acton name, like 'update', 'insert' or 'delete'
+     * @param string $name the name of the form, default : [$action-$table]
+     * @param string $label the text of the submit button
+     * @param mixed $fields the fields to generate, in an array. default: all the fields
+     * @param boolean $empty if true, the form will not contain form elements
+     * @return \Form the form object
      */
-    public function generateFormFor ($action, $name = '', $label = '', $empty = false)
+    public function generateFormFor ($action, $name = '', $label = '', $fields = 'all', $empty = false)
     {
         if ( isNull ($name) )
         {
@@ -944,11 +951,19 @@ abstract class Entity implements JsonSerializable
         if ( !isNull ($label) )
             $form->setButtonLabel ($label);
 
-        if ( !$empty )
+        if ( !$empty && $fields == 'all')
         {
             foreach ($this->fields as $champ => $valeur)
             {
                 $form->addField ($valeur->getHtmlField ());
+            }
+        }
+        else if (!$empty && is_array ($fields))
+        {
+            // ex : array("nom", "prenom")
+            foreach ($fields as $value)
+            {
+                $form->addField($this->fields[$value]->getHtmlField());
             }
         }
 
@@ -972,10 +987,10 @@ abstract class Entity implements JsonSerializable
     /**
      * Génere un champ de mise à jour en HTML.
      */
-    public function generateUpdateForm ($name = '', $label = '')
+    public function generateUpdateForm ($name = '', $label = '', $fields='all')
     {
-        $form = $this->generateFormFor ('update', $name, $label);
-
+	echo("generate");
+        $form = $this->generateFormFor ('update', $name, $label, $fields);
         $keysList = $this->getDefinedPrimaryFields ();
         $destination = new Input ('ids', 'hidden');
         $destination->setValue (arr2param ($keysList, ','));
@@ -992,7 +1007,7 @@ abstract class Entity implements JsonSerializable
     public function generateDeleteForm ($name = '', $label = '')
     {
 
-        $form = $this->generateFormFor ('delete', $name, $label, true);
+        $form = $this->generateFormFor ('delete', $name, $label, 'all', true);
 
         $keysList = $this->getDefinedPrimaryFields ();
         $destination = new Input ('ids', 'hidden');
