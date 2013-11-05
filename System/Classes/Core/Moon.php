@@ -40,7 +40,7 @@ class Moon {
         $cl->loadBy($field, $value);
         $cl->autoLoadLinkedClasses();
         return $cl;
-    }    
+    }
 
     /**
      * Crée un tableau contenant le ou les objets correspondants aux critères 

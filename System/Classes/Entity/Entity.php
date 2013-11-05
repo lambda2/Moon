@@ -989,7 +989,6 @@ abstract class Entity implements JsonSerializable
      */
     public function generateUpdateForm ($name = '', $label = '', $fields='all')
     {
-	echo("generate");
         $form = $this->generateFormFor ('update', $name, $label, $fields);
         $keysList = $this->getDefinedPrimaryFields ();
         $destination = new Input ('ids', 'hidden');
@@ -1122,7 +1121,7 @@ abstract class Entity implements JsonSerializable
         }
         else /** @TODO : Gestion des messages d'erreur */
         {
-            var_dump ($this->happyFields->getRulesErrors ());
+            var_dump ($this->happyFields);
             var_dump ($this->happyFields->getRulesErrors ());
             echo '<span style="color: red">rules NOT validated !</span>';
             return false;
