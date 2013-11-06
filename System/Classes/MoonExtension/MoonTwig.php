@@ -23,23 +23,23 @@ class MoonTwig extends Twig_Extension
      */
     public function getFunctions ()
     {
-        return array (
-            new Twig_SimpleFunction ('link', 'MoonTwig::moonLink', array ('is_safe' => array ('html'))),
-            new Twig_SimpleFunction ('href', 'MoonTwig::moonHref', array ('is_safe' => array ('html'))),
-            new Twig_SimpleFunction ('insertForm', 'MoonTwig::insertForm'),
-            new Twig_SimpleFunction ('deleteForm', 'MoonTwig::deleteForm'),
-            new Twig_SimpleFunction ('deleteLink', 'MoonTwig::deleteLink'),
-            new Twig_SimpleFunction ('updateForm', 'MoonTwig::updateForm'),
-            new Twig_SimpleFunction ('getFormOpenTag', 'MoonTwig::getFormOpenTag'),
-            new Twig_SimpleFunction ('getFormCloseTag', 'MoonTwig::getFormCloseTag'),
-            new Twig_SimpleFunction ('getFormFieldList', 'MoonTwig::getFormFieldList'),
-            new Twig_SimpleFunction ('truncate', 'MoonTwig::truncate'),
-            new Twig_SimpleFunction ('gravatar', 'MoonTwig::getGravatar'),
-            new Twig_SimpleFunction ('plu', 'MoonTwig::plural'),
-            new Twig_SimpleFunction ('fetch', 'MoonTwig::fetch'),
-            new Twig_SimpleFunction ('sum', 'MoonTwig::sum'),
-            new Twig_SimpleFunction ('len', 'MoonTwig::getCount')
-        );
+	return array (
+		new Twig_SimpleFunction ('link', 'MoonTwig::moonLink', array ('is_safe' => array ('html'))),
+		new Twig_SimpleFunction ('href', 'MoonTwig::moonHref', array ('is_safe' => array ('html'))),
+		new Twig_SimpleFunction ('insertForm', 'MoonTwig::insertForm'),
+		new Twig_SimpleFunction ('deleteForm', 'MoonTwig::deleteForm'),
+		new Twig_SimpleFunction ('deleteLink', 'MoonTwig::deleteLink'),
+		new Twig_SimpleFunction ('updateForm', 'MoonTwig::updateForm'),
+		new Twig_SimpleFunction ('getFormOpenTag', 'MoonTwig::getFormOpenTag'),
+		new Twig_SimpleFunction ('getFormCloseTag', 'MoonTwig::getFormCloseTag'),
+		new Twig_SimpleFunction ('getFormFieldList', 'MoonTwig::getFormFieldList'),
+		new Twig_SimpleFunction ('truncate', 'MoonTwig::truncate'),
+		new Twig_SimpleFunction ('gravatar', 'MoonTwig::getGravatar'),
+		new Twig_SimpleFunction ('plu', 'MoonTwig::plural'),
+		new Twig_SimpleFunction ('fetch', 'MoonTwig::fetch'),
+		new Twig_SimpleFunction ('sum', 'MoonTwig::sum'),
+		new Twig_SimpleFunction ('len', 'MoonTwig::getCount')
+		);
     }
 
     /**
@@ -56,29 +56,29 @@ class MoonTwig extends Twig_Extension
      */
     public static function moonLink ($str, $text = '')
     {
-        $pl = explode ('.', self::getProperVal ($str));
-        if ( strcmp ($text, '') == 0 )
-        {
-            $text = $pl[0];
-        }
-        $str = Core::opts ()->system->siteroot . implode (DIRECTORY_SEPARATOR, $pl);
-        $opts = array ();
-        $numOpts = func_num_args ();
-        if ( $numOpts > 2 )
-        {
-            $options = func_get_args ();
-            for ($i = 2; $i < $numOpts; $i++)
-            {
-                $opts[] = self::getProperVal ($options[$i]);
-            }
-        }
-        $o = '';
-        if ( count ($opts) > 0 )
-        {
-            $o = '/' . implode ('/', $opts);
-        }
+	$pl = explode ('.', self::getProperVal ($str));
+	if ( strcmp ($text, '') == 0 )
+	{
+	    $text = $pl[0];
+	}
+	$str = Core::opts ()->system->siteroot . implode (DIRECTORY_SEPARATOR, $pl);
+	$opts = array ();
+	$numOpts = func_num_args ();
+	if ( $numOpts > 2 )
+	{
+	    $options = func_get_args ();
+	    for ($i = 2; $i < $numOpts; $i++)
+	    {
+		$opts[] = self::getProperVal ($options[$i]);
+	    }
+	}
+	$o = '';
+	if ( count ($opts) > 0 )
+	{
+	    $o = '/' . implode ('/', $opts);
+	}
 
-        return '<a href="' . $str . $o . '">' . $text . '</a>';
+	return '<a href="' . $str . $o . '">' . $text . '</a>';
     }
 
     /**
@@ -88,22 +88,22 @@ class MoonTwig extends Twig_Extension
      */
     public static function moonHref ($str)
     {
-        $pl = explode ('.', self::getProperVal ($str));
-        $str = Core::opts ()->system->siteroot . implode (DIRECTORY_SEPARATOR, $pl);
-        $opts = array ();
-        $numOpts = func_num_args ();
-        if ( $numOpts > 1 )
-        {
-            $options = func_get_args ();
-            for ($i = 1; $i < $numOpts; $i++)
-            {
-                $opts[] = self::getProperVal ($options[$i]);
-            }
-        }
-        $o = '';
-        if ( count ($opts) > 0 )
-            $o = '/' . implode ('/', $opts);
-        return $str . $o;
+	$pl = explode ('.', self::getProperVal ($str));
+	$str = Core::opts ()->system->siteroot . implode (DIRECTORY_SEPARATOR, $pl);
+	$opts = array ();
+	$numOpts = func_num_args ();
+	if ( $numOpts > 1 )
+	{
+	    $options = func_get_args ();
+	    for ($i = 1; $i < $numOpts; $i++)
+	    {
+		$opts[] = self::getProperVal ($options[$i]);
+	    }
+	}
+	$o = '';
+	if ( count ($opts) > 0 )
+	    $o = '/' . implode ('/', $opts);
+	return $str . $o;
     }
 
     /**
@@ -114,12 +114,12 @@ class MoonTwig extends Twig_Extension
      */
     public static function insertForm ($entity, $label = '', $ajax = false)
     {
-        $entity = self::convertStringToEntity ($entity);
-        if ( !is_a ($entity, 'Entity') )
-            throw new AlertException (
-            "Invalid entity supplied for form generation", 1);
+	$entity = self::convertStringToEntity ($entity);
+	if ( !is_a ($entity, 'Entity') )
+	    throw new AlertException (
+		    "Invalid entity supplied for form generation", 1);
 
-        return $entity->generateInsertForm ('', $label);
+	return $entity->generateInsertForm ('', $label);
     }
 
     /**
@@ -127,12 +127,12 @@ class MoonTwig extends Twig_Extension
      */
     public static function sum ($array)
     {
-        return array_sum ($array);
+	return array_sum ($array);
     }
 
     public static function getGravatar ($email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array ())
     {
-        return getGravatar ($email, $s, $d, $r, $img, $atts);
+	return getGravatar ($email, $s, $d, $r, $img, $atts);
     }
 
     /**
@@ -143,11 +143,11 @@ class MoonTwig extends Twig_Extension
      */
     public static function updateForm ($entity, $label = '', $ajax = false)
     {
-        if ( !is_a ($entity, 'Entity') )
-            throw new AlertException (
-            "Invalid entity supplied for form generation", 1);
+	if ( !is_a ($entity, 'Entity') )
+	    throw new AlertException (
+		    "Invalid entity supplied for form generation", 1);
 
-        return $entity->generateUpdateForm ('', $label);
+	return $entity->generateUpdateForm ('', $label);
     }
 
     /**
@@ -159,11 +159,11 @@ class MoonTwig extends Twig_Extension
      */
     public static function deleteForm ($entity, $label = '', $ajax = false)
     {
-        if ( !is_a ($entity, 'Entity') )
-            throw new AlertException (
-            "Invalid entity supplied for form generation", 1);
+	if ( !is_a ($entity, 'Entity') )
+	    throw new AlertException (
+		    "Invalid entity supplied for form generation", 1);
 
-        return $entity->generateDeleteForm ('', $label);
+	return $entity->generateDeleteForm ('', $label);
     }
 
     /**
@@ -173,16 +173,16 @@ class MoonTwig extends Twig_Extension
      */
     public static function deleteLink ($entity, $ajax = false)
     {
-        if ( !is_a ($entity, 'Entity') )
-            throw new AlertException (
-            "Invalid entity supplied for form generation", 1);
+	if ( !is_a ($entity, 'Entity') )
+	    throw new AlertException (
+		    "Invalid entity supplied for form generation", 1);
 
-        return $entity->generateDeleteLink ($ajax);
+	return $entity->generateDeleteLink ($ajax);
     }
 
     public static function truncate ($text, $num = 100, $end = "")
     {
-        return truncate ($text, $num, $end);
+	return truncate ($text, $num, $end);
     }
 
     /**
@@ -192,8 +192,8 @@ class MoonTwig extends Twig_Extension
      */
     public static function getFormOpenTag ($entity, $action = 'insert')
     {
-        $entity = self::convertStringToEntity ($entity);
-        return $entity->generateFormFor ($action)->getFormOpenTag ();
+	$entity = self::convertStringToEntity ($entity);
+	return $entity->generateFormFor ($action)->getFormOpenTag ();
     }
 
     /**
@@ -203,8 +203,8 @@ class MoonTwig extends Twig_Extension
      */
     public static function getFormCloseTag ($entity, $action = 'insert')
     {
-        $entity = self::convertStringToEntity ($entity);
-        return $entity->generateFormFor ($action)->getFormCloseTag ();
+	$entity = self::convertStringToEntity ($entity);
+	return $entity->generateFormFor ($action)->getFormCloseTag ();
     }
 
     /**
@@ -213,8 +213,8 @@ class MoonTwig extends Twig_Extension
      */
     public static function getFormFieldList ($entity, $action = 'insert')
     {
-        $entity = self::convertStringToEntity ($entity);
-        return $entity->generateFormFor ($action)->getFormFieldList ();
+	$entity = self::convertStringToEntity ($entity);
+	return $entity->generateFormFor ($action)->getFormFieldList ();
     }
 
     /**
@@ -222,67 +222,74 @@ class MoonTwig extends Twig_Extension
      */
     public static function fetch ($query)
     {
-        $entities = new Entities ($query);
-        return $entities;
+	$entities = new Entities ($query);
+	return $entities;
     }
 
     protected static function convertStringToEntity ($str)
     {
-        if ( is_string ($str) )
-        {
-            $str = Moon::create ($str);
-        }
-        return $str;
+	if ( is_string ($str) )
+	{
+	    $str = Moon::create ($str);
+	}
+	return $str;
     }
 
     protected static function getProperVal ($obj)
     {
-        if ( is_a ($obj, 'EntityField') )
-        {
-            return $obj->getValue ();
-        }
-        else
-        {
-            return $obj;
-        }
+	if ( is_a ($obj, 'EntityField') )
+	{
+	    return $obj->getValue ();
+	}
+	else
+	{
+	    return $obj;
+	}
     }
 
     public static function plural ($str, $obj, $ext = 's', $before = null, $none = null)
     {
-        $nb = count ($obj);
-        if ( $nb > 1 )
-        {
-            if ( $before )
-                return $before . $nb . ' ' . $str . $ext;
-            else
-                return $nb . ' ' . $str . $ext;
-        }
-        else if ( $nb == 0 )
-        {
-            if ( $none )
-                return $none . ' ' . $str;
-            else if ( $before )
-                return $before . $nb . ' ' . $str;
-            else
-                return $nb . ' ' . $str;
-        }
-        else
-        {
-            if ( $before )
-                return $before . $nb . ' ' . $str;
-            else
-                return $nb . ' ' . $str;
-        }
+	if ( is_integer($obj) )
+	{
+	    $nb = $obj;
+	}
+	else
+	{
+	    $nb = count ($obj);
+	}
+	if ( $nb > 1 )
+	{
+	    if ( $before )
+		return $before . $nb . ' ' . $str . $ext;
+	    else
+		return $nb . ' ' . $str . $ext;
+	}
+	else if ( $nb == 0 )
+	{
+	    if ( $none )
+		return $none . ' ' . $str;
+	    else if ( $before )
+		return $before . $nb . ' ' . $str;
+	    else
+		return $nb . ' ' . $str;
+	}
+	else
+	{
+	    if ( $before )
+		return $before . $nb . ' ' . $str;
+	    else
+		return $nb . ' ' . $str;
+	}
     }
 
     public static function getCount ($obj)
     {
-        return count ($obj);
+	return count ($obj);
     }
 
     function getName ()
     {
-        'Moon';
+	'Moon';
     }
 
 }
