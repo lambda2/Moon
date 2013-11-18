@@ -209,7 +209,7 @@ abstract class Controller
         {
             throw new AlertException (
             "Unable to load the templates configuration file."
-            . "Verify the syntax of your YAML file", 1
+            . "Verify the syntax of your YAML file (searching into : '{$templateConfigPath}')", 1
             );
         }
     }

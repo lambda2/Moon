@@ -5,18 +5,18 @@
  */
 const sep = DIRECTORY_SEPARATOR;
 
-$rpath = __DIR__.'/../';
+$rpath = __DIR__.'';
 
 /**
  * La configuration (c'est à dire les logins de la base de données, un éventuel
  * préfixe de table et les modes de développement).
  */
-include_once(__DIR__.'/../'.'System/Classes/Profiler/Profiler.php');
+include_once($rpath.'/Classes/Profiler/Profiler.php');
 Profiler::startTimer();
 /**
  * Le pathFinder, qui va nous permettre d'avoir un autoloader intelligent.
  */
-require_once(__DIR__.'/../'.'System' . sep . 'pathfinder.php');
+require_once($rpath . sep . 'pathfinder.php');
 extension_loaded('apc') ? Pathfinder::enableCache() : Pathfinder::disableCache();
 
 /**
@@ -39,7 +39,7 @@ function __autoload($nomClasse) {
     /**
      * Et on laisse la main à notre PathFinder
      */
-    $foundClasses = PathFinder::getClasses(__DIR__.'/../'.'System');
+    $foundClasses = PathFinder::getClasses($rpath);
     $pos          = strrpos($nomClasse, '\\');
     if ($pos > 0) {
         $nomClasse = substr($nomClasse, $pos + 1);
@@ -82,7 +82,7 @@ function __autoload($nomClasse) {
     
     if(!class_exists('Annotation_Target'))
     {
-        require __DIR__.'/../'.'System/Addendum/annotations.php';
+        require_once($rpath.'/Addendum/annotations.php');
     }
     
     if(!$found)
@@ -98,7 +98,7 @@ function __autoload($nomClasse) {
  * fonctions utilitaires utilisables à n'importe quel endroit.
  * 
  */
-$helpers = PathFinder::getHelpers(__DIR__.'/../'.'System');
+$helpers = PathFinder::getHelpers($rpath);
 foreach ($helpers as $class => $url) {
     require_once($url);
 }
