@@ -96,12 +96,21 @@ class Entities implements Iterator, Countable, JsonSerializable {
     }
 
     /**
+     * Sanitize the history with escaping the '.'.
+     * @param string $hist the history to sanitize.
+     */
+    public function sanitizeForHistory($hist)
+    {
+        return(str_replace('.','#dot#',$hidt));
+    }
+
+    /**
      * Add the given string to the history.
      * @param string $hist the history to add.
      */
     public function addToHistory($hist)
     {
-        $this->history = $hist.'.'.$this->table;
+        $this->history = $this->sanitizeForHistory($hist).'.'.$this->table;
     }
 
     /**

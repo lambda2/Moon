@@ -696,8 +696,13 @@ abstract class Controller
         return $this->grantAccess ();
     }
 
-    protected function getRenderedHtml ()
+    protected function getRenderedHtml ($template = false)
     {
+        $t = $this->template;
+        if ($template != false)
+        {
+            $this->template = $template;
+        }
         // Check if the user have enought permissions
         if ( !$this->grantAccess () )
             throw new MemberAccessException ("Access Denied");
@@ -716,7 +721,9 @@ abstract class Controller
 
         Profiler::endTimer ();
         // And return the rendered html
-        return $this->twig->render ($this->template, $this->mergeData ());
+        $r = $this->twig->render ($this->template, $this->mergeData ());
+        $this->template = $t;
+        return ($r);
     }
 
     final public function render ()

@@ -291,11 +291,12 @@ class Router
         }
         else if ( isset ($params['sandbox']) )
         {
+            echo("sandbox = ".$params['sandbox']);
             if ( Core::opts ()->system->mode == 'DEBUG' &&
                     file_exists (
-                            '../System/SandBox/' . $params['sandbox'] . '.php') )
+                            './Moon/SandBox/' . $params['sandbox'] . '.php') )
             {
-                include_once '../System/SandBox/' . $params['sandbox'] . '.php';
+                include_once './Moon/SandBox/' . $params['sandbox'] . '.php';
             }
             else
             {
