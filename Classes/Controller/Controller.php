@@ -504,6 +504,22 @@ abstract class Controller
             $this->addJs ('../System/Classes/Debug/debug.js');
         }
     }
+    
+    protected function filterPost($elt)
+    {
+        if( isset($_POST[$elt]) )
+            return (htmlentities($_POST[$elt]));
+        else
+            return null;
+    }
+    
+    protected function filterGet($elt)
+    {
+        if( isset($_GET[$elt]) )
+            return (htmlentities($_GET[$elt]));
+        else
+            return null;
+    }
 
     /**
      * Will add additional webdata, such as POST, GET, SESSION
