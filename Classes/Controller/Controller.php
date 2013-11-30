@@ -742,12 +742,17 @@ abstract class Controller
         return ($r);
     }
 
-    final public function render ()
+    final public function render ($template = false)
     {
         // Check if the user have enought permissions
         if ( !$this->grantAccess () )
             throw new MemberAccessException ("Access Denied");
 
+        if ($template != false)
+        {
+            $this->template = $template;
+            $this->definedTemplate = true;
+        }
         if ( $this->definedTemplate == false )
         {
             $this->template = $this->getTemplateFileName ();
