@@ -242,7 +242,9 @@ class Router
             $options = array ();
             if ( count ($request) > 1 )
             {
-                $method = explode ('?', explode ('#', $request[1])[0])[0];
+                $method = explode('#', $request[1]);
+                $method = explode ('?', $method[0]);
+                $method = $method[0];
                 $opts = explode ('?', $request[1]);
                 $alt_meth = array_shift ($opts);
                 if ( count ($opts) )
@@ -549,7 +551,9 @@ class Router
 
                 if ( count ($request) > 1 )
                 {
-                    $method = explode ('?', explode ('#', $request[1])[0])[0];
+		    $method = explode('#', $request[1]);
+		    $method = explode ('?', $method[0]);
+		    $method = $method[0];
                 }
                 else
                     $method = 'index';
