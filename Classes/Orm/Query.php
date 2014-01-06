@@ -193,7 +193,10 @@ class Query {
      */
     protected function getSelectSql()
     {
-        return ' SELECT '.implode(', ',$this->ficonstraints);
+	if (!$this->ficonstraints[0])
+	    return ' SELECT * ';
+	else
+	    return ' SELECT '.implode(', ',$this->ficonstraints);
     }
 
     /**
