@@ -186,7 +186,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
     public function loadFromDatabase()
     {
         $query = $this->generateQueryFromHistory();
-
+		$query->applyFilter($this->filter);
         // On récupère l'instance de l'ORM
         $this->loaded = true;
         $orm = Core::getBdd();

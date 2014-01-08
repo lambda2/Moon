@@ -172,6 +172,18 @@ class Query {
         return $this;
     }
 
+    public function applyFilter($filter)
+    {
+		if ($filter->getLimit())
+			$this->limit($filter->getLimit());
+		if ($filter->getOrderColumn())
+		{
+			if ($filter->getOrderSort())
+				$this->orderBy($filter->getOrderColumn(), $filter->getOrderSort());
+			else
+				$this->orderBy($filter->getOrderColumn());
+		}
+    }
 
     /* -------------- protected methods for query selectors ---------------- */
 
