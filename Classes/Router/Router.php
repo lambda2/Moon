@@ -25,13 +25,13 @@ class Router
      * La méthode procède par ordre de priorité :
      * 1 - Dans le fichier des routes de l'utilisateur, si une route est définie
      * pour cette URL.
-     * 2 - Dans les controlleurs, si un controlleur a le nom du premier élément 
-     * de l'url 
-     * 
-     * @TODO : Essayer de contruire dynamiquement un controlleur si le 
+     * 2 - Dans les controlleurs, si un controlleur a le nom du premier élément
+     * de l'url
+     *
+     * @TODO : Essayer de contruire dynamiquement un controlleur si le
      * controlleur demandé correspond a une entitée. Il faut alors commencer a
      * se pencher sur la gestion des accès (classe Controller ? access.yml ?)
-     * 
+     *
      * @return mixed False si aucun controlleur n'a été trouvé, sinon le nom du
      * controlleur à charger.
      */
@@ -74,7 +74,7 @@ class Router
     }
 
     /**
-     * Cherche dans les routes définies par l'utilisateur si la requete ne 
+     * Cherche dans les routes définies par l'utilisateur si la requete ne
      * correspond pas à une route vers un controlleur.
      * @param string $requestedUrl l'url de la requete
      * @return mixed False si aucun controlleur n'a été trouvé, sinon le nom du
@@ -95,7 +95,7 @@ class Router
     }
 
     /**
-     * Cherche dans les controleurs si la requete ne correspond pas à un 
+     * Cherche dans les controleurs si la requete ne correspond pas à un
      * controlleur.
      * @param string $requestedUrl l'url de la requete
      * @return mixed False si aucun controlleur n'a été trouvé, sinon le nom du
@@ -112,7 +112,7 @@ class Router
         if ( is_file ('Controllers' . DIRECTORY_SEPARATOR . $split[0] . '.php') )
             $controlleur = $split[0];
 
-        /** @TODO : Peut etre faudrait il chercher aussi les controlleurs 
+        /** @TODO : Peut etre faudrait il chercher aussi les controlleurs
          * sans prendre en compte la casse de caractères (case-insensitive) ? */
         return $controlleur;
     }
@@ -162,11 +162,11 @@ class Router
     }
 
     /**
-     * Recoit une url et renvoie un tableau composé de tous les éléments de 
-     * l'url (sauf les parametres). Si l'option [withoutRoot] est à true, les 
+     * Recoit une url et renvoie un tableau composé de tous les éléments de
+     * l'url (sauf les parametres). Si l'option [withoutRoot] est à true, les
      * éléments composant la racine du site ne seront pas renvoyés.
      * @param string $url l'url à découper.
-     * @param boolean $withoutRoot si est à true, les éléments composant 
+     * @param boolean $withoutRoot si est à true, les éléments composant
      * la racine du site ne seront pas renvoyés.
      * @return array un tableau composé des éléments de l'url.
      */
@@ -190,7 +190,7 @@ class Router
 
     /**
      * Instancie le controlleur et apelle la bonne méthode
-     * @param type $controllerUrl l'url du controlleur sous la forme 
+     * @param type $controllerUrl l'url du controlleur sous la forme
      * [Classe].[Methode]
      * @return boolean True si tout est bon, false sinon.
      */
@@ -283,7 +283,7 @@ class Router
                     }
                     $c->setUrlParams ($annotParams);
                 }
-                $c->$method ();
+                $c->$method (array());
             }
             else
             {
@@ -591,7 +591,7 @@ class Router
     }
 
     /**
-     * Méthode principale de la classe, chargée de déterminer le controlleur 
+     * Méthode principale de la classe, chargée de déterminer le controlleur
      * à apeller en fonction des paramètres de la requete.
      * @param type $params les paramètres de la requete.
      */
