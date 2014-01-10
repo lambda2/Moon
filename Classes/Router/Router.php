@@ -563,7 +563,7 @@ class Router
                 {
                     // On la charge
                     $c = new $classe ($params);
-                    $c->$method ();
+                    $c->$method (array());
                 }
                 else
                 {
