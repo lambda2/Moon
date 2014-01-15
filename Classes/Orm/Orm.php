@@ -22,20 +22,20 @@ abstract class Orm {
     protected $driver;
     protected static $db;
     protected static $instance;
-    
+
     // Constraints
 
     /** @var $wcontraints contains all the [where] contraints */
     protected $currentQuery = null;
 
-    
+
     /* ----------------- Common methods ------------------- */
-    
+
     public function __construct($driver) {
         $this->driver = $driver;
         $this->currentQuery = new Query();
         /** @TODO : Peut etre peut on enlever la respondsabilitée de la base
-         * de données a la classe Core, et faire en sorte que l'ORM gere seul 
+         * de données a la classe Core, et faire en sorte que l'ORM gere seul
          * la base de données...
          */
     }
@@ -48,7 +48,7 @@ abstract class Orm {
 
     /**
      * Méthode necessaire pour démarrer le moteur.
-     * Elle ne doit (normalement) etre exécutée qu'une seule fois à 
+     * Elle ne doit (normalement) etre exécutée qu'une seule fois à
      * l'initialisation du Core.
      * @param array() $p les paramètres de connexion
      * @throws OrmException si il y a une erreur.
@@ -56,15 +56,15 @@ abstract class Orm {
     public static function launch($p) {
         try {
             self::$db = new PDO(
-                    "{$p['driver']}:host={$p['host']};dbname={$p['dbname']}", 
-                            $p['login'], $p['pass'], 
+                    "{$p['driver']}:host={$p['host']};dbname={$p['dbname']}",
+                            $p['login'], $p['pass'],
                             array(PDO::MYSQL_ATTR_INIT_COMMAND
                 => 'SET NAMES \'UTF8\'')
             );
             self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             throw new OrmException(
-                    "Erreur lors de l\'initialisation de la base de données : " 
+                    "Erreur lors de l\'initialisation de la base de données : "
                     . $e->getMessage() . "<br/>");
         }
     }
@@ -78,8 +78,8 @@ abstract class Orm {
 
         try {
             $i = new PDO(
-                    "{$p['driver']}:host={$p['host']};dbname={$p['dbname']}", 
-                            $p['login'], $p['pass'], 
+                    "{$p['driver']}:host={$p['host']};dbname={$p['dbname']}",
+                            $p['login'], $p['pass'],
                             array(PDO::MYSQL_ATTR_INIT_COMMAND
                 => 'SET NAMES \'UTF8\'')
             );
@@ -169,7 +169,7 @@ abstract class Orm {
 
         $fields = $this->getDefinedFieldsFromData($data);
         $parenthValues = $this->generateInterrArray($data);
-        $request = 
+        $request =
             'INSERT INTO '
             .$table.' ('.$fields.')'
             .' VALUES ('.$parenthValues.');';
@@ -185,12 +185,12 @@ abstract class Orm {
 
             Debug::log("Erreur lors de l'insertion : $e->getMessage()",1);
             // Peut etre faudra il enlever cette exception.
-            
+
             throw new OrmException(
             "Unable to execute the request '$request' : ["
             . $e->getMessage() . ']');
             var_dump($e);
-            
+
         }
         return $r;
     }
@@ -199,7 +199,7 @@ abstract class Orm {
     {
         return self::$db->lastInsertId();
     }
- 
+
     protected function convertFieldsToParams($entity)
     {
         $params = array();
@@ -213,7 +213,7 @@ abstract class Orm {
         return $params;
     }
 
-   
+
     public function insertEntity($entity)
     {
         $table = $entity->getTable();
@@ -224,7 +224,7 @@ abstract class Orm {
     }
 
     /**
-     * Va mettre à jour les champs spécifiés dans data dans la table 
+     * Va mettre à jour les champs spécifiés dans data dans la table
      * fournie par $table pour les ids spécifiés par $ids.
      */
     public function update($data, $table, $ids)
@@ -235,8 +235,11 @@ abstract class Orm {
             throw new OrmException("Arguments invalides pour l'insertion.", 1);
 
         $set = $this->generateDefinedInterrArray($data);
-        $where = $this->generateDefinedInterrArray($ids,' AND ');
-        $request = 
+        if ($ids == NULL)
+            $where = "1";
+        else
+            $where = $this->generateDefinedInterrArray($ids,' AND ');
+        $request =
             'UPDATE '
             .$table.' SET '.$set.''
             .' WHERE '.$where.';';
@@ -257,7 +260,7 @@ abstract class Orm {
     }
 
     /**
-     * Va supprimer dans la table spécifiée par $table 
+     * Va supprimer dans la table spécifiée par $table
      * les entrées corespondant aux ids spécifiés par $ids.
      */
     public function delete($table, $ids)
@@ -268,7 +271,7 @@ abstract class Orm {
             throw new OrmException("Arguments invalides pour l'insertion.", 1);
 
         $where = $this->generateDefinedInterrArray($ids,' AND ');
-        $request = 
+        $request =
             'DELETE FROM '.$table
             .' WHERE '.$where.';';
         try {
@@ -469,7 +472,7 @@ abstract class Orm {
     public abstract function getAllTables();
 
     public abstract function getAllColumnsFrom($tableName);
-    
+
     public abstract function getMoonLinksFrom($tableName, $external=false);
 
     public abstract function getAllRelationsFrom($tableName);
@@ -477,7 +480,7 @@ abstract class Orm {
     public abstract function getAllRelationsWith($tableName);
 
     public abstract function getAllRelationsBetween($origin,$destination);
-    
+
     public abstract function getAllRelations();
 
     public abstract function getAllEntityFields($tableName);
