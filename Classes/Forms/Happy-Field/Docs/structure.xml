@@ -1,0 +1,1213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project version="2.0.0a12" title="Happy-Field Documentation">
+  <file path="HappyRules.php" hash="8e4f789330c86e230792f0af6dac54ce" package="Default">
+    <include line="18" type="Include" package="Default">
+      <name>HappyFunctions.php</name>
+    </include>
+    <class final="false" abstract="false" namespace="Happy" line="33" package="Happy\Rules">
+      <extends/>
+      <name>HappyRules</name>
+      <full_name>\Happy\HappyRules</full_name>
+      <docblock line="23">
+        <description>Will define the rules to check for one (form) field.</description>
+        <long-description/>
+        <tag line="23" name="package" description="Happy"/>
+        <tag line="23" name="subpackage" description="Rules"/>
+        <tag line="23" name="category" description="Field Check"/>
+        <tag line="23" name="copyright" description="Copyright (c) 2013, Lambdaweb"/>
+        <tag line="23" name="author" description="Andre Aubin &lt;andre.aubin@lambdaweb.fr&gt;"/>
+        <tag line="23" name="since" description="v1.0"/>
+        <tag line="23" name="link" description="http://lambda2.github.io/Happy-Field/" link="http://lambda2.github.io/Happy-Field/"/>
+      </docblock>
+      <property final="false" static="false" visibility="protected" line="35" namespace="Happy" package="Default">
+        <name>$field</name>
+        <default/>
+      </property>
+      <property final="false" static="false" visibility="protected" line="36" namespace="Happy" package="Default">
+        <name>$label</name>
+        <default/>
+      </property>
+      <property final="false" static="false" visibility="protected" line="37" namespace="Happy" package="Default">
+        <name>$rules</name>
+        <default>array()</default>
+      </property>
+      <property final="false" static="false" visibility="protected" line="39" namespace="Happy" package="Default">
+        <name>$fieldErrors</name>
+        <default>array()</default>
+      </property>
+      <property final="false" static="false" visibility="protected" line="40" namespace="Happy" package="Default">
+        <name>$debugErrors</name>
+        <default>array()</default>
+      </property>
+      <property final="false" static="true" visibility="protected" line="42" namespace="Happy" package="Default">
+        <name>$func_ns</name>
+        <default>'Happy\HappyFunctions'</default>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="51" package="Happy\Rules">
+        <name>__construct</name>
+        <full_name>__construct</full_name>
+        <docblock line="45">
+          <description>Will construct a new HappyRules</description>
+          <long-description/>
+          <tag line="45" name="param" description="the name of the field in the form" type="string" variable="$fieldName">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="45" name="param" description="the rules to check" type="string|array" variable="$rules">
+            <type by_reference="false">string</type>
+            <type by_reference="false">array</type>
+          </tag>
+          <tag line="45" name="param" description="the label of the field for the error message" type="string" variable="$label">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="51">
+          <name>$fieldName</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="51">
+          <name>$rules</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="51">
+          <name>$label</name>
+          <default>''</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="Happy" line="72" package="Happy\Rules">
+        <name>parseRules</name>
+        <full_name>parseRules</full_name>
+        <docblock line="63">
+          <description>Will parse the rules string for return
+an array of rules.</description>
+          <long-description>&lt;p&gt;The rules must be an array or a string
+where rules are separed by the | character.&lt;/p&gt;</long-description>
+          <tag line="63" name="param" description="" type="\Happy\string/array" variable="$rules">
+            <type by_reference="false">\Happy\string/array</type>
+          </tag>
+          <tag line="63" name="throws" description="if $rules is not a string or an array" type="\Happy\Exception">
+            <type by_reference="false">\Happy\Exception</type>
+          </tag>
+          <tag line="63" name="return" description="array containing the parsed rules" type="\Happy\An">
+            <type by_reference="false">\Happy\An</type>
+          </tag>
+        </docblock>
+        <argument line="72">
+          <name>$rules</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="protected" namespace="Happy" line="89" package="Happy\Rules">
+        <name>cleanArray</name>
+        <full_name>cleanArray</full_name>
+        <docblock line="86">
+          <description>Clean the given array for the rules parsing.</description>
+          <long-description/>
+        </docblock>
+        <argument line="89">
+          <name>$array</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="107" package="Happy\Rules">
+        <name>checkRulesExists</name>
+        <full_name>checkRulesExists</full_name>
+        <docblock line="103">
+          <description>Will check if each rule exists.</description>
+          <long-description/>
+          <tag line="103" name="return" description="if all the rules exists, false otherwise." type="true">
+            <type by_reference="false">true</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="147" package="Happy\Rules">
+        <name>addRule</name>
+        <full_name>addRule</full_name>
+        <docblock line="139">
+          <description>Add the rule to the other rules.</description>
+          <long-description>&lt;p&gt;The rule can be a simple rule, an array
+of rules or a string where rules are
+separed by the | character.&lt;/p&gt;</long-description>
+          <tag line="139" name="param" description="the rule to add" type="string|array" variable="$rule">
+            <type by_reference="false">string</type>
+            <type by_reference="false">array</type>
+          </tag>
+          <tag line="139" name="return" description="if succes, false otherwise." type="true">
+            <type by_reference="false">true</type>
+          </tag>
+        </docblock>
+        <argument line="147">
+          <name>$rule</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="159" package="Happy\Rules">
+        <name>clearRules</name>
+        <full_name>clearRules</full_name>
+        <docblock line="156">
+          <description>Clear all the rules</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="170" package="Happy\Rules">
+        <name>checkRules</name>
+        <full_name>checkRules</full_name>
+        <docblock line="165">
+          <description>Will check each rule.</description>
+          <long-description/>
+          <tag line="165" name="param" description="the rules to check" type="array" variable="$rules">
+            <type by_reference="false">array</type>
+          </tag>
+          <tag line="165" name="return" description="if all the rules are checked, false otherwise." type="true">
+            <type by_reference="false">true</type>
+          </tag>
+        </docblock>
+        <argument line="170">
+          <name>$testValue</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="219" package="Happy\Rules">
+        <name>getField</name>
+        <full_name>getField</full_name>
+        <docblock line="214">
+          <description>Gets the value of field.</description>
+          <long-description/>
+          <tag line="214" name="return" description="" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="231" package="Happy\Rules">
+        <name>setField</name>
+        <full_name>setField</full_name>
+        <docblock line="224">
+          <description>Sets the value of field.</description>
+          <long-description/>
+          <tag line="224" name="param" description="the field" type="mixed" variable="$field">
+            <type by_reference="false">mixed</type>
+          </tag>
+          <tag line="224" name="return" description="" type="self">
+            <type by_reference="false">self</type>
+          </tag>
+        </docblock>
+        <argument line="231">
+          <name>$field</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="243" package="Happy\Rules">
+        <name>getLabel</name>
+        <full_name>getLabel</full_name>
+        <docblock line="238">
+          <description>Gets the value of label.</description>
+          <long-description/>
+          <tag line="238" name="return" description="" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="255" package="Happy\Rules">
+        <name>setLabel</name>
+        <full_name>setLabel</full_name>
+        <docblock line="248">
+          <description>Sets the value of label.</description>
+          <long-description/>
+          <tag line="248" name="param" description="the label" type="mixed" variable="$label">
+            <type by_reference="false">mixed</type>
+          </tag>
+          <tag line="248" name="return" description="" type="self">
+            <type by_reference="false">self</type>
+          </tag>
+        </docblock>
+        <argument line="255">
+          <name>$label</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="267" package="Happy\Rules">
+        <name>getRules</name>
+        <full_name>getRules</full_name>
+        <docblock line="262">
+          <description>Gets the value of rules.</description>
+          <long-description/>
+          <tag line="262" name="return" description="" type="array">
+            <type by_reference="false">array</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="279" package="Happy\Rules">
+        <name>setRules</name>
+        <full_name>setRules</full_name>
+        <docblock line="272">
+          <description>Sets the value of rules.</description>
+          <long-description/>
+          <tag line="272" name="param" description="the rules" type="mixed" variable="$rules">
+            <type by_reference="false">mixed</type>
+          </tag>
+          <tag line="272" name="return" description="" type="self">
+            <type by_reference="false">self</type>
+          </tag>
+        </docblock>
+        <argument line="279">
+          <name>$rules</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="291" package="Happy\Rules">
+        <name>getFieldErrors</name>
+        <full_name>getFieldErrors</full_name>
+        <docblock line="286">
+          <description>Gets the value of fieldErrors.</description>
+          <long-description/>
+          <tag line="286" name="return" description="" type="array">
+            <type by_reference="false">array</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="301" package="Happy\Rules">
+        <name>getStrFieldErrors</name>
+        <full_name>getStrFieldErrors</full_name>
+        <docblock line="296">
+          <description>Gets the string value of fieldErrors.</description>
+          <long-description/>
+          <tag line="296" name="return" description="" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="313" package="Happy\Rules">
+        <name>setFieldErrors</name>
+        <full_name>setFieldErrors</full_name>
+        <docblock line="306">
+          <description>Sets the value of fieldErrors.</description>
+          <long-description/>
+          <tag line="306" name="param" description="the fieldErrors" type="mixed" variable="$fieldErrors">
+            <type by_reference="false">mixed</type>
+          </tag>
+          <tag line="306" name="return" description="" type="self">
+            <type by_reference="false">self</type>
+          </tag>
+        </docblock>
+        <argument line="313">
+          <name>$fieldErrors</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="325" package="Happy\Rules">
+        <name>getDebugErrors</name>
+        <full_name>getDebugErrors</full_name>
+        <docblock line="320">
+          <description>Gets the value of debugErrors.</description>
+          <long-description/>
+          <tag line="320" name="return" description="" type="array">
+            <type by_reference="false">array</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="335" package="Happy\Rules">
+        <name>getStrDebugErrors</name>
+        <full_name>getStrDebugErrors</full_name>
+        <docblock line="330">
+          <description>Gets the string value of debugErrors.</description>
+          <long-description/>
+          <tag line="330" name="return" description="" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Happy" line="347" package="Happy\Rules">
+        <name>setDebugErrors</name>
+        <full_name>setDebugErrors</full_name>
+        <docblock line="340">
+          <description>Sets the value of debugErrors.</description>
+          <long-description/>
+          <tag line="340" name="param" description="the debugErrors" type="mixed" variable="$debugErrors">
+            <type by_reference="false">mixed</type>
+          </tag>
+          <tag line="340" name="return" description="" type="self">
+            <type by_reference="false">self</type>
+          </tag>
+        </docblock>
+        <argument line="347">
+          <name>$debugErrors</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file HappyRules.php</error>
+      <error line="35" code="50018">No DocBlock was found for property $field</error>
+      <error line="36" code="50018">No DocBlock was found for property $label</error>
+      <error line="37" code="50018">No DocBlock was found for property $rules</error>
+      <error line="39" code="50018">No DocBlock was found for property $fieldErrors</error>
+      <error line="40" code="50018">No DocBlock was found for property $debugErrors</error>
+      <error line="42" code="50018">No DocBlock was found for property $func_ns</error>
+      <error line="86" code="50015">Argument $array is missing from the Docblock of cleanArray()</error>
+      <error line="165" code="50014">Name of argument $testValue does not match with the DocBlock's name $rules in checkRules()</error>
+      <notice line="165" code="50013">Parameter $rules could not be found in checkRules()</notice>
+    </parse_markers>
+  </file>
+  <file path="Tests/HappyFunctionsTest.php" hash="34412d964ca074b7d68e2299efc29872" package="Default">
+    <include line="17" type="Require Once" package="Default">
+      <name>../HappyRules.php</name>
+    </include>
+    <include line="27" type="Require Once" package="Default">
+      <name>PHPUnit/Autoload.php</name>
+    </include>
+    <include line="50" type="Require Once" package="Default">
+      <name>PHPUnit/TextUI/TestRunner.php</name>
+    </include>
+    <constant namespace="global" line="23" package="Default">
+      <name>PHPUnit_MAIN_METHOD</name>
+      <full_name>\PHPUnit_MAIN_METHOD</full_name>
+      <value>'HappyFunctionsTest::main'</value>
+    </constant>
+    <class final="false" abstract="false" namespace="global" line="40" package="Happy\Tests">
+      <extends>\PHPUnit_Framework_TestCase</extends>
+      <name>HappyFunctionsTest</name>
+      <full_name>\HappyFunctionsTest</full_name>
+      <docblock line="30">
+        <description>Test class for HappyFunctions.</description>
+        <long-description/>
+        <tag line="30" name="package" description="Happy"/>
+        <tag line="30" name="subpackage" description="Tests"/>
+        <tag line="30" name="category" description="Functions Tests"/>
+        <tag line="30" name="copyright" description="Copyright (c) 2013, Lambdaweb"/>
+        <tag line="30" name="author" description="Andre Aubin &lt;andre.aubin@lambdaweb.fr&gt;"/>
+        <tag line="30" name="since" description="v1.0"/>
+        <tag line="30" name="link" description="http://lambda2.github.io/Happy-Field/" link="http://lambda2.github.io/Happy-Field/"/>
+      </docblock>
+      <property final="false" static="false" visibility="public" line="42" namespace="global" package="Default">
+        <name>$hrule</name>
+        <default/>
+      </property>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="49" package="Happy\Tests">
+        <name>main</name>
+        <full_name>main</full_name>
+        <docblock line="43">
+          <description>Runs the test methods of this class.</description>
+          <long-description/>
+          <tag line="43" name="access" description="public"/>
+          <tag line="43" name="static" description=""/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="62" package="Happy\Tests">
+        <name>setUp</name>
+        <full_name>setUp</full_name>
+        <docblock line="56">
+          <description>Sets up the fixture, for example, opens a network connection.</description>
+          <long-description>&lt;p&gt;This method is called before a test is executed.&lt;/p&gt;</long-description>
+          <tag line="56" name="access" description="protected"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="88" package="Happy\Tests">
+        <name>testBasicFunctions</name>
+        <full_name>testBasicFunctions</full_name>
+        <docblock line="72">
+          <description>tests the rules validation for the
+basic functions.</description>
+          <long-description/>
+          <tag line="72" name="covers" description="\Happy\HappyRules::checkRulesExists" refers="\Happy\HappyRules::checkRulesExists"/>
+          <tag line="72" name="covers" description="\Happy\HappyRules::cleanArray" refers="\Happy\HappyRules::cleanArray"/>
+          <tag line="72" name="covers" description="\Happy\HappyRules::checkRules" refers="\Happy\HappyRules::checkRules"/>
+          <tag line="72" name="covers" description="\Happy\HappyFunctions::sup" refers="\Happy\HappyFunctions::sup"/>
+          <tag line="72" name="covers" description="\Happy\HappyFunctions::inf" refers="\Happy\HappyFunctions::inf"/>
+          <tag line="72" name="covers" description="\Happy\HappyFunctions::equ" refers="\Happy\HappyFunctions::equ"/>
+          <tag line="72" name="covers" description="\Happy\HappyFunctions::required" refers="\Happy\HappyFunctions::required"/>
+          <tag line="72" name="covers" description="\Happy\HappyFunctions::minLength" refers="\Happy\HappyFunctions::minLength"/>
+          <tag line="72" name="covers" description="\Happy\HappyFunctions::maxLength" refers="\Happy\HappyFunctions::maxLength"/>
+          <tag line="72" name="covers" description="\Happy\HappyFunctions::exactLength" refers="\Happy\HappyFunctions::exactLength"/>
+          <tag line="72" name="dataProvider" description="getBasicData"/>
+        </docblock>
+        <argument line="88">
+          <name>$testValue</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="88">
+          <name>$testRules</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="88">
+          <name>$expected</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="102" package="Happy\Tests">
+        <name>getBasicData</name>
+        <full_name>getBasicData</full_name>
+        <docblock line="99">
+          <description>Provides data for testing basic functions</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="156" package="Happy\Tests">
+        <name>testTypeFunctions</name>
+        <full_name>testTypeFunctions</full_name>
+        <docblock line="137">
+          <description>tests the rules validation for the
+Type functions.</description>
+          <long-description/>
+          <tag line="137" name="covers" description="\Happy\HappyRules::checkRulesExists" refers="\Happy\HappyRules::checkRulesExists"/>
+          <tag line="137" name="covers" description="\Happy\HappyRules::cleanArray" refers="\Happy\HappyRules::cleanArray"/>
+          <tag line="137" name="covers" description="\Happy\HappyRules::checkRules" refers="\Happy\HappyRules::checkRules"/>
+          <tag line="137" name="covers" description="\Happy\HappyFunctions::alpha" refers="\Happy\HappyFunctions::alpha"/>
+          <tag line="137" name="covers" description="\Happy\HappyFunctions::alphaNum" refers="\Happy\HappyFunctions::alphaNum"/>
+          <tag line="137" name="covers" description="\Happy\HappyFunctions::alphaNumDash" refers="\Happy\HappyFunctions::alphaNumDash"/>
+          <tag line="137" name="covers" description="\Happy\HappyFunctions::num" refers="\Happy\HappyFunctions::num"/>
+          <tag line="137" name="covers" description="\Happy\HappyFunctions::isNum" refers="\Happy\HappyFunctions::isNum"/>
+          <tag line="137" name="covers" description="\Happy\HappyFunctions::integer" refers="\Happy\HappyFunctions::integer"/>
+          <tag line="137" name="covers" description="\Happy\HappyFunctions::decimal" refers="\Happy\HappyFunctions::decimal"/>
+          <tag line="137" name="covers" description="\Happy\HappyFunctions::natural" refers="\Happy\HappyFunctions::natural"/>
+          <tag line="137" name="covers" description="\Happy\HappyFunctions::naturalNotZero" refers="\Happy\HappyFunctions::naturalNotZero"/>
+          <tag line="137" name="dataProvider" description="getTypeData"/>
+        </docblock>
+        <argument line="156">
+          <name>$testValue</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="156">
+          <name>$testRules</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="156">
+          <name>$expected</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="171" package="Happy\Tests">
+        <name>getTypeData</name>
+        <full_name>getTypeData</full_name>
+        <docblock line="168">
+          <description>Provides data for testing Type functions</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="274" package="Happy\Tests">
+        <name>testRegexFunctions</name>
+        <full_name>testRegexFunctions</full_name>
+        <docblock line="258">
+          <description>tests the rules validation for the
+Regex functions.</description>
+          <long-description/>
+          <tag line="258" name="covers" description="\Happy\HappyRules::checkRulesExists" refers="\Happy\HappyRules::checkRulesExists"/>
+          <tag line="258" name="covers" description="\Happy\HappyRules::cleanArray" refers="\Happy\HappyRules::cleanArray"/>
+          <tag line="258" name="covers" description="\Happy\HappyRules::checkRules" refers="\Happy\HappyRules::checkRules"/>
+          <tag line="258" name="covers" description="\Happy\HappyRules::addRule" refers="\Happy\HappyRules::addRule"/>
+          <tag line="258" name="covers" description="\Happy\HappyRules::clearRules" refers="\Happy\HappyRules::clearRules"/>
+          <tag line="258" name="covers" description="\Happy\HappyFunctions::regMatch" refers="\Happy\HappyFunctions::regMatch"/>
+          <tag line="258" name="covers" description="\Happy\HappyFunctions::email" refers="\Happy\HappyFunctions::email"/>
+          <tag line="258" name="covers" description="\Happy\HappyFunctions::emails" refers="\Happy\HappyFunctions::emails"/>
+          <tag line="258" name="covers" description="\Happy\HappyFunctions::isBase64" refers="\Happy\HappyFunctions::isBase64"/>
+          <tag line="258" name="dataProvider" description="getRegexData"/>
+        </docblock>
+        <argument line="274">
+          <name>$testValue</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="274">
+          <name>$testRules</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="274">
+          <name>$expected</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="289" package="Happy\Tests">
+        <name>getRegexData</name>
+        <full_name>getRegexData</full_name>
+        <docblock line="286">
+          <description>Provides data for testing Regex functions</description>
+          <long-description/>
+        </docblock>
+      </method>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file Tests/HappyFunctionsTest.php</error>
+      <error line="42" code="50018">No DocBlock was found for property $hrule</error>
+      <error line="72" code="50015">Argument $testValue is missing from the Docblock of testBasicFunctions()</error>
+      <error line="72" code="50015">Argument $testRules is missing from the Docblock of testBasicFunctions()</error>
+      <error line="72" code="50015">Argument $expected is missing from the Docblock of testBasicFunctions()</error>
+      <error line="137" code="50015">Argument $testValue is missing from the Docblock of testTypeFunctions()</error>
+      <error line="137" code="50015">Argument $testRules is missing from the Docblock of testTypeFunctions()</error>
+      <error line="137" code="50015">Argument $expected is missing from the Docblock of testTypeFunctions()</error>
+      <error line="258" code="50015">Argument $testValue is missing from the Docblock of testRegexFunctions()</error>
+      <error line="258" code="50015">Argument $testRules is missing from the Docblock of testRegexFunctions()</error>
+      <error line="258" code="50015">Argument $expected is missing from the Docblock of testRegexFunctions()</error>
+    </parse_markers>
+  </file>
+  <file path="Tests/HappyRulesTest.php" hash="18fcc44fa9bccdcde09e2b38287cacf0" package="Default">
+    <include line="17" type="Require Once" package="Default">
+      <name>../HappyRules.php</name>
+    </include>
+    <include line="27" type="Require Once" package="Default">
+      <name>PHPUnit/Autoload.php</name>
+    </include>
+    <include line="50" type="Require Once" package="Default">
+      <name>PHPUnit/TextUI/TestRunner.php</name>
+    </include>
+    <constant namespace="global" line="23" package="Default">
+      <name>PHPUnit_MAIN_METHOD</name>
+      <full_name>\PHPUnit_MAIN_METHOD</full_name>
+      <value>'HappyRulesTest::main'</value>
+    </constant>
+    <class final="false" abstract="false" namespace="global" line="40" package="Happy\Tests">
+      <extends>\PHPUnit_Framework_TestCase</extends>
+      <name>HappyRulesTest</name>
+      <full_name>\HappyRulesTest</full_name>
+      <docblock line="30">
+        <description>Test class for HappyRules.</description>
+        <long-description/>
+        <tag line="30" name="package" description="Happy"/>
+        <tag line="30" name="subpackage" description="Tests"/>
+        <tag line="30" name="category" description="Rules Tests"/>
+        <tag line="30" name="copyright" description="Copyright (c) 2013, Lambdaweb"/>
+        <tag line="30" name="author" description="Andre Aubin &lt;andre.aubin@lambdaweb.fr&gt;"/>
+        <tag line="30" name="since" description="v1.0"/>
+        <tag line="30" name="link" description="http://lambda2.github.io/Happy-Field/" link="http://lambda2.github.io/Happy-Field/"/>
+      </docblock>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="49" package="Happy\Tests">
+        <name>main</name>
+        <full_name>main</full_name>
+        <docblock line="43">
+          <description>Runs the test methods of this class.</description>
+          <long-description/>
+          <tag line="43" name="access" description="public"/>
+          <tag line="43" name="static" description=""/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="62" package="Happy\Tests">
+        <name>setUp</name>
+        <full_name>setUp</full_name>
+        <docblock line="56">
+          <description>Sets up the fixture, for example, opens a network connection.</description>
+          <long-description>&lt;p&gt;This method is called before a test is executed.&lt;/p&gt;</long-description>
+          <tag line="56" name="access" description="protected"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="72" package="Happy\Tests">
+        <name>tearDown</name>
+        <full_name>tearDown</full_name>
+        <docblock line="66">
+          <description>Tears down the fixture, for example, closes a network connection.</description>
+          <long-description>&lt;p&gt;This method is called after a test is executed.&lt;/p&gt;</long-description>
+          <tag line="66" name="access" description="protected"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="81" package="Happy\Tests">
+        <name>testConstruct</name>
+        <full_name>testConstruct</full_name>
+        <docblock line="75">
+          <description>tests the HappyRules constructor</description>
+          <long-description/>
+          <tag line="75" name="covers" description="\Happy\HappyRules::__construct" refers="\Happy\HappyRules::__construct"/>
+          <tag line="75" name="covers" description="\Happy\HappyRules::parseRules" refers="\Happy\HappyRules::parseRules"/>
+          <tag line="75" name="covers" description="\Happy\HappyRules::cleanArray" refers="\Happy\HappyRules::cleanArray"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="102" package="Happy\Tests">
+        <name>testCheckRulesExists</name>
+        <full_name>testCheckRulesExists</full_name>
+        <docblock line="96">
+          <description>tests the rules existence</description>
+          <long-description/>
+          <tag line="96" name="covers" description="\Happy\HappyRules::__construct" refers="\Happy\HappyRules::__construct"/>
+          <tag line="96" name="covers" description="\Happy\HappyRules::checkRulesExists" refers="\Happy\HappyRules::checkRulesExists"/>
+          <tag line="96" name="covers" description="\Happy\HappyRules::cleanArray" refers="\Happy\HappyRules::cleanArray"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="147" package="Happy\Tests">
+        <name>testCheckRulesValid</name>
+        <full_name>testCheckRulesValid</full_name>
+        <docblock line="139">
+          <description>tests the rules validation</description>
+          <long-description/>
+          <tag line="139" name="covers" description="\Happy\HappyRules::__construct" refers="\Happy\HappyRules::__construct"/>
+          <tag line="139" name="covers" description="\Happy\HappyRules::checkRulesExists" refers="\Happy\HappyRules::checkRulesExists"/>
+          <tag line="139" name="covers" description="\Happy\HappyRules::cleanArray" refers="\Happy\HappyRules::cleanArray"/>
+          <tag line="139" name="covers" description="\Happy\HappyRules::checkRules" refers="\Happy\HappyRules::checkRules"/>
+          <tag line="139" name="dataProvider" description="getTestValues"/>
+        </docblock>
+        <argument line="147">
+          <name>$testValue</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="147">
+          <name>$testRules</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="147">
+          <name>$expected</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="159" package="Happy\Tests">
+        <name>getTestValues</name>
+        <full_name>getTestValues</full_name>
+        <docblock line="156">
+          <description>Returns test values for the testCheckRulesValid test</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="181" package="Happy\Tests">
+        <name>testGetSetField</name>
+        <full_name>testGetSetField</full_name>
+        <docblock line="175">
+          <description>tests the getter and the setter of Field</description>
+          <long-description/>
+          <tag line="175" name="covers" description="\Happy\HappyRules::__construct" refers="\Happy\HappyRules::__construct"/>
+          <tag line="175" name="covers" description="\Happy\HappyRules::getField" refers="\Happy\HappyRules::getField"/>
+          <tag line="175" name="covers" description="\Happy\HappyRules::setField" refers="\Happy\HappyRules::setField"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="194" package="Happy\Tests">
+        <name>testGetSetLabel</name>
+        <full_name>testGetSetLabel</full_name>
+        <docblock line="188">
+          <description>tests the getter and the setter of Label</description>
+          <long-description/>
+          <tag line="188" name="covers" description="\Happy\HappyRules::__construct" refers="\Happy\HappyRules::__construct"/>
+          <tag line="188" name="covers" description="\Happy\HappyRules::getLabel" refers="\Happy\HappyRules::getLabel"/>
+          <tag line="188" name="covers" description="\Happy\HappyRules::setLabel" refers="\Happy\HappyRules::setLabel"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="207" package="Happy\Tests">
+        <name>testGetSetRules</name>
+        <full_name>testGetSetRules</full_name>
+        <docblock line="201">
+          <description>tests the getter and the setter of Rules</description>
+          <long-description/>
+          <tag line="201" name="covers" description="\Happy\HappyRules::__construct" refers="\Happy\HappyRules::__construct"/>
+          <tag line="201" name="covers" description="\Happy\HappyRules::getRules" refers="\Happy\HappyRules::getRules"/>
+          <tag line="201" name="covers" description="\Happy\HappyRules::setRules" refers="\Happy\HappyRules::setRules"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="224" package="Happy\Tests">
+        <name>testGetSetErrors</name>
+        <full_name>testGetSetErrors</full_name>
+        <docblock line="214">
+          <description>tests the getter and the setter of FieldErrors</description>
+          <long-description/>
+          <tag line="214" name="covers" description="\Happy\HappyRules::__construct" refers="\Happy\HappyRules::__construct"/>
+          <tag line="214" name="covers" description="\Happy\HappyRules::getFieldErrors" refers="\Happy\HappyRules::getFieldErrors"/>
+          <tag line="214" name="covers" description="\Happy\HappyRules::setFieldErrors" refers="\Happy\HappyRules::setFieldErrors"/>
+          <tag line="214" name="covers" description="\Happy\HappyRules::getStrFieldErrors" refers="\Happy\HappyRules::getStrFieldErrors"/>
+          <tag line="214" name="covers" description="\Happy\HappyRules::getDebugErrors" refers="\Happy\HappyRules::getDebugErrors"/>
+          <tag line="214" name="covers" description="\Happy\HappyRules::setDebugErrors" refers="\Happy\HappyRules::setDebugErrors"/>
+          <tag line="214" name="covers" description="\Happy\HappyRules::getStrDebugErrors" refers="\Happy\HappyRules::getStrDebugErrors"/>
+        </docblock>
+      </method>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file Tests/HappyRulesTest.php</error>
+      <error line="139" code="50015">Argument $testValue is missing from the Docblock of testCheckRulesValid()</error>
+      <error line="139" code="50015">Argument $testRules is missing from the Docblock of testCheckRulesValid()</error>
+      <error line="139" code="50015">Argument $expected is missing from the Docblock of testCheckRulesValid()</error>
+    </parse_markers>
+  </file>
+  <file path="HappyErrors.php" hash="ec496a604843842fb62599b67ed523e2" package="Default">
+    <class final="false" abstract="false" namespace="Happy" line="31" package="Happy\Errors">
+      <extends/>
+      <name>HappyErrors</name>
+      <full_name>\Happy\HappyErrors</full_name>
+      <docblock line="18">
+        <description>Will manage the human readable errors translation
+and the i18n [from a file ?]</description>
+        <long-description/>
+        <tag line="18" name="TODO" description=": Find a robust translation system !&#10;-&gt; Maybe a translation yaml file ?"/>
+        <tag line="18" name="package" description="Happy"/>
+        <tag line="18" name="subpackage" description="Errors"/>
+        <tag line="18" name="category" description="Field Errors handling"/>
+        <tag line="18" name="copyright" description="Copyright (c) 2013, Lambdaweb"/>
+        <tag line="18" name="author" description="Andre Aubin &lt;andre.aubin@lambdaweb.fr&gt;"/>
+        <tag line="18" name="since" description="v1.0"/>
+        <tag line="18" name="link" description="http://lambda2.github.io/Happy-Field/" link="http://lambda2.github.io/Happy-Field/"/>
+      </docblock>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file HappyErrors.php</error>
+    </parse_markers>
+  </file>
+  <file path="HappyField.php" hash="8583a4009d25e61ba494bdae7f276da9" package="Default">
+    <class final="false" abstract="false" namespace="Happy" line="28" package="Happy\Rules">
+      <extends/>
+      <name>HappyField</name>
+      <full_name>\Happy\HappyField</full_name>
+      <docblock line="18">
+        <description/>
+        <long-description/>
+        <tag line="18" name="package" description="Happy"/>
+        <tag line="18" name="subpackage" description="Rules"/>
+        <tag line="18" name="category" description="Field Check"/>
+        <tag line="18" name="copyright" description="Copyright (c) 2013, Lambdaweb"/>
+        <tag line="18" name="author" description="Andre Aubin &lt;andre.aubin@lambdaweb.fr&gt;"/>
+        <tag line="18" name="since" description="v1.0"/>
+        <tag line="18" name="link" description="http://lambda2.github.io/Happy-Field/" link="http://lambda2.github.io/Happy-Field/"/>
+      </docblock>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file HappyField.php</error>
+      <critical line="18" code="50005">No short description for class \Happy\HappyField</critical>
+    </parse_markers>
+  </file>
+  <file path="HappyFunctions.php" hash="5b6c82160049ff6424dd875409e335a7" package="Default">
+    <class final="false" abstract="false" namespace="Happy" line="29" package="Happy\Functions">
+      <extends/>
+      <name>HappyFunctions</name>
+      <full_name>\Happy\HappyFunctions</full_name>
+      <docblock line="18">
+        <description>Will define a lot of basic functions
+for validating the forms</description>
+        <long-description/>
+        <tag line="18" name="package" description="Happy"/>
+        <tag line="18" name="subpackage" description="Functions"/>
+        <tag line="18" name="category" description="Validation functions"/>
+        <tag line="18" name="copyright" description="Copyright (c) 2013, Lambdaweb"/>
+        <tag line="18" name="author" description="Andre Aubin &lt;andre.aubin@lambdaweb.fr&gt;"/>
+        <tag line="18" name="since" description="v1.0"/>
+        <tag line="18" name="link" description="http://lambda2.github.io/Happy-Field/" link="http://lambda2.github.io/Happy-Field/"/>
+      </docblock>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="39" package="Happy\Functions">
+        <name>sup</name>
+        <full_name>sup</full_name>
+        <docblock line="36">
+          <description/>
+          <long-description/>
+          <tag line="36" name="return" description="true if $expression is strictly greater than $value" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="39">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="39">
+          <name>$value</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="51" package="Happy\Functions">
+        <name>inf</name>
+        <full_name>inf</full_name>
+        <docblock line="48">
+          <description/>
+          <long-description/>
+          <tag line="48" name="return" description="true if $expression is strictly less than $value" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="51">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="51">
+          <name>$value</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="63" package="Happy\Functions">
+        <name>equ</name>
+        <full_name>equ</full_name>
+        <docblock line="60">
+          <description/>
+          <long-description/>
+          <tag line="60" name="return" description="true if $expression equals $value" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="63">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="63">
+          <name>$value</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="71" package="Happy\Functions">
+        <name>required</name>
+        <full_name>required</full_name>
+        <docblock line="68">
+          <description/>
+          <long-description/>
+          <tag line="68" name="return" description="false if $expression is empty" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="71">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="83" package="Happy\Functions">
+        <name>minLength</name>
+        <full_name>minLength</full_name>
+        <docblock line="80">
+          <description/>
+          <long-description/>
+          <tag line="80" name="return" description="false if $expression is shorter then the parameter value" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="83">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="83">
+          <name>$val</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="102" package="Happy\Functions">
+        <name>maxLength</name>
+        <full_name>maxLength</full_name>
+        <docblock line="99">
+          <description/>
+          <long-description/>
+          <tag line="99" name="return" description="false if $expression is longer then the parameter value" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="102">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="102">
+          <name>$val</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="121" package="Happy\Functions">
+        <name>exactLength</name>
+        <full_name>exactLength</full_name>
+        <docblock line="118">
+          <description/>
+          <long-description/>
+          <tag line="118" name="return" description="false if $expression is not exactly the parameter value." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="121">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="121">
+          <name>$val</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="144" package="Happy\Functions">
+        <name>alpha</name>
+        <full_name>alpha</full_name>
+        <docblock line="140">
+          <description/>
+          <long-description/>
+          <tag line="140" name="return" description="false if $expression contains anything other&#10;than alphabetical characters." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="144">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="154" package="Happy\Functions">
+        <name>alphaNum</name>
+        <full_name>alphaNum</full_name>
+        <docblock line="150">
+          <description/>
+          <long-description/>
+          <tag line="150" name="return" description="false if $expression contains anything other&#10;than  alpha-numeric characters." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="154">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="164" package="Happy\Functions">
+        <name>alphaNumDash</name>
+        <full_name>alphaNumDash</full_name>
+        <docblock line="160">
+          <description/>
+          <long-description/>
+          <tag line="160" name="return" description="false if $expression contains anything other&#10;than  alpha-numeric characters with underscores and dashes." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="164">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="174" package="Happy\Functions">
+        <name>num</name>
+        <full_name>num</full_name>
+        <docblock line="170">
+          <description/>
+          <long-description/>
+          <tag line="170" name="return" description="false if $expression contains anything other&#10;than numeric characters." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="174">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="185" package="Happy\Functions">
+        <name>isNum</name>
+        <full_name>isNum</full_name>
+        <docblock line="181">
+          <description/>
+          <long-description/>
+          <tag line="181" name="return" description="false if $expression contains anything other&#10;than numeric characters." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="185">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="195" package="Happy\Functions">
+        <name>integer</name>
+        <full_name>integer</full_name>
+        <docblock line="191">
+          <description/>
+          <long-description/>
+          <tag line="191" name="return" description="false if $expression contains anything other&#10;than an integer." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="195">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="205" package="Happy\Functions">
+        <name>decimal</name>
+        <full_name>decimal</full_name>
+        <docblock line="201">
+          <description/>
+          <long-description/>
+          <tag line="201" name="return" description="false if $expression contains anything other&#10;than an double|float." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="205">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="215" package="Happy\Functions">
+        <name>natural</name>
+        <full_name>natural</full_name>
+        <docblock line="211">
+          <description/>
+          <long-description/>
+          <tag line="211" name="return" description="false if $expression contains anything other&#10;than a Natural number (0,1,2,3, etc.)" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="215">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="224" package="Happy\Functions">
+        <name>naturalNotZero</name>
+        <full_name>naturalNotZero</full_name>
+        <docblock line="220">
+          <description/>
+          <long-description/>
+          <tag line="220" name="return" description="false if $expression contains anything other&#10;than a Natural number exepted zero (1,2,3, etc.)" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="224">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="250" package="Happy\Functions">
+        <name>regMatch</name>
+        <full_name>regMatch</full_name>
+        <docblock line="246">
+          <description/>
+          <long-description/>
+          <tag line="246" name="return" description="false if $expression does not match&#10;the one in parameter" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="250">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="250">
+          <name>$regex</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="263" package="Happy\Functions">
+        <name>email</name>
+        <full_name>email</full_name>
+        <docblock line="260">
+          <description/>
+          <long-description/>
+          <tag line="260" name="return" description="false if $expression is not a valid email adress" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="263">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="273" package="Happy\Functions">
+        <name>emails</name>
+        <full_name>emails</full_name>
+        <docblock line="269">
+          <description/>
+          <long-description/>
+          <tag line="269" name="return" description="false if any value provided in a comma separated list&#10;is not a valid email." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="273">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Happy" line="300" package="Happy\Functions">
+        <name>isBase64</name>
+        <full_name>isBase64</full_name>
+        <docblock line="292">
+          <description>Valid Base64</description>
+          <long-description>&lt;p&gt;Tests a string for characters outside of the Base64 alphabet
+as defined by RFC 2045 http://www.faqs.org/rfcs/rfc2045&lt;/p&gt;</long-description>
+          <tag line="292" name="return" description="false if $expression is not a valid base64 string." type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="300">
+          <name>$expression</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file HappyFunctions.php</error>
+      <error line="36" code="50012">No short description for method sup()</error>
+      <error line="36" code="50015">Argument $expression is missing from the Docblock of sup()</error>
+      <error line="36" code="50015">Argument $value is missing from the Docblock of sup()</error>
+      <error line="48" code="50012">No short description for method inf()</error>
+      <error line="48" code="50015">Argument $expression is missing from the Docblock of inf()</error>
+      <error line="48" code="50015">Argument $value is missing from the Docblock of inf()</error>
+      <error line="60" code="50012">No short description for method equ()</error>
+      <error line="60" code="50015">Argument $expression is missing from the Docblock of equ()</error>
+      <error line="60" code="50015">Argument $value is missing from the Docblock of equ()</error>
+      <error line="68" code="50012">No short description for method required()</error>
+      <error line="68" code="50015">Argument $expression is missing from the Docblock of required()</error>
+      <error line="80" code="50012">No short description for method minLength()</error>
+      <error line="80" code="50015">Argument $expression is missing from the Docblock of minLength()</error>
+      <error line="80" code="50015">Argument $val is missing from the Docblock of minLength()</error>
+      <error line="99" code="50012">No short description for method maxLength()</error>
+      <error line="99" code="50015">Argument $expression is missing from the Docblock of maxLength()</error>
+      <error line="99" code="50015">Argument $val is missing from the Docblock of maxLength()</error>
+      <error line="118" code="50012">No short description for method exactLength()</error>
+      <error line="118" code="50015">Argument $expression is missing from the Docblock of exactLength()</error>
+      <error line="118" code="50015">Argument $val is missing from the Docblock of exactLength()</error>
+      <error line="140" code="50012">No short description for method alpha()</error>
+      <error line="140" code="50015">Argument $expression is missing from the Docblock of alpha()</error>
+      <error line="150" code="50012">No short description for method alphaNum()</error>
+      <error line="150" code="50015">Argument $expression is missing from the Docblock of alphaNum()</error>
+      <error line="160" code="50012">No short description for method alphaNumDash()</error>
+      <error line="160" code="50015">Argument $expression is missing from the Docblock of alphaNumDash()</error>
+      <error line="170" code="50012">No short description for method num()</error>
+      <error line="170" code="50015">Argument $expression is missing from the Docblock of num()</error>
+      <error line="181" code="50012">No short description for method isNum()</error>
+      <error line="181" code="50015">Argument $expression is missing from the Docblock of isNum()</error>
+      <error line="191" code="50012">No short description for method integer()</error>
+      <error line="191" code="50015">Argument $expression is missing from the Docblock of integer()</error>
+      <error line="201" code="50012">No short description for method decimal()</error>
+      <error line="201" code="50015">Argument $expression is missing from the Docblock of decimal()</error>
+      <error line="211" code="50012">No short description for method natural()</error>
+      <error line="211" code="50015">Argument $expression is missing from the Docblock of natural()</error>
+      <error line="220" code="50012">No short description for method naturalNotZero()</error>
+      <error line="220" code="50015">Argument $expression is missing from the Docblock of naturalNotZero()</error>
+      <error line="246" code="50012">No short description for method regMatch()</error>
+      <error line="246" code="50015">Argument $expression is missing from the Docblock of regMatch()</error>
+      <error line="246" code="50015">Argument $regex is missing from the Docblock of regMatch()</error>
+      <error line="260" code="50012">No short description for method email()</error>
+      <error line="260" code="50015">Argument $expression is missing from the Docblock of email()</error>
+      <error line="269" code="50012">No short description for method emails()</error>
+      <error line="269" code="50015">Argument $expression is missing from the Docblock of emails()</error>
+      <error line="292" code="50015">Argument $expression is missing from the Docblock of isBase64()</error>
+    </parse_markers>
+  </file>
+  <package name="Default" full_name="Default"/>
+  <package name="Happy" full_name="Happy">
+    <package name="Errors" full_name="Happy\Errors"/>
+    <package name="Functions" full_name="Happy\Functions"/>
+    <package name="Rules" full_name="Happy\Rules"/>
+    <package name="Tests" full_name="Happy\Tests"/>
+  </package>
+  <namespace name="Happy" full_name="Happy"/>
+  <namespace name="global" full_name="global"/>
+  <marker count="0">todo</marker>
+  <marker count="0">fixme</marker>
+  <deprecated count="0"/>
+</project>

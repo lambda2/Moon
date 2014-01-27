@@ -1,0 +1,365 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>Happy-Field Documentation » \HappyRulesTest</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">Happy-Field Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Happy.html"><i class="icon-folder-open"></i> Happy</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">75</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">0</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method_getTestValues" title="getTestValues :: Returns test values for the testCheckRulesValid test"><span class="description">Returns test values for the testCheckRulesValid test</span><pre>getTestValues()</pre></a></li>
+<li class="method public "><a href="#method_main" title="main :: Runs the test methods of this class."><span class="description">Runs the test methods of this class.</span><pre>main()</pre></a></li>
+<li class="method public "><a href="#method_testCheckRulesExists" title="testCheckRulesExists :: tests the rules existence"><span class="description">tests the rules existence</span><pre>testCheckRulesExists()</pre></a></li>
+<li class="method public "><a href="#method_testCheckRulesValid" title="testCheckRulesValid :: tests the rules validation"><span class="description">tests the rules validation</span><pre>testCheckRulesValid()</pre></a></li>
+<li class="method public "><a href="#method_testConstruct" title="testConstruct :: tests the HappyRules constructor"><span class="description">tests the HappyRules constructor</span><pre>testConstruct()</pre></a></li>
+<li class="method public "><a href="#method_testGetSetErrors" title="testGetSetErrors :: tests the getter and the setter of FieldErrors"><span class="description">tests the getter and the setter of FieldErrors</span><pre>testGetSetErrors()</pre></a></li>
+<li class="method public "><a href="#method_testGetSetField" title="testGetSetField :: tests the getter and the setter of Field"><span class="description">tests the getter and the setter of Field</span><pre>testGetSetField()</pre></a></li>
+<li class="method public "><a href="#method_testGetSetLabel" title="testGetSetLabel :: tests the getter and the setter of Label"><span class="description">tests the getter and the setter of Label</span><pre>testGetSetLabel()</pre></a></li>
+<li class="method public "><a href="#method_testGetSetRules" title="testGetSetRules :: tests the getter and the setter of Rules"><span class="description">tests the getter and the setter of Rules</span><pre>testGetSetRules()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method_setUp" title="setUp :: Sets up the fixture, for example, opens a network connection."><span class="description">Sets up the fixture, for example, opens a network connection.</span><pre>setUp()</pre></a></li>
+<li class="method protected "><a href="#method_tearDown" title="tearDown :: Tears down the fixture, for example, closes a network connection."><span class="description">Tears down the fixture, for example, closes a network connection.</span><pre>tearDown()</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a id="\HappyRulesTest"></a><ul class="breadcrumb">
+<li>
+<a href="../index.html"><i class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/global.html">global</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/HappyRulesTest.html">HappyRulesTest</a>
+</li>
+</ul>
+<div class="element class">
+<p class="short_description">Test class for HappyRules.</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Happy.Tests.html">Happy</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tests</td>
+</tr>
+<tr>
+<th>category</th>
+<td>Rules Tests</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2013, Lambdaweb</td>
+</tr>
+<tr>
+<th>author</th>
+<td><a href="mailto:andre.aubin@lambdaweb.fr">Andre Aubin</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>v1.0</td>
+</tr>
+<tr>
+<th>link</th>
+<td><a href="http://lambda2.github.io/Happy-Field/">http://lambda2.github.io/Happy-Field/</a></td>
+</tr>
+</table>
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_getTestValues"></a><div class="element clickable method public method_getTestValues" data-toggle="collapse" data-target=".method_getTestValues .collapse">
+<h2>Returns test values for the testCheckRulesValid test</h2>
+<pre>getTestValues() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_main"></a><div class="element clickable method public method_main" data-toggle="collapse" data-target=".method_main .collapse">
+<h2>Runs the test methods of this class.</h2>
+<pre>main() </pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>access</th>
+<td>public</td>
+</tr>
+<tr>
+<th>static</th>
+<td></td>
+</tr>
+</table>
+</div></div>
+</div>
+<a id="method_testCheckRulesExists"></a><div class="element clickable method public method_testCheckRulesExists" data-toggle="collapse" data-target=".method_testCheckRulesExists .collapse">
+<h2>tests the rules existence</h2>
+<pre>testCheckRulesExists() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::__construct</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::checkRulesExists</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::cleanArray</td>
+</tr>
+</table>
+</div></div>
+</div>
+<a id="method_testCheckRulesValid"></a><div class="element clickable method public method_testCheckRulesValid" data-toggle="collapse" data-target=".method_testCheckRulesValid .collapse">
+<h2>tests the rules validation</h2>
+<pre>testCheckRulesValid($testValue, $testRules, $expected) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::__construct</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::checkRulesExists</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::cleanArray</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::checkRules</td>
+</tr>
+<tr>
+<th>dataProvider</th>
+<td>getTestValues</td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$testValue</h4></div>
+<div class="subelement argument"><h4>$testRules</h4></div>
+<div class="subelement argument"><h4>$expected</h4></div>
+</div></div>
+</div>
+<a id="method_testConstruct"></a><div class="element clickable method public method_testConstruct" data-toggle="collapse" data-target=".method_testConstruct .collapse">
+<h2>tests the HappyRules constructor</h2>
+<pre>testConstruct() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::__construct</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::parseRules</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::cleanArray</td>
+</tr>
+</table>
+</div></div>
+</div>
+<a id="method_testGetSetErrors"></a><div class="element clickable method public method_testGetSetErrors" data-toggle="collapse" data-target=".method_testGetSetErrors .collapse">
+<h2>tests the getter and the setter of FieldErrors</h2>
+<pre>testGetSetErrors() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::__construct</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::getFieldErrors</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::setFieldErrors</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::getStrFieldErrors</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::getDebugErrors</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::setDebugErrors</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::getStrDebugErrors</td>
+</tr>
+</table>
+</div></div>
+</div>
+<a id="method_testGetSetField"></a><div class="element clickable method public method_testGetSetField" data-toggle="collapse" data-target=".method_testGetSetField .collapse">
+<h2>tests the getter and the setter of Field</h2>
+<pre>testGetSetField() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::__construct</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::getField</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::setField</td>
+</tr>
+</table>
+</div></div>
+</div>
+<a id="method_testGetSetLabel"></a><div class="element clickable method public method_testGetSetLabel" data-toggle="collapse" data-target=".method_testGetSetLabel .collapse">
+<h2>tests the getter and the setter of Label</h2>
+<pre>testGetSetLabel() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::__construct</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::getLabel</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::setLabel</td>
+</tr>
+</table>
+</div></div>
+</div>
+<a id="method_testGetSetRules"></a><div class="element clickable method public method_testGetSetRules" data-toggle="collapse" data-target=".method_testGetSetRules .collapse">
+<h2>tests the getter and the setter of Rules</h2>
+<pre>testGetSetRules() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::__construct</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::getRules</td>
+</tr>
+<tr>
+<th>covers</th>
+<td>\Happy\HappyRules::setRules</td>
+</tr>
+</table>
+</div></div>
+</div>
+<a id="method_setUp"></a><div class="element clickable method protected method_setUp" data-toggle="collapse" data-target=".method_setUp .collapse">
+<h2>Sets up the fixture, for example, opens a network connection.</h2>
+<pre>setUp() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This method is called before a test is executed.</p></div>
+<table class="table table-bordered"><tr>
+<th>access</th>
+<td>protected</td>
+</tr></table>
+</div></div>
+</div>
+<a id="method_tearDown"></a><div class="element clickable method protected method_tearDown" data-toggle="collapse" data-target=".method_tearDown .collapse">
+<h2>Tears down the fixture, for example, closes a network connection.</h2>
+<pre>tearDown() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This method is called after a test is executed.</p></div>
+<table class="table table-bordered"><tr>
+<th>access</th>
+<td>protected</td>
+</tr></table>
+</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a12</a> and<br>
+            generated on 2013-04-11T00:33:02+02:00.<br></footer></div>
+</div>
+</body>
+</html>

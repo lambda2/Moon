@@ -1,0 +1,456 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>Happy-Field Documentation » \Happy\HappyFunctions</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">Happy-Field Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Happy.html"><i class="icon-folder-open"></i> Happy</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">75</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">0</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list"><li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method_alpha" title="alpha :: "><span class="description">alpha()
+        </span><pre>alpha()</pre></a></li>
+<li class="method public "><a href="#method_alphaNum" title="alphaNum :: "><span class="description">alphaNum()
+        </span><pre>alphaNum()</pre></a></li>
+<li class="method public "><a href="#method_alphaNumDash" title="alphaNumDash :: "><span class="description">alphaNumDash()
+        </span><pre>alphaNumDash()</pre></a></li>
+<li class="method public "><a href="#method_decimal" title="decimal :: "><span class="description">decimal()
+        </span><pre>decimal()</pre></a></li>
+<li class="method public "><a href="#method_email" title="email :: "><span class="description">email()
+        </span><pre>email()</pre></a></li>
+<li class="method public "><a href="#method_emails" title="emails :: "><span class="description">emails()
+        </span><pre>emails()</pre></a></li>
+<li class="method public "><a href="#method_equ" title="equ :: "><span class="description">equ()
+        </span><pre>equ()</pre></a></li>
+<li class="method public "><a href="#method_exactLength" title="exactLength :: "><span class="description">exactLength()
+        </span><pre>exactLength()</pre></a></li>
+<li class="method public "><a href="#method_inf" title="inf :: "><span class="description">inf()
+        </span><pre>inf()</pre></a></li>
+<li class="method public "><a href="#method_integer" title="integer :: "><span class="description">integer()
+        </span><pre>integer()</pre></a></li>
+<li class="method public "><a href="#method_isBase64" title="isBase64 :: Valid Base64"><span class="description">Valid Base64</span><pre>isBase64()</pre></a></li>
+<li class="method public "><a href="#method_isNum" title="isNum :: "><span class="description">isNum()
+        </span><pre>isNum()</pre></a></li>
+<li class="method public "><a href="#method_maxLength" title="maxLength :: "><span class="description">maxLength()
+        </span><pre>maxLength()</pre></a></li>
+<li class="method public "><a href="#method_minLength" title="minLength :: "><span class="description">minLength()
+        </span><pre>minLength()</pre></a></li>
+<li class="method public "><a href="#method_natural" title="natural :: "><span class="description">natural()
+        </span><pre>natural()</pre></a></li>
+<li class="method public "><a href="#method_naturalNotZero" title="naturalNotZero :: "><span class="description">naturalNotZero()
+        </span><pre>naturalNotZero()</pre></a></li>
+<li class="method public "><a href="#method_num" title="num :: "><span class="description">num()
+        </span><pre>num()</pre></a></li>
+<li class="method public "><a href="#method_regMatch" title="regMatch :: "><span class="description">regMatch()
+        </span><pre>regMatch()</pre></a></li>
+<li class="method public "><a href="#method_required" title="required :: "><span class="description">required()
+        </span><pre>required()</pre></a></li>
+<li class="method public "><a href="#method_sup" title="sup :: "><span class="description">sup()
+        </span><pre>sup()</pre></a></li>
+</ul>
+</li></ul>
+</div>
+<div class="span8">
+<a id="\Happy\HappyFunctions"></a><ul class="breadcrumb">
+<li>
+<a href="../index.html"><i class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/Happy.html">Happy</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Happy.HappyFunctions.html">HappyFunctions</a>
+</li>
+</ul>
+<div class="element class">
+<p class="short_description">Will define a lot of basic functions
+for validating the forms</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Happy.Functions.html">Happy</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Functions</td>
+</tr>
+<tr>
+<th>category</th>
+<td>Validation functions</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2013, Lambdaweb</td>
+</tr>
+<tr>
+<th>author</th>
+<td><a href="mailto:andre.aubin@lambdaweb.fr">Andre Aubin</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>v1.0</td>
+</tr>
+<tr>
+<th>link</th>
+<td><a href="http://lambda2.github.io/Happy-Field/">http://lambda2.github.io/Happy-Field/</a></td>
+</tr>
+</table>
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_alpha"></a><div class="element clickable method public method_alpha" data-toggle="collapse" data-target=".method_alpha .collapse">
+<h2>alpha()
+        </h2>
+<pre>alpha($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression contains anything other
+than alphabetical characters.</div>
+</div></div>
+</div>
+<a id="method_alphaNum"></a><div class="element clickable method public method_alphaNum" data-toggle="collapse" data-target=".method_alphaNum .collapse">
+<h2>alphaNum()
+        </h2>
+<pre>alphaNum($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression contains anything other
+than  alpha-numeric characters.</div>
+</div></div>
+</div>
+<a id="method_alphaNumDash"></a><div class="element clickable method public method_alphaNumDash" data-toggle="collapse" data-target=".method_alphaNumDash .collapse">
+<h2>alphaNumDash()
+        </h2>
+<pre>alphaNumDash($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression contains anything other
+than  alpha-numeric characters with underscores and dashes.</div>
+</div></div>
+</div>
+<a id="method_decimal"></a><div class="element clickable method public method_decimal" data-toggle="collapse" data-target=".method_decimal .collapse">
+<h2>decimal()
+        </h2>
+<pre>decimal($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression contains anything other
+than an double|float.</div>
+</div></div>
+</div>
+<a id="method_email"></a><div class="element clickable method public method_email" data-toggle="collapse" data-target=".method_email .collapse">
+<h2>email()
+        </h2>
+<pre>email($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression is not a valid email adress</div>
+</div></div>
+</div>
+<a id="method_emails"></a><div class="element clickable method public method_emails" data-toggle="collapse" data-target=".method_emails .collapse">
+<h2>emails()
+        </h2>
+<pre>emails($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if any value provided in a comma separated list
+is not a valid email.</div>
+</div></div>
+</div>
+<a id="method_equ"></a><div class="element clickable method public method_equ" data-toggle="collapse" data-target=".method_equ .collapse">
+<h2>equ()
+        </h2>
+<pre>equ($expression, $value) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<div class="subelement argument"><h4>$value</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if $expression equals $value</div>
+</div></div>
+</div>
+<a id="method_exactLength"></a><div class="element clickable method public method_exactLength" data-toggle="collapse" data-target=".method_exactLength .collapse">
+<h2>exactLength()
+        </h2>
+<pre>exactLength($expression, $val) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<div class="subelement argument"><h4>$val</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression is not exactly the parameter value.</div>
+</div></div>
+</div>
+<a id="method_inf"></a><div class="element clickable method public method_inf" data-toggle="collapse" data-target=".method_inf .collapse">
+<h2>inf()
+        </h2>
+<pre>inf($expression, $value) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<div class="subelement argument"><h4>$value</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if $expression is strictly less than $value</div>
+</div></div>
+</div>
+<a id="method_integer"></a><div class="element clickable method public method_integer" data-toggle="collapse" data-target=".method_integer .collapse">
+<h2>integer()
+        </h2>
+<pre>integer($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression contains anything other
+than an integer.</div>
+</div></div>
+</div>
+<a id="method_isBase64"></a><div class="element clickable method public method_isBase64" data-toggle="collapse" data-target=".method_isBase64 .collapse">
+<h2>Valid Base64</h2>
+<pre>isBase64($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Tests a string for characters outside of the Base64 alphabet
+as defined by RFC 2045 http://www.faqs.org/rfcs/rfc2045</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression is not a valid base64 string.</div>
+</div></div>
+</div>
+<a id="method_isNum"></a><div class="element clickable method public method_isNum" data-toggle="collapse" data-target=".method_isNum .collapse">
+<h2>isNum()
+        </h2>
+<pre>isNum($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression contains anything other
+than numeric characters.</div>
+</div></div>
+</div>
+<a id="method_maxLength"></a><div class="element clickable method public method_maxLength" data-toggle="collapse" data-target=".method_maxLength .collapse">
+<h2>maxLength()
+        </h2>
+<pre>maxLength($expression, $val) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<div class="subelement argument"><h4>$val</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression is longer then the parameter value</div>
+</div></div>
+</div>
+<a id="method_minLength"></a><div class="element clickable method public method_minLength" data-toggle="collapse" data-target=".method_minLength .collapse">
+<h2>minLength()
+        </h2>
+<pre>minLength($expression, $val) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<div class="subelement argument"><h4>$val</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression is shorter then the parameter value</div>
+</div></div>
+</div>
+<a id="method_natural"></a><div class="element clickable method public method_natural" data-toggle="collapse" data-target=".method_natural .collapse">
+<h2>natural()
+        </h2>
+<pre>natural($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression contains anything other
+than a Natural number (0,1,2,3, etc.)</div>
+</div></div>
+</div>
+<a id="method_naturalNotZero"></a><div class="element clickable method public method_naturalNotZero" data-toggle="collapse" data-target=".method_naturalNotZero .collapse">
+<h2>naturalNotZero()
+        </h2>
+<pre>naturalNotZero($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression contains anything other
+than a Natural number exepted zero (1,2,3, etc.)</div>
+</div></div>
+</div>
+<a id="method_num"></a><div class="element clickable method public method_num" data-toggle="collapse" data-target=".method_num .collapse">
+<h2>num()
+        </h2>
+<pre>num($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression contains anything other
+than numeric characters.</div>
+</div></div>
+</div>
+<a id="method_regMatch"></a><div class="element clickable method public method_regMatch" data-toggle="collapse" data-target=".method_regMatch .collapse">
+<h2>regMatch()
+        </h2>
+<pre>regMatch($expression, $regex) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<div class="subelement argument"><h4>$regex</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression does not match
+the one in parameter</div>
+</div></div>
+</div>
+<a id="method_required"></a><div class="element clickable method public method_required" data-toggle="collapse" data-target=".method_required .collapse">
+<h2>required()
+        </h2>
+<pre>required($expression) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>false if $expression is empty</div>
+</div></div>
+</div>
+<a id="method_sup"></a><div class="element clickable method public method_sup" data-toggle="collapse" data-target=".method_sup .collapse">
+<h2>sup()
+        </h2>
+<pre>sup($expression, $value) : boolean</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$expression</h4></div>
+<div class="subelement argument"><h4>$value</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if $expression is strictly greater than $value</div>
+</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a12</a> and<br>
+            generated on 2013-04-11T00:33:02+02:00.<br></footer></div>
+</div>
+</body>
+</html>
