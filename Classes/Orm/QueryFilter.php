@@ -40,6 +40,11 @@ class QueryFilter {
         $this->limit = $limit;
         return $this;
     }
+    
+    public function getLimit()
+    {
+    	return ($this->limit);
+    }
 
     /**
      * Defines an offset to begin for the result set.
@@ -50,6 +55,11 @@ class QueryFilter {
     {
         $this->offset = $offset;
         return $this;
+    }
+    
+    public function getOffset()
+    {
+    	return ($this->offset);
     }
 
     /**
@@ -66,6 +76,11 @@ class QueryFilter {
         return $this;
     }
 
+    public function getOrderColumn()
+    {
+    	return ($this->orderColumn);
+    }
+
     /**
      * Defines a direction to sort the result set.
      * @param $sort String the direction of sort (ASC or DESC)
@@ -78,6 +93,12 @@ class QueryFilter {
         return $this;
     }
 
+    public function getOrderSort()
+    {
+    	return ($this->orderSort);
+    }
+
+
     /**
      * All the results will be distinct on the given column name.
      * @param $column String the columns who have to be distinct.
@@ -88,6 +109,16 @@ class QueryFilter {
         $this->distinct = true;
         $this->distinctColumns = $column;
         return $this;
+    }
+
+    public function getDistinct()
+    {
+    	return ($this->distinct);
+    }
+
+    public function getDistinctColumns()
+    {
+    	return ($this->distinctColumns);
     }
 
 

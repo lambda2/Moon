@@ -186,7 +186,7 @@ class Entities implements Iterator, Countable, JsonSerializable {
     public function loadFromDatabase()
     {
         $query = $this->generateQueryFromHistory();
-
+		$query->applyFilter($this->filter);
         // On récupère l'instance de l'ORM
         $this->loaded = true;
         $orm = Core::getBdd();
@@ -289,7 +289,6 @@ class Entities implements Iterator, Countable, JsonSerializable {
                     $linker = $this->getGoodFieldFromTableName($relation, $originTable);
                     if($linker == '')
                         $linker = $this->getGoodFieldFromTableName($nrelation, $originTable);
-
                     $q->select($linker)->from($originTable);
                     $baseQuery = $q;
                 }

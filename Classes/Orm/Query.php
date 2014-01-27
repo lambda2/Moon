@@ -172,6 +172,18 @@ class Query {
         return $this;
     }
 
+    public function applyFilter($filter)
+    {
+		if ($filter->getLimit())
+			$this->limit($filter->getLimit());
+		if ($filter->getOrderColumn())
+		{
+			if ($filter->getOrderSort())
+				$this->orderBy($filter->getOrderColumn(), $filter->getOrderSort());
+			else
+				$this->orderBy($filter->getOrderColumn());
+		}
+    }
 
     /* -------------- protected methods for query selectors ---------------- */
 
@@ -193,7 +205,10 @@ class Query {
      */
     protected function getSelectSql()
     {
-        return ' SELECT '.implode(', ',$this->ficonstraints);
+	if (!$this->ficonstraints[0])
+	    return ' SELECT * ';
+	else
+	    return ' SELECT '.implode(', ',$this->ficonstraints);
     }
 
     /**

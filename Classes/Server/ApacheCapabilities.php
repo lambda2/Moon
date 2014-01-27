@@ -35,6 +35,7 @@ class ApacheCapabilities extends BaseServerCapabilities
     protected function loadPowers()
     {
         parent::loadPowers();
-        $this->superpowers = array_merge($this->superpowers, apache_get_modules());
+	if (function_exists("apache_get_modules"))
+	    $this->superpowers = array_merge($this->superpowers, apache_get_modules());
     }
 }
