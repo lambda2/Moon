@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>Happy-Field Documentation » \Happy\HappyRules</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">Happy-Field Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Happy.html"><i class="icon-folder-open"></i> Happy</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">75</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">0</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct :: Will construct a new HappyRules"><span class="description">Will construct a new HappyRules</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_addRule" title="addRule :: Add the rule to the other rules."><span class="description">Add the rule to the other rules.</span><pre>addRule()</pre></a></li>
+<li class="method public "><a href="#method_checkRules" title="checkRules :: Will check each rule."><span class="description">Will check each rule.</span><pre>checkRules()</pre></a></li>
+<li class="method public "><a href="#method_checkRulesExists" title="checkRulesExists :: Will check if each rule exists."><span class="description">Will check if each rule exists.</span><pre>checkRulesExists()</pre></a></li>
+<li class="method public "><a href="#method_clearRules" title="clearRules :: Clear all the rules"><span class="description">Clear all the rules</span><pre>clearRules()</pre></a></li>
+<li class="method public "><a href="#method_getDebugErrors" title="getDebugErrors :: Gets the value of debugErrors."><span class="description">Gets the value of debugErrors.</span><pre>getDebugErrors()</pre></a></li>
+<li class="method public "><a href="#method_getField" title="getField :: Gets the value of field."><span class="description">Gets the value of field.</span><pre>getField()</pre></a></li>
+<li class="method public "><a href="#method_getFieldErrors" title="getFieldErrors :: Gets the value of fieldErrors."><span class="description">Gets the value of fieldErrors.</span><pre>getFieldErrors()</pre></a></li>
+<li class="method public "><a href="#method_getLabel" title="getLabel :: Gets the value of label."><span class="description">Gets the value of label.</span><pre>getLabel()</pre></a></li>
+<li class="method public "><a href="#method_getRules" title="getRules :: Gets the value of rules."><span class="description">Gets the value of rules.</span><pre>getRules()</pre></a></li>
+<li class="method public "><a href="#method_getStrDebugErrors" title="getStrDebugErrors :: Gets the string value of debugErrors."><span class="description">Gets the string value of debugErrors.</span><pre>getStrDebugErrors()</pre></a></li>
+<li class="method public "><a href="#method_getStrFieldErrors" title="getStrFieldErrors :: Gets the string value of fieldErrors."><span class="description">Gets the string value of fieldErrors.</span><pre>getStrFieldErrors()</pre></a></li>
+<li class="method public "><a href="#method_setDebugErrors" title="setDebugErrors :: Sets the value of debugErrors."><span class="description">Sets the value of debugErrors.</span><pre>setDebugErrors()</pre></a></li>
+<li class="method public "><a href="#method_setField" title="setField :: Sets the value of field."><span class="description">Sets the value of field.</span><pre>setField()</pre></a></li>
+<li class="method public "><a href="#method_setFieldErrors" title="setFieldErrors :: Sets the value of fieldErrors."><span class="description">Sets the value of fieldErrors.</span><pre>setFieldErrors()</pre></a></li>
+<li class="method public "><a href="#method_setLabel" title="setLabel :: Sets the value of label."><span class="description">Sets the value of label.</span><pre>setLabel()</pre></a></li>
+<li class="method public "><a href="#method_setRules" title="setRules :: Sets the value of rules."><span class="description">Sets the value of rules.</span><pre>setRules()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method_cleanArray" title="cleanArray :: Clean the given array for the rules parsing."><span class="description">Clean the given array for the rules parsing.</span><pre>cleanArray()</pre></a></li>
+<li class="method protected "><a href="#method_parseRules" title="parseRules :: Will parse the rules string for return
+an array of rules."><span class="description">Will parse the rules string for return
+an array of rules.</span><pre>parseRules()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_debugErrors" title="$debugErrors :: "><span class="description"></span><pre>$debugErrors</pre></a></li>
+<li class="property protected "><a href="#property_field" title="$field :: "><span class="description"></span><pre>$field</pre></a></li>
+<li class="property protected "><a href="#property_fieldErrors" title="$fieldErrors :: "><span class="description"></span><pre>$fieldErrors</pre></a></li>
+<li class="property protected "><a href="#property_func_ns" title="$func_ns :: "><span class="description"></span><pre>$func_ns</pre></a></li>
+<li class="property protected "><a href="#property_label" title="$label :: "><span class="description"></span><pre>$label</pre></a></li>
+<li class="property protected "><a href="#property_rules" title="$rules :: "><span class="description"></span><pre>$rules</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a id="\Happy\HappyRules"></a><ul class="breadcrumb">
+<li>
+<a href="../index.html"><i class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/Happy.html">Happy</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Happy.HappyRules.html">HappyRules</a>
+</li>
+</ul>
+<div class="element class">
+<p class="short_description">Will define the rules to check for one (form) field.</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Happy.Rules.html">Happy</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Rules</td>
+</tr>
+<tr>
+<th>category</th>
+<td>Field Check</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2013, Lambdaweb</td>
+</tr>
+<tr>
+<th>author</th>
+<td><a href="mailto:andre.aubin@lambdaweb.fr">Andre Aubin</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>v1.0</td>
+</tr>
+<tr>
+<th>link</th>
+<td><a href="http://lambda2.github.io/Happy-Field/">http://lambda2.github.io/Happy-Field/</a></td>
+</tr>
+</table>
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
+<h2>Will construct a new HappyRules</h2>
+<pre>__construct(string $fieldName, string | array $rules, string $label) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code><p>the name of the field in the form</p></div>
+<div class="subelement argument">
+<h4>$rules</h4>
+<code>string</code><code>array</code><p>the rules to check</p></div>
+<div class="subelement argument">
+<h4>$label</h4>
+<code>string</code><p>the label of the field for the error message</p></div>
+</div></div>
+</div>
+<a id="method_addRule"></a><div class="element clickable method public method_addRule" data-toggle="collapse" data-target=".method_addRule .collapse">
+<h2>Add the rule to the other rules.</h2>
+<pre>addRule(string | array $rule) : true</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The rule can be a simple rule, an array
+of rules or a string where rules are
+separed by the | character.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$rule</h4>
+<code>string</code><code>array</code><p>the rule to add</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>true</code>if succes, false otherwise.</div>
+</div></div>
+</div>
+<a id="method_checkRules"></a><div class="element clickable method public method_checkRules" data-toggle="collapse" data-target=".method_checkRules .collapse">
+<h2>Will check each rule.</h2>
+<pre>checkRules($testValue) : true</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$testValue</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>true</code>if all the rules are checked, false otherwise.</div>
+</div></div>
+</div>
+<a id="method_checkRulesExists"></a><div class="element clickable method public method_checkRulesExists" data-toggle="collapse" data-target=".method_checkRulesExists .collapse">
+<h2>Will check if each rule exists.</h2>
+<pre>checkRulesExists() : true</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>true</code>if all the rules exists, false otherwise.</div>
+</div></div>
+</div>
+<a id="method_clearRules"></a><div class="element clickable method public method_clearRules" data-toggle="collapse" data-target=".method_clearRules .collapse">
+<h2>Clear all the rules</h2>
+<pre>clearRules() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getDebugErrors"></a><div class="element clickable method public method_getDebugErrors" data-toggle="collapse" data-target=".method_getDebugErrors .collapse">
+<h2>Gets the value of debugErrors.</h2>
+<pre>getDebugErrors() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getField"></a><div class="element clickable method public method_getField" data-toggle="collapse" data-target=".method_getField .collapse">
+<h2>Gets the value of field.</h2>
+<pre>getField() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getFieldErrors"></a><div class="element clickable method public method_getFieldErrors" data-toggle="collapse" data-target=".method_getFieldErrors .collapse">
+<h2>Gets the value of fieldErrors.</h2>
+<pre>getFieldErrors() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getLabel"></a><div class="element clickable method public method_getLabel" data-toggle="collapse" data-target=".method_getLabel .collapse">
+<h2>Gets the value of label.</h2>
+<pre>getLabel() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getRules"></a><div class="element clickable method public method_getRules" data-toggle="collapse" data-target=".method_getRules .collapse">
+<h2>Gets the value of rules.</h2>
+<pre>getRules() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getStrDebugErrors"></a><div class="element clickable method public method_getStrDebugErrors" data-toggle="collapse" data-target=".method_getStrDebugErrors .collapse">
+<h2>Gets the string value of debugErrors.</h2>
+<pre>getStrDebugErrors() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getStrFieldErrors"></a><div class="element clickable method public method_getStrFieldErrors" data-toggle="collapse" data-target=".method_getStrFieldErrors .collapse">
+<h2>Gets the string value of fieldErrors.</h2>
+<pre>getStrFieldErrors() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_setDebugErrors"></a><div class="element clickable method public method_setDebugErrors" data-toggle="collapse" data-target=".method_setDebugErrors .collapse">
+<h2>Sets the value of debugErrors.</h2>
+<pre>setDebugErrors(mixed $debugErrors) : <a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>fluent</th>
+<td>This method is part of a fluent interface and will return the same instance</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$debugErrors</h4>
+<code>mixed</code><p>the debugErrors</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></code></div>
+</div></div>
+</div>
+<a id="method_setField"></a><div class="element clickable method public method_setField" data-toggle="collapse" data-target=".method_setField .collapse">
+<h2>Sets the value of field.</h2>
+<pre>setField(mixed $field) : <a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>fluent</th>
+<td>This method is part of a fluent interface and will return the same instance</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$field</h4>
+<code>mixed</code><p>the field</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></code></div>
+</div></div>
+</div>
+<a id="method_setFieldErrors"></a><div class="element clickable method public method_setFieldErrors" data-toggle="collapse" data-target=".method_setFieldErrors .collapse">
+<h2>Sets the value of fieldErrors.</h2>
+<pre>setFieldErrors(mixed $fieldErrors) : <a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>fluent</th>
+<td>This method is part of a fluent interface and will return the same instance</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldErrors</h4>
+<code>mixed</code><p>the fieldErrors</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></code></div>
+</div></div>
+</div>
+<a id="method_setLabel"></a><div class="element clickable method public method_setLabel" data-toggle="collapse" data-target=".method_setLabel .collapse">
+<h2>Sets the value of label.</h2>
+<pre>setLabel(mixed $label) : <a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>fluent</th>
+<td>This method is part of a fluent interface and will return the same instance</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$label</h4>
+<code>mixed</code><p>the label</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></code></div>
+</div></div>
+</div>
+<a id="method_setRules"></a><div class="element clickable method public method_setRules" data-toggle="collapse" data-target=".method_setRules .collapse">
+<h2>Sets the value of rules.</h2>
+<pre>setRules(mixed $rules) : <a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>fluent</th>
+<td>This method is part of a fluent interface and will return the same instance</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$rules</h4>
+<code>mixed</code><p>the rules</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Happy.HappyRules.html">\Happy\HappyRules</a></code></div>
+</div></div>
+</div>
+<a id="method_cleanArray"></a><div class="element clickable method protected method_cleanArray" data-toggle="collapse" data-target=".method_cleanArray .collapse">
+<h2>Clean the given array for the rules parsing.</h2>
+<pre>cleanArray($array) </pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$array</h4></div>
+</div></div>
+</div>
+<a id="method_parseRules"></a><div class="element clickable method protected method_parseRules" data-toggle="collapse" data-target=".method_parseRules .collapse">
+<h2>Will parse the rules string for return
+an array of rules.</h2>
+<pre>parseRules(\Happy\string/array $rules) : \Happy\An</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The rules must be an array or a string
+where rules are separed by the | character.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$rules</h4>
+<code>\Happy\string/array</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Happy\Exception</code></th>
+<td>if $rules is not a string or an array</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Happy\An</code>array containing the parsed rules</div>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_debugErrors"> </a><div class="element clickable property protected property_debugErrors" data-toggle="collapse" data-target=".property_debugErrors .collapse">
+<h2></h2>
+<pre>$debugErrors </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_field"> </a><div class="element clickable property protected property_field" data-toggle="collapse" data-target=".property_field .collapse">
+<h2></h2>
+<pre>$field </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_fieldErrors"> </a><div class="element clickable property protected property_fieldErrors" data-toggle="collapse" data-target=".property_fieldErrors .collapse">
+<h2></h2>
+<pre>$fieldErrors </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_func_ns"> </a><div class="element clickable property protected property_func_ns" data-toggle="collapse" data-target=".property_func_ns .collapse">
+<h2></h2>
+<pre>$func_ns </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_label"> </a><div class="element clickable property protected property_label" data-toggle="collapse" data-target=".property_label .collapse">
+<h2></h2>
+<pre>$label </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_rules"> </a><div class="element clickable property protected property_rules" data-toggle="collapse" data-target=".property_rules .collapse">
+<h2></h2>
+<pre>$rules </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a12</a> and<br>
+            generated on 2013-04-11T00:33:02+02:00.<br></footer></div>
+</div>
+</body>
+</html>
